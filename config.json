@@ -1,0 +1,14 @@
+{
+	"inbox": "./inbox",
+	"oggdec": {
+		"input": "tmp/queue",
+		"output": "tmp/decoded"
+	},
+	"explode": {
+		"output": "tmp/exploded"
+	},
+	"publish": {
+		"input": "tmp/exploded",
+		"output": "../library"
+	}
+}

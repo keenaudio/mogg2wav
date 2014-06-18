@@ -1,0 +1,31 @@
+{
+  "name": "keenaudio-mogg2wav",
+  "version": "0.0.1",
+  "repository": {},
+  "dependencies": {
+    "yargs": "1.2.1"
+  },
+  "devDependencies": {
+    "gulp": "3.6.2",
+    "gulp-changed": "^0.4.0",
+    "gulp-clean": "0.2.4",
+    "gulp-debug": "0.3.0",
+    "gulp-expect-file": "0.0.4",
+    "gulp-filter": "0.4.1",
+    "gulp-load-plugins": "0.5.0",
+    "gulp-rename": "1.2.0",
+    "gulp-replace": "0.2.0",
+    "gulp-shell": "^0.2.7",
+    "gulp-size": "0.3.0",
+    "gulp-spawn": "0.3.0",
+    "gulp-util": "2.2.14",
+    "gulp-watch": "0.6.2",
+    "run-sequence": "0.3.6",
+    "streamqueue": "0.0.6",
+    "through": "2.3.4",
+    "through2": "0.4.1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
