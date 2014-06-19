@@ -14,8 +14,21 @@ var Server; // injected by express in index.jade
 
   // Define the global app instance.
   var app = angular.module('keenaudio', [ // Module dependencies
-    'ngRoute'
+    'ngRoute',
+    'app-templates'
   ]);
+
+  app.config(function($routeProvider, $locationProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: 'views/main/main.jade'
+      })
+      .otherwise({redirect:'/'});
+
+
+    // configure html5 to get links working on jsfiddle
+    //$locationProvider.html5Mode(true);
+  });
 
   app.run(function()  {
     console.log(_f("keenaudio app running")); //@strip

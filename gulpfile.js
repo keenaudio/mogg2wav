@@ -374,7 +374,7 @@ gulp.task('default', ['prepare'], function(cb) {
 });
 
 gulp.task('clean', function() {
-  return gulp.src("tmp", {read: false}).pipe($.clean());
+  return gulp.src(".tmp", {read: false}).pipe($.clean());
 });
 
 gulp.task('mkdirs', $.mkdirs($.config.createdirs));
@@ -419,9 +419,14 @@ gulp.task('explode', function() {
 //]));
 
 gulp.task('watch', function() {
+
+  gulp.watch("web/static/**/*.jade", ["app-templates"]);
+
+
   var lr = livereload();
   gulp.src([
-    "web/**/*"
+    "web/**/*",
+    ".tmp/web/**/*"
     ], { read: false })
     .pipe($.watch( { name: "server pages watch" }))
     .pipe(lr);
@@ -431,10 +436,10 @@ gulp.task('build', function(cb) {
   runSequence('clean', cb);
 });
 
-gulp.task('server', function(cb) {
+gulp.task('server', ['clean'], function(cb) {
   // start LR server
   livereload();
-  $.sequence('watch', 'dev-server');
+  $.sequence('app-templates', 'dev-server', 'watch');
 });
 
 gulp.task('server:dist', ['build'], function(cb) {
@@ -449,7 +454,7 @@ gulp.task('dev-server', function(cb) {
   var env = $.merge(process.env, {
     NODE_ENV: 'development',
   //  NODE_DEBUG: "livereload,express:*",
-    DEBUG: "tinylr:*"
+    DEBUG: "tinylr:*,send"
   });
 
   $.util.log("Server env: " + JSON.stringify(env, null, 2));
@@ -505,3 +510,75 @@ gulp.task('dist-server', function(cb) {
       args: args
     }));
 });
+
+// Convert angular templates to JS
+$.html2js = function(config) {
+  $.assert(config.src, "'src' is required");
+  $.assert(config.dest, "'dest' is required");
+  $.assert(config.module, "'module' is required");
+  //$.assert(config.cwd, "'cwd' is required");
+
+  var jadeFilter = $.filter("**/*.jade");
+  var srcOptions = {};
+  if (config.cwd) {
+    srcOptions.cwd = config.cwd;
+  }
+
+  var jadeVars = {
+    "NG": true
+  };
+
+  return gulp.src(config.src, srcOptions)
+    .pipe(jadeFilter)
+    .pipe($.jsmacro($.options.jsmacro.client)) // unlike html, jade will be processed with jsmacro
+    .pipe($.jade({ pretty: true, locals: jadeVars }))
+    //.pipe($.debug({ verbose: true }))
+    .pipe(jadeFilter.restore())
+    .pipe($.ngHtml2js({
+        moduleName: config.module//,
+        // replace: function(filename) {
+        //   return filename.replace('.jade', '.html');
+        // }
+      //  stripPrefix: config.cwd
+    }))
+   // .pipe($.concat(config.module + '.js'))
+    .pipe(gulp.dest(config.dest))
+    .pipe($.size({ showFiles: true }));
+}
+
+
+
+gulp.task("app-templates", function() {
+
+  var jadeVars = {
+    "NG": true
+  };
+
+  return gulp.src("**/*.jade", { cwd: "web/static"})
+   // .pipe(jadeFilter)
+   // .pipe($.jsmacro($.options.jsmacro.client)) // unlike html, jade will be processed with jsmacro
+   .pipe($.debug({ verbose: true }))
+
+    .pipe($.jade({ pretty: true, locals: jadeVars }))
+    .pipe($.debug({ verbose: true }))
+    //.pipe(jadeFilter.restore())
+    .pipe($.ngHtml2js({
+        moduleName: "app-templates",
+        rename: function(filename) {
+           return filename.replace('.html', '.jade');
+        }
+      //  stripPrefix: config.cwd
+    }))
+    .pipe($.rename({
+      dirname: "web/static",
+      basename: "app-templates"
+    }))
+    .pipe($.debug({ verbose: true }))
+
+   // .pipe($.concat(config.module + '.js'))
+    .pipe(gulp.dest(".tmp"))
+    .pipe($.size({ showFiles: true }));
+
+});
+
+

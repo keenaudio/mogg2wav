@@ -3,3 +3,4 @@ inbox
 tmp
 *.mogg
 .tmp
+bower_components

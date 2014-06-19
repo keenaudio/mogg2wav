@@ -145,8 +145,8 @@ app.clientConfig = clientSafeConfig();
 app.locals.config = config;
 
 
-var bodyParser = require('body-parser');
-app.use(bodyParser());
+//var bodyParser = require('body-parser');
+//app.use(bodyParser());
 
 // Livereload
 //@if DEV
@@ -162,7 +162,14 @@ app.use(bodyParser());
 //@end
 
 // Handlers
-app.use('/', function(req, res, next) {
+app.use(function(req, res, next) {
+  console.log(_f("START REQUEST: " + req.url));
+  next();
+});
+
+app.use('/bower_components', express.static('bower_components'));
+
+app.use(function(req, res, next) {
   if (req.path === '/') {
     res.render('pages/app.jade', {});
   } else {
@@ -170,7 +177,22 @@ app.use('/', function(req, res, next) {
   }
 });
 
-app.use('/', express.static('web/static'));
+//@if DEV
+if (DEV) {
+  app.use(express.static('.tmp/web/static', { hidden: true }));
+  app.use(function(req, res, next) {
+  console.log(_f("AFTER TEMP: " + req.url));
+  next();
+});
+
+}
+//@end
+
+app.use(express.static('web/static'));
+app.use(function(req, res, next) {
+  console.log(_f("after static" + req.url));
+  next();
+});
 
 
 // Last handler, 404
@@ -184,22 +206,22 @@ app.use(function(error, req, res, next) {
 
 // Service start
 var server = http.createServer(app);
-var io = socket.listen(server);
-io.on('connection', function (socket) {
-    socket.on('message', function (from, msg) {
+// var io = socket.listen(server);
+// io.on('connection', function (socket) {
+//     socket.on('message', function (from, msg) {
  
-      console.log('recieved message from', 
-                  from, 'msg', JSON.stringify(msg));
+//       console.log('recieved message from', 
+//                   from, 'msg', JSON.stringify(msg));
  
-      console.log('broadcasting message');
-      console.log('payload is', msg);
-      io.sockets.emit('broadcast', {
-        payload: msg,
-        source: from
-      });
-      console.log('broadcast complete');
-    });
-  });
+//       console.log('broadcasting message');
+//       console.log('payload is', msg);
+//       io.sockets.emit('broadcast', {
+//         payload: msg,
+//         source: from
+//       });
+//       console.log('broadcast complete');
+//     });
+//   });
 
 server.listen(app.get('port'), function(){
   // Do not strip this - leave in for production
