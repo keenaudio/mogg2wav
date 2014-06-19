@@ -6,13 +6,43 @@ var path = require('path');
 var through = require('through');
 var through2 = require('through2');
 var fs = require('fs');
+var cp = require("child_process");
+var Stream = require('stream').Stream;
+var Writable = require('stream').Writable;
 
-// Load plugins (lazy)
-var $ = require('gulp-load-plugins')();
+var $ = require('gulp-load-plugins')(); // Load gulp plugins (lazy)
 $.sequence = require('run-sequence');
+$.merge = require('merge');
 
 // Command line args
 $.args = args;
+
+// Config
+$.config = require("./config.json");
+
+// Internals
+var serverArgs = function(dist) {
+  // Build command line args for express server
+  var args = [];
+  args.push("--port=8008");
+  if ($.args['server-url']) {
+    args.push("--server-url=" + $.args['server-url']);
+  }
+
+  if (dist) {
+    args.push("--config-file=../src/config.json");
+  }
+  return args;
+};
+
+var lrServer;
+function livereload() {
+  if (!lrServer) {
+    $.util.log("Server pages: starting livereload server on port: " + $.config.livereload);
+    lrServer = $.livereload($.config.livereload);
+  }
+  return lrServer;
+}
 
 // Helper methods
 
@@ -26,7 +56,32 @@ $.exec = function(commands, options, cb) {
     $.util.log("ERROR: " + err)
   }).on('data', function(data) {
     $.util.log("got data: " + data);
-  })
+  });
+  return stream;
+}
+
+$.shellOutput = function(cmd, args, cb) {
+  // spawn program
+  var program = cp.spawn(cmd, args);
+
+  // create buffer
+  var newBuffer = new Buffer(0);
+
+  // when program receives data add it to buffer
+  program.stdout.on("readable", function () {
+    var chunk;
+    while (chunk = program.stdout.read()) {
+      newBuffer = Buffer.concat([
+        newBuffer,
+        chunk
+      ], newBuffer.length + chunk.length);
+    }
+  });
+
+  // when program finishes call callback
+  program.stdout.on("end", function () {
+    cb(newBuffer);
+  });
 }
 
 $.mkdirs = function(dirs) {
@@ -37,133 +92,301 @@ $.mkdirs = function(dirs) {
   return $.shell.task(cmds);
 }
 
-$.oggdec = function(srcFile, targetFile, cb) {
- // $.util.log("Decoding MOGG to: " + targetDir);
+$.hasChanged = function(outputTemplate, templateVars) {
+    return through2.obj(function (file, enc, cb) {
+        if (file.isNull()) {
+            gutil.log("CHANGED: NULL FILE");
+            this.push(file);
+            return cb();
+        }
 
-  var fullPath = path.resolve(srcFile);
-  var extName = path.extname(fullPath);
-  var folderName = path.basename(fullPath, extName);
-  var fileName = path.join($.config.oggdec.input, folderName) + '.ogg' // change file extension
 
-  $.exec([
-    'cp "' + srcFile + '" "' + fileName + '"',
-    'sox -S "' + fileName + '" "' + targetFile + '"'
-  ], {}, cb);
+        var fullPath = file.path;
+        var ext = path.extname(fullPath);
+        var folder = path.basename(fullPath, ext);
+        var filename = folder + ext;
+
+        var sourceFile = file;
+        var targetPath = $.util.template(outputTemplate, $.merge(templateVars || {}, {
+            file: file,
+            folder: folder,
+            filename: filename
+        }));
+
+        $.util.log("Inspecting target path: " + targetPath);
+        var stream = this;
+        fs.stat(targetPath, function (err, targetStat) {
+            if (err && err.code === 'ENOENT') {
+              $.util.log("Processing NEW track: " + folder);
+              stream.push(sourceFile);
+            } else if (sourceFile.stat.mtime > targetStat.mtime) {
+              $.util.log("Processing NEWER track: " + folder);
+              stream.push(sourceFile);
+            } else {
+              $.util.log("NOT changed: " + filename);
+            }
+            cb();
+        });
+    });
+
 }
 
-$.explode = function(srcFile, targetDir, cb) {
- // $.util.log("Exploding to " + targetDir);
 
-  var fullPath = path.resolve(srcFile);
-  var extName = path.extname(fullPath);
-  var folderName = path.basename(fullPath, extName);
-  var fileName = folderName + extName;
+$.oggdec = function() {
 
-  $.exec([
-    'mkdir -p "' + folderName + '"',
-    path.resolve('./explode.sh') + ' "' + fullPath + '"'
-  ], {
-    cwd: targetDir
-  }, cb);
+  return through2.obj(function (file, enc, cb) {
+    var ext = path.extname(file.path);
+    var folder = path.basename(file.path, ext);
+    var filename = folder + ext;
+    var targetPath = $.util.template($.config.oggdec.output, {
+      file: file,
+      folder: folder,
+      filename: filename
+    });
+    $.util.log("Decoding: " + file.path + " to " + targetPath);
+    $.exec([
+      'sox -S -t ogg "' + file.path + '" "' + targetPath + '"'
+    ], {}, cb);
+  });
+}
+
+$.meta = function() {
+
+  return through2.obj(function (file, enc, cb) {
+    var ext = path.extname(file.path);
+    var folder = path.basename(file.path, ext);
+    var filename = folder + ext;
+    var targetPath = $.util.template($.config.meta.output, {
+      file: file,
+      folder: folder,
+      filename: filename
+    });
+    $.util.log("Extracting meta from: " + file.path + " to " + targetPath);
+    $.shellOutput("soxi",  ["-c",file.path], function(buffer) {
+      var numChannels = parseInt(buffer.toString());
+      $.util.log("File has " + numChannels + " channels");
+      var meta = {
+        "name": folder,
+        "numChannels": numChannels,
+        "metaVersion": 1,
+        "processTime": new Date().getTime()
+      };
+
+      var s = through();
+      s.pipe($.debug({ verbose: true })).pipe(gulp.dest(process.cwd()));
+
+      var file = new $.util.File();
+      file.contents = new Buffer(JSON.stringify(meta, null, 2));
+      file.path = targetPath;
+      s.write(file);
+    });
+
+  });
+}
+
+
+$.explode = function() {
+
+  return through2.obj(function (file, enc, next) {
+
+    var ext = path.extname(file.path);
+    var folder = path.basename(file.path, ext);
+    var filename = folder + ext;
+
+    var metaPath = $.util.template($.config.meta.output, {
+      file: file,
+      folder: folder,
+      filename: filename
+    });
+
+    var metaStr = fs.readFileSync(metaPath);
+    $.util.log("meta: " + metaStr);
+    var meta = JSON.parse(metaStr);
+
+    var numChannels = meta["numChannels"];
+    $.util.log("Exploding " + file.path + " with " + numChannels + " channels");
+
+
+    function createTargetFolder(cb) {
+      var targetDir = path.resolve(path.dirname($.util.template($.config.explode.output, {
+        file: file,
+        folder: folder,
+        filename: filename,
+        tracknum: 1
+      })), '..');
+
+      $.util.log("Creating folder " + folder + " in targetDir " + targetDir);
+
+      $.exec([
+        'mkdir -p "' + folder + '"'
+      ], {
+        cwd: targetDir
+      }, cb);
+    };
+
+    var curChannel = 0;
+
+    function createWav(tracknum, cb) {;
+
+      var targetFile = $.util.template($.config.explode.output, {
+        file: file,
+        folder: folder,
+        filename: filename,
+        tracknum: tracknum
+      });
+
+      $.exec([
+        'sox -V0 -S "' + file.path + '" "' + targetFile + '" remix ' + tracknum
+      ], {}, cb);
+
+    };
+
+
+    function nextWav() {
+      curChannel++;
+      if (curChannel > numChannels) {
+       $.util.log("ALL DONE");
+        next();
+      } else {
+        createWav(curChannel, nextWav);
+      }
+    }
+
+    createTargetFolder(nextWav);
+
+  });
 }
 
 $.ingest = function() {
   return through2.obj(function (file, enc, cb) {
-    $.util.log("Ingesting: " + file.path);
-
-    var fullPath = file.path;
-    var extName = path.extname(fullPath);
-    var folderName = path.basename(fullPath, extName);
-    var fileName = folderName + extName;
-    var targetDir = $.config.oggdec.output;
-    var targetFile = path.join(targetDir, folderName) + '.wav';
-
-    $.util.log("Decoding to: "  + targetFile);
-    $.oggdec(file.path, targetFile, function() {
-      $.util.log("Decoding complete.");
-      $.explode(targetFile, $.config.explode.output, function() {
-        $.util.log("Done processing " + folderName);
-        $.exec([
-          'mv "' + path.join($.config.explode.output, folderName) + '" "' + $.config.publish.output + '/"', // copy to library
-          'rm "' + path.join($.config.oggdec.input, folderName) + '.ogg' + '"', // remove queue item
-          'rm "' + targetFile + '"' // remove multichannel wav
-        //  'rm "' + fullPath + '"' // remove original .mogg file
-        ], {}, cb)
-        //cb();
-      });
+    var ext = path.extname(file.path);
+    var folder = path.basename(file.path, ext);
+    var filename = folder + ext;
+    var targetPath = $.util.template($.config.ingest.output, {
+      file: file,
+      folder: folder,
+      filename: filename
     });
+    $.util.log("Ingesting: " + file.path + " to " + targetPath);
+    $.exec([
+        'cp "' + file.path + '" "' + targetPath + '"'
+    ], {}, cb);
   });
 };
 
-// Config
-$.config = require("./config.json");
+$.server = function(fileName, opt){
+  $.util.log("Server fleName: " + fileName + " options: " + JSON.stringify(opt, null, 2)); //@strip
+
+  var options = $.merge({
+    cwd: process.cwd(),
+    nodeArgs: [],
+    args: [],
+    env: process.env || {},
+    cmd: process.argv[0]
+  }, opt || {});
+
+  var stream, child, timeout, running = false, ignoreChanges = false;
+
+  function processFile(file){
+    $.util.log("dev-server processFile: " + file.path + " running: " + running + " ignoreChanges: " + ignoreChanges);
+    if (ignoreChanges) return;
+    startServer();
+    if (!timeout) {
+      $.util.log("Setting timeout to start Server");
+      timeout = setTimeout(startServer, 250);
+    } else {
+      $.util.log("There is already a timeout pending");
+    }
+  }
+
+  function startServer(){
+    $.util.log("timeout END. Starting server");
+    ignoreChanges = true;
+    timeout = false;
+    stream.emit('server.start', fileName, options.nodeArgs, options.args, options.env, options.cmd);
+  }
+
+  stream = through(processFile);
+  stream.start = startServer;
+
+  stream.on('server.start', function(filename, nodeArgs, args, env, cmd) {
+    $.util.log("Received server.start event.  running: " + running + " env: " + JSON.stringify(env, null, 2));
+    if (running) {
+      stream.emit('server.stop');
+      return;
+    }
+    var spawnArgs = nodeArgs.concat([filename], args);
+    $.util.log("Launching server: " + cmd + " , " + JSON.stringify(spawnArgs));
+    child = cp.spawn(cmd, spawnArgs, {
+      env: env
+    });
+    running = true;
+    child.on('exit', function(code, signal) {
+      running = false;
+      if (signal !== null) {
+        $.util.log('application exited with signal ', signal);
+      } else {
+        $.util.log('application exited with code ', code);
+      }
+      if (signal === 'SIGKILL') {
+        $.util.log("Received SIGKILL from child process. Restarting server");
+        stream.emit('server.start', filename, nodeArgs, args, env, cmd);
+      }
+    });
+    child.stdout.on('data', function(buffer) {
+      $.util.log('[dev-server STDOUT] > ' + String(buffer));
+    });
+    child.stderr.on('data', function(buffer) {
+      $.util.log('[dev-server STDERR] > ' + String(buffer));
+    });
+    stream.emit('server.started');
+  });
+
+  stream.on('server.stop', function() {
+    $.util.log("Received 'server.stop' event.  running: " + running);
+
+    if (running) {
+      $.util.log("Server is running.  Stopping it now");
+      child.kill('SIGKILL');
+      running = false;
+    }
+  });
+  stream.on('server.started', function() {
+    $.util.log("Server has started, now watching files for changes");
+    ignoreChanges = false;
+  });
+
+ return stream;
+};
 
 // Tasks
-gulp.task('default', function() {
-  // place code for your default task here
-});
-
-gulp.task('clean', function() {
-  return gulp.src("tmp", {read: false}).pipe($.clean());
-});
-
-gulp.task('mkdirs', $.mkdirs([
-  $.config.oggdec.input,
-  $.config.oggdec.output,
-  $.config.explode.output,
-  $.config.inbox,
-  $.config.publish.output
-]));
-
-gulp.task('prepare',function(cb) {
-  $.sequence('clean', 'mkdirs', cb);
-});
-
-
 
 gulp.task('default', ['prepare'], function(cb) {
   //$.util.log("mogg2wav, running with config: " + JSON.stringify($.config, null, 2));
 
   $.sequence(
     'ingest',
-   // 'oggdec', 
-   // 'explode', 
-   // 'publish', 
+    'oggdec',
+     'meta',
+    'explode',
+   // 'publish',
     cb);
 });
 
+gulp.task('clean', function() {
+  return gulp.src("tmp", {read: false}).pipe($.clean());
+});
+
+gulp.task('mkdirs', $.mkdirs($.config.createdirs));
+
+gulp.task('prepare',function(cb) {
+  $.sequence('clean', 'mkdirs', cb);
+});
+
 // Ingest
-
-// only push through files changed more recently than the destination files
-function shouldIngest(stream, cb, sourceFile, targetPath) {
-  //$.util.log("Inspecting: " + sourceFile.relative + " stat: " + JSON.stringify(sourceFile.stat, null, 2));
-
-  var filename = sourceFile.relative;
-  var ext = path.extname(filename);
-  var folder = filename.replace(ext, "");
-  var targetDir = path.resolve($.config.publish.output, folder);
-
- // $.util.log("Target dir: " + targetDir);
-
-  fs.stat(targetDir, function (err, targetStat) {
-    if (err && err.code === 'ENOENT') {
-      $.util.log("Processing NEW track: " + folder);
-      stream.push(sourceFile);
-    } else if (sourceFile.stat.mtime > targetStat.mtime) {
-      $.util.log("Processing NEWER track: " + folder);
-      stream.push(sourceFile);
-    } else {
-      $.util.log("NOT ingesting: " + filename);
-    }
-
-    cb();
-  });
-}
-
-
 gulp.task('ingest', function() {
-  return gulp.src('*.mogg', { cwd: $.config.inbox, buffer: false })
-    .pipe($.changed($.config.publish.output, { hasChanged: shouldIngest })) // only process new/changed files
+  return gulp.src($.config.ingest.input, { buffer: false })
+    .pipe($.args.force ? through() : $.hasChanged($.config.ingest.output)) // only process new/changed files
     .pipe($.ingest())
 //    .pipe(gulp.dest($.config.ingest.output))
 });
@@ -171,19 +394,114 @@ gulp.task('ingest', function() {
 
 // OGG Decode
 gulp.task('oggdec', function() {
-  return gulp.src('**/*.mogg', { cwd: $.config.oggdec.input, read: false })
-    .pipe($.oggdec($.config.oggdec.output))
+  return gulp.src($.config.oggdec.input, { buffer: false })
+    .pipe($.args.force ? through() : $.hasChanged($.config.oggdec.output)) // only process new/changed files
+    .pipe($.oggdec())
+});
+
+// Extract meta
+gulp.task('meta', function() {
+  return gulp.src($.config.meta.input, { buffer: false })
+    .pipe($.args.force ? through() : $.hasChanged($.config.meta.output)) // only process new/changed files
+    .pipe($.meta())
 });
 
 // Explode one multichannel to many mono files
 gulp.task('explode', function() {
-  return gulp.src('**/*.wav', { cwd: $.config.explode.input, read: false })
-    .pipe($.explode($.config.explode.output))
+  return gulp.src($.config.explode.input, { buffer: false })
+    //.pipe($.debug({ verbose: true }))
+    .pipe($.args.force ? through() : $.hasChanged($.config.explode.output, { tracknum: 1 })) // only process new/changed files
+    .pipe($.explode())
 });
 
-gulp.task('publish', $.shell.task([
-  'cp -R ' + $.config.publish.input + '/ ' + $.config.publish.output + '/'
-]));
+//gulp.task('publish', $.shell.task([
+//  'cp -R ' + $.config.publish.input + '/ ' + $.config.publish.output + '/'
+//]));
+
+gulp.task('watch', function() {
+  var lr = livereload();
+  gulp.src([
+    "web/**/*"
+    ], { read: false })
+    .pipe($.watch( { name: "server pages watch" }))
+    .pipe(lr);
+});
+
+gulp.task('build', function(cb) {
+  runSequence('clean', cb);
+});
+
+gulp.task('server', function(cb) {
+  // start LR server
+  livereload();
+  $.sequence('watch', 'dev-server');
+});
+
+gulp.task('server:dist', ['build'], function(cb) {
+  $.sequence('dist-server');
+})
+
+gulp.task('dev-server', function(cb) {
+  var lr = livereload();
+  var args = serverArgs(false);
+  var file = path.resolve('./server.js');
+
+  var env = $.merge(process.env, {
+    NODE_ENV: 'development',
+  //  NODE_DEBUG: "livereload,express:*",
+    DEBUG: "tinylr:*"
+  });
+
+  $.util.log("Server env: " + JSON.stringify(env, null, 2));
+
+  var server = $.server(file, {
+    args: args,
+    env: env
+  });
+
+  server.on('server.started', function() {
+    $.util.log("Received SERVER STARTED event.");
+  });
+
+  server.start();
+
+  $.watch({
+    glob: ['.tmp/_livereload'],
+    emitOnGlob: false
+  }, function(stream) {
+    $.util.log("Sending LIVERELOAD event to all clients");
+   // setTimeout(function() {
+      //for (var i = 0; i < lrServers.length; i++) {
+        lr.changed("/");
+      //}
+    //}, 2000);
+  });
+
+  $.watch({
+    glob: [
+      file,
+      'config.json'
+    ],
+    timeout: 1000,
+    emitOnGlob: false,
+ //   passThrough: false
+  }, function(stream) {
+   // $.util.log("Server files changed, server will restart");
+    //return stream;
+  })
+  .pipe(server);
+
+});
 
 
+gulp.task('dist-server', function(cb) {
+  var args = serverArgs(true);
+  var file = options.serverFile.dist;
 
+  $.util.log("Starting dist server: " + file + " : " + JSON.stringify(args));
+
+  gulp.src(file)
+    .pipe($.server(file, {
+      args: args
+    }));
+});

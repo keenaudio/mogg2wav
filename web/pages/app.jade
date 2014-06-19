@@ -1,0 +1,11 @@
+extends ../layouts/master
+
+block head
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.js")
+  script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.js")
+  script(src="app.js")
+  
+block content
+  #app(ng-app="keenaudio")
+    div(ng-view="")
+

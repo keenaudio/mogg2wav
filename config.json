@@ -1,14 +1,26 @@
 {
-	"inbox": "./inbox",
+	"livereload": 35729,
+	"createdirs": [
+		"../inbox",
+		"../library/mogg",
+		"../library/mwav",
+		"../library/meta",
+		"../library/wavs"
+	],
+	"ingest": {
+		"input": "../inbox/**/*.mogg",
+		"output": "../library/mogg/<%= filename %>"
+	},
 	"oggdec": {
-		"input": "tmp/queue",
-		"output": "tmp/decoded"
+		"input": "../library/mogg/**/*.mogg",
+		"output": "../library/mwav/<%= folder %>.wav"
+	},
+	"meta": {
+		"input": "../library/mwav/**/*.wav",
+		"output": "../library/meta/<%= folder %>.json"
 	},
 	"explode": {
-		"output": "tmp/exploded"
-	},
-	"publish": {
-		"input": "tmp/exploded",
-		"output": "../library"
+		"input": "../library/mwav/**/*.wav",
+		"output": "../library/wavs/<%= folder %>/<%= folder %>.<%= tracknum %>.wav"
 	}
 }

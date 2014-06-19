@@ -7,4 +7,3 @@ while [ $chans -ge 1 ]; do
    sox -V0 -S "$1" "$out" remix $chans
    chans=$(( $chans-1 ))
 done
-echo "done yo"
