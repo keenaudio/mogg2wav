@@ -184,6 +184,11 @@ $.meta = function() {
   });
 }
 
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
 
 $.explode = function() {
 
@@ -232,7 +237,7 @@ $.explode = function() {
         file: file,
         folder: folder,
         filename: filename,
-        tracknum: tracknum
+        tracknum: pad(tracknum, 2)
       });
 
       $.exec([

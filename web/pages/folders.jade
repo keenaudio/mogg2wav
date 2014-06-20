@@ -7,6 +7,10 @@ block content
     each folder in folders
       li
         a(href='/folders/#{ folder }') #{ folder }
+        span | 
+        a(href='/json/samples/#{ folder }') (samples.json)
+        span | 
+        a(href='/daw/?data=#{ encodeURIComponent("/json/samples/" + folder) }') (DAW)
 
 
 

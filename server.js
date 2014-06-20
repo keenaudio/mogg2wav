@@ -148,15 +148,15 @@ app.locals.config = config;
 
 // Livereload
 //@if DEV
-//if (DEV) {
-//  var lrPort = config.get('livereload');
-//  var liveReload = require('connect-livereload');
-//  console.log(_f("Injecting LR script into pages, port: " + lrPort)); //@strip
-//  app.use('/', liveReload({
-//    port: lrPort,
-//    ignore: []
-//  }));
-//}
+if (DEV) {
+ var lrPort = config.get('livereload');
+ var liveReload = require('connect-livereload');
+ console.log(_f("Injecting LR script into pages, port: " + lrPort)); //@strip
+ app.use('/', liveReload({
+   port: lrPort,
+   ignore: []
+ }));
+}
 //@end
 
 // Handlers
@@ -169,13 +169,6 @@ app.use(function(req, res, next) {
 
 app.use('/bower_components', express.static('bower_components'));
 
-app.use(function(req, res, next) {
-  if (req.path === '/') {
-    res.render('pages/app.jade', {});
-  } else {
-    next();
-  }
-});
 
 app.use('/folders', express.static(config.get('library.folders')));
 
@@ -197,20 +190,9 @@ app.use('/folders', function(req, res, next) {
   });
 });
 
-
-
-//@if DEV
-if (DEV) {
-  app.use(express.static('.tmp/web/static', { hidden: true }));
-  app.use(express.static('.tmp/web/app', { hidden: true }));
-
-}
-//@end
-
-app.use(express.static('web/static'));
-app.use(express.static('web/app'));
-
-app.use('/json', require('./lib/server/routes/json')(config));
+app.use('/daw', express.static('OpenDAW'));
+app.use('/json', require('./lib/server/routes/json')(config, api));
+app.use('/', require('./lib/server/routes/app')(config));
 
 // Last handler, 404
 app.use(function(error, req, res, next) {
