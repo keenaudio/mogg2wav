@@ -1,7 +1,8 @@
 {
 	"livereload": 35729,
 	"library": {
-		"folders": "../library/wavs"
+		"folders": "../library/wavs",
+		"meta": "../library/meta"
 	},
 	"createdirs": [
 		"../inbox",
@@ -24,6 +25,6 @@
 	},
 	"explode": {
 		"input": "../library/mwav/**/*.wav",
-		"output": "../library/wavs/<%= folder %>/<%= tracknum %>.<%= folder %>.wav"
+		"output": "../library/wavs/<%= folder %>/<%= $.pad(tracknum,2) %>.<%= folder %>.wav"
 	}
 }
