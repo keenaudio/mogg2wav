@@ -1,5 +1,8 @@
 {
 	"livereload": 35729,
+	"library": {
+		"folders": "../library/wavs"
+	},
 	"createdirs": [
 		"../inbox",
 		"../library/mogg",

@@ -420,7 +420,7 @@ gulp.task('explode', function() {
 
 gulp.task('watch', function() {
 
-  gulp.watch("web/static/**/*.jade", ["app-templates"]);
+  gulp.watch("web/app/**/*.jade", ["app-templates"]);
 
 
   var lr = livereload();
@@ -485,7 +485,8 @@ gulp.task('dev-server', function(cb) {
   $.watch({
     glob: [
       file,
-      'config.json'
+      'config.json',
+      'lib/server/**/*'
     ],
     timeout: 1000,
     emitOnGlob: false,
@@ -554,7 +555,7 @@ gulp.task("app-templates", function() {
     "NG": true
   };
 
-  return gulp.src("**/*.jade", { cwd: "web/static"})
+  return gulp.src("**/*.jade", { cwd: "web/app"})
    // .pipe(jadeFilter)
    // .pipe($.jsmacro($.options.jsmacro.client)) // unlike html, jade will be processed with jsmacro
    .pipe($.debug({ verbose: true }))
@@ -570,7 +571,7 @@ gulp.task("app-templates", function() {
       //  stripPrefix: config.cwd
     }))
     .pipe($.rename({
-      dirname: "web/static",
+      dirname: "web/app",
       basename: "app-templates"
     }))
     .pipe($.debug({ verbose: true }))

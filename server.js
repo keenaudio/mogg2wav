@@ -4,8 +4,6 @@
 var _f = function(msg) { return "server.js: " + msg; };
 //@end
 
-console.log(_f("I am here"));
-
 // 3rd party modules
 var express = require('express')
   , http = require('http')
@@ -13,7 +11,7 @@ var express = require('express')
   , fs = require('fs')
   , socket = require('socket.io')
 
-var Config = require('./lib/config').Config;
+var Config = require('./lib/common/config').Config;
 
 var env = process.env;
 
@@ -162,6 +160,8 @@ app.locals.config = config;
 //@end
 
 // Handlers
+var api = require('./lib/server/api')(config);
+
 app.use(function(req, res, next) {
   console.log(_f("START REQUEST: " + req.url));
   next();
@@ -177,23 +177,40 @@ app.use(function(req, res, next) {
   }
 });
 
+app.use('/folders', express.static(config.get('library.folders')));
+
+app.use('/folders/:folder', function(req, res, next) {
+  var folder = req.params.folder;
+  api.wavs(folder, function(err, files) {
+    res.render('pages/files.jade', {
+      files: files,
+      folder: folder
+    });
+  });
+});
+
+app.use('/folders', function(req, res, next) {
+  api.folders(function(err, files) {
+    res.render('pages/folders.jade', {
+      folders: files
+    });
+  });
+});
+
+
+
 //@if DEV
 if (DEV) {
   app.use(express.static('.tmp/web/static', { hidden: true }));
-  app.use(function(req, res, next) {
-  console.log(_f("AFTER TEMP: " + req.url));
-  next();
-});
+  app.use(express.static('.tmp/web/app', { hidden: true }));
 
 }
 //@end
 
 app.use(express.static('web/static'));
-app.use(function(req, res, next) {
-  console.log(_f("after static" + req.url));
-  next();
-});
+app.use(express.static('web/app'));
 
+app.use('/json', require('./lib/server/routes/json')(config));
 
 // Last handler, 404
 app.use(function(error, req, res, next) {
