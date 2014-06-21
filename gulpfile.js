@@ -75,7 +75,7 @@ gulp.task('prepare',function(cb) {
 // Ingest
 gulp.task('ingest', function() {
   return gulp.src($.config.get("ingest.input"), { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("ingest.output"))) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("ingest.output"))) // only process new/changed files
     .pipe($.ingest())
 //    .pipe(gulp.dest($.config.ingest.output))
 });
@@ -84,14 +84,14 @@ gulp.task('ingest', function() {
 // OGG Decode
 gulp.task('oggdec', function() {
   return gulp.src($.config.get("oggdec.input"), { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("oggdec.output"))) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("oggdec.output"))) // only process new/changed files
     .pipe($.oggdec())
 });
 
 // Extract meta
 gulp.task('meta', function() {
   return gulp.src($.config.get("meta.input"), { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("meta.output"))) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("meta.output"))) // only process new/changed files
     .pipe($.meta())
 });
 
@@ -99,7 +99,7 @@ gulp.task('meta', function() {
 gulp.task('explode', function() {
   return gulp.src($.config.get("explode.input"), { buffer: false })
     //.pipe($.debug({ verbose: true }))
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("explode.output"), { tracknum: 1 })) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("explode.output"), { tracknum: 1 })) // only process new/changed files
     .pipe($.explode())
 });
 
