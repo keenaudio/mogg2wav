@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('underscore');
 var gulp = require('gulp');
 var fs = require('fs');
 var path = require('path');
@@ -9,6 +10,7 @@ var args = require('yargs').argv;// Command line args
 var $ = require('gulp-load-plugins')(); // Load gulp plugins (lazy)
 $.merge = require('merge');
 $.merge($, {
+  _: _,
   gulp: gulp,
   args: args,
   path: path,
@@ -26,10 +28,13 @@ $.pad = function(num, size) {
 }
 
 $.mkdirs = function(dirs) {
-  var cmds = [];
+  var cmds = [], dir;
   for (var i = 0; i < dirs.length; i++) {
-    cmds.push('mkdir -p "' + dirs[i] + '"');
+    dir = _.template(dirs[i], { config: $.config });
+    cmds.push('mkdir -p "' + dir + '"');
+    $.util.log("Creating directory: " + dir);
   }
+
   return $.shell.task(cmds);
 }
 
@@ -62,23 +67,14 @@ gulp.task('clean', function() {
 
 gulp.task('mkdirs', $.mkdirs($.config.get("create_dirs")));
 
-gulp.task('initconfig', function() {
-  var configPath = config.get("paths.configJSON");
-  var defaultPath = config.get("paths.configJSON.default");
-  if (!fs.existsSync(configPath)) {
-    $.util.log("Creating new config file: " + configPath);
-    return gulp.src(defaultPath)
-      .pipe(gulp.dest(configPath));
-  }
-});
 
 gulp.task('prepare',function(cb) {
-  $.sequence('clean', 'mkdirs', 'initconfig', cb);
+  $.sequence('clean', 'mkdirs', cb);
 });
 
 // Ingest
 gulp.task('ingest', function() {
-  return gulp.src($.config.ingest.input, { buffer: false })
+  return gulp.src($.config.get("ingest.input"), { buffer: false })
     .pipe($.args.force ? $.through() : $.hasChanged($.config.get("ingest.output"))) // only process new/changed files
     .pipe($.ingest())
 //    .pipe(gulp.dest($.config.ingest.output))
@@ -87,21 +83,21 @@ gulp.task('ingest', function() {
 
 // OGG Decode
 gulp.task('oggdec', function() {
-  return gulp.src($.config.oggdec.input, { buffer: false })
+  return gulp.src($.config.get("oggdec.input"), { buffer: false })
     .pipe($.args.force ? $.through() : $.hasChanged($.config.get("oggdec.output"))) // only process new/changed files
     .pipe($.oggdec())
 });
 
 // Extract meta
 gulp.task('meta', function() {
-  return gulp.src($.config.meta.input, { buffer: false })
+  return gulp.src($.config.get("meta.input"), { buffer: false })
     .pipe($.args.force ? $.through() : $.hasChanged($.config.get("meta.output"))) // only process new/changed files
     .pipe($.meta())
 });
 
 // Explode one multichannel to many mono files
 gulp.task('explode', function() {
-  return gulp.src($.config.explode.input, { buffer: false })
+  return gulp.src($.config.get("explode.input"), { buffer: false })
     //.pipe($.debug({ verbose: true }))
     .pipe($.args.force ? $.through() : $.hasChanged($.config.get("explode.output"), { tracknum: 1 })) // only process new/changed files
     .pipe($.explode())

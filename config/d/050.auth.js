@@ -4,9 +4,7 @@ module.exports = function(config) {
   var secureCookies = true;
   
   //@if DEV
-  if (config.get('dev')) {
-    secureCookies = false;
-  }
+  secureCookies = false;
   //@end
   
   // Passport auth

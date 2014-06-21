@@ -5,9 +5,7 @@ var _f = function(msg) { return "build_meta.js: " + msg; };
 module.exports = function(config) {
 
   //@if DEV
-  if (config.get('dev')) {
-    return;
-  }
+  return;
   //@end
 
   // build_info.json

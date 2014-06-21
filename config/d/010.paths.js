@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = function(config) {
 
   var rootDir = path.resolve(__dirname, '../..'); // config/d
-  var configDir = path.resolve(rootDir, '..'); // config
+  var configDir = path.resolve(__dirname, '..'); // config
   var tmpDir = path.join(rootDir, '.tmp');
 
   //   // Disk paths
@@ -22,8 +22,8 @@ module.exports = function(config) {
       root: rootDir,
       revManifest: mkpath('rev-manifest.json'),
       buildInfo: mkpath('build_info.json'),
-      configJSON: mkpath('config.json'),
-      "configJSON.default": mkpath('config.json.default')
+      configJSON: mkpath(configDir, 'config.json'),
+      configJSONdefault: mkpath('config.json.default')
     }
   });
 
