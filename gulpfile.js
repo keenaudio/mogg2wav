@@ -1,17 +1,20 @@
 'use strict';
 
 var gulp = require('gulp');
+var fs = require('fs');
+var path = require('path');
+var args = require('yargs').argv;// Command line args
 
 // Core helpers
 var $ = require('gulp-load-plugins')(); // Load gulp plugins (lazy)
 $.merge = require('merge');
 $.merge($, {
   gulp: gulp,
-  args: require('yargs').argv,// Command line args
-  path: require('path'),
+  args: args,
+  path: path,
   through: require('through'),
   through2: require('through2'),
-  fs: require('fs'),
+  fs: fs,
   sequence: require('run-sequence')
 });
 
@@ -35,7 +38,10 @@ var myHelpers = require('./lib/gulp')($);
 $.merge($,  myHelpers); // Load gulp helpers
 
 // Config
-$.config = require("./config.json");
+var Config = require('./lib/common/config').Config;
+$.config = new Config();
+require('./config')($.config);
+
 
 // Tasks
 gulp.task('default', ['prepare'], function(cb) {
@@ -54,16 +60,26 @@ gulp.task('clean', function() {
   return gulp.src(".tmp", {read: false}).pipe($.clean());
 });
 
-gulp.task('mkdirs', $.mkdirs($.config.createdirs));
+gulp.task('mkdirs', $.mkdirs($.config.get("create_dirs")));
+
+gulp.task('initconfig', function() {
+  var configPath = config.get("paths.configJSON");
+  var defaultPath = config.get("paths.configJSON.default");
+  if (!fs.existsSync(configPath)) {
+    $.util.log("Creating new config file: " + configPath);
+    return gulp.src(defaultPath)
+      .pipe(gulp.dest(configPath));
+  }
+});
 
 gulp.task('prepare',function(cb) {
-  $.sequence('clean', 'mkdirs', cb);
+  $.sequence('clean', 'mkdirs', 'initconfig', cb);
 });
 
 // Ingest
 gulp.task('ingest', function() {
   return gulp.src($.config.ingest.input, { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.ingest.output)) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("ingest.output"))) // only process new/changed files
     .pipe($.ingest())
 //    .pipe(gulp.dest($.config.ingest.output))
 });
@@ -72,14 +88,14 @@ gulp.task('ingest', function() {
 // OGG Decode
 gulp.task('oggdec', function() {
   return gulp.src($.config.oggdec.input, { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.oggdec.output)) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("oggdec.output"))) // only process new/changed files
     .pipe($.oggdec())
 });
 
 // Extract meta
 gulp.task('meta', function() {
   return gulp.src($.config.meta.input, { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.meta.output)) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("meta.output"))) // only process new/changed files
     .pipe($.meta())
 });
 
@@ -87,7 +103,7 @@ gulp.task('meta', function() {
 gulp.task('explode', function() {
   return gulp.src($.config.explode.input, { buffer: false })
     //.pipe($.debug({ verbose: true }))
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.explode.output, { tracknum: 1 })) // only process new/changed files
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("explode.output"), { tracknum: 1 })) // only process new/changed files
     .pipe($.explode())
 });
 
@@ -132,8 +148,9 @@ gulp.task("app-templates", function() {
 var lrServer;
 function livereload() {
   if (!lrServer) {
-    $.util.log("Server pages: starting livereload server on port: " + $.config.livereload);
-    lrServer = $.livereload($.config.livereload);
+    var lrPort = $.config.get("ports.livereload");
+    $.util.log("Starting livereload server on port: " + lrPort);
+    lrServer = $.livereload(lrPort);
   }
   return lrServer;
 }
@@ -141,7 +158,7 @@ function livereload() {
 
 gulp.task('watch', function() {
 
-  gulp.watch("web/app/**/*.jade", ["app-templates"]);
+  gulp.watch("web/app/**/*.jade", ["app-templates"]); // recompile jade templates to JS on file save
 
 
   var lr = livereload();

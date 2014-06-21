@@ -4,3 +4,5 @@ tmp
 *.mogg
 .tmp
 bower_components
+config/*.json
+.npm-debug.log
