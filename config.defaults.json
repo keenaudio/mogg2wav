@@ -44,6 +44,10 @@
   },
   "als2json": {
     "input": "<%= config.get('paths.als') %>/**/*.als",
-    "output": "<%= config.get('paths.als') %>/<%= folder %>/<%= folder %>.json"
+    "output": "<%= config.get('paths.als') %>/<%= folder %>/<%= folder %>.als.json"
+  },
+  "als2daw": {
+    "input": "<%= config.get('paths.als') %>/**/*.als.json",
+    "output": "<%= config.get('paths.als') %>/<%= folder %>/<%= folder %>.daw.json"
   }
 }

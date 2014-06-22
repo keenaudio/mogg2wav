@@ -19,8 +19,11 @@ angular.module("keenaudio").directive("kAlsProject", function($http, $routeParam
       NG.attachScopeToElem($scope, $elem);
       console.log("als view loaded");
       $http.get('/json/als/project/' + $routeParams.project).success(function(data) {
-        $scope.project = data;
-        $scope.tracks = data.Ableton.LiveSet[0].Tracks[0].AudioTrack;
+        $scope.data = data;
+        $scope.project = new AbletonProject(data);
+        $scope.liveSet = $scope.project.liveSet;
+        $scope.tracks = $scope.liveSet.tracks; //data.Ableton.LiveSet[0].Tracks[0].AudioTrack;
+        $scope.scenes = $scope.liveSet.scenes;
       });
     }
   };
@@ -31,16 +34,17 @@ angular.module("keenaudio").directive("kAlsTrack", function() {
     restrict: 'A',
     templateUrl: 'views/als/als_track.jade',
     scope: {
-      track: '='
+      track: '=',
+      showHeader: '@'
     },
     link:function ($scope, $elem, attr) {
       NG.attachScopeToElem($scope, $elem);
       console.log("track view loaded: " + $scope.track);
       $scope.$watch('track', function(track) {
         if (!track) return;
-        $scope.name = track.Name[0].UserName[0].$.Value;
+        $scope.name = track.name; //Name[0].UserName[0].$.Value;
         console.log("Setting name: " + $scope.name);
-        $scope.slots = track.DeviceChain[0].MainSequencer[0].ClipSlotList[0].ClipSlot;
+        $scope.slots = track.slots; //DeviceChain[0].MainSequencer[0].ClipSlotList[0].ClipSlot;
       });
     }
   };
@@ -57,7 +61,7 @@ angular.module("keenaudio").directive("kAlsClipSlot", function() {
       NG.attachScopeToElem($scope, $elem);
       console.log("clipslot view loaded");
       $scope.$watch('slot', function(slot) {
-        $scope.clip = slot.ClipSlot[0].Value[0];
+        $scope.clip = slot.clip; //ClipSlot[0].Value[0];
       });
       
     }
@@ -75,7 +79,12 @@ angular.module("keenaudio").directive("kAlsClip", function() {
       NG.attachScopeToElem($scope, $elem);
       console.log("clipslot view loaded");
       $scope.$watch('clip', function(clip) {
-        $scope.sample = clip.AudioClip[0].SampleRef[0];
+        if (!clip) {
+          console.log("No clip passed to k-als-clip");
+          return;
+        }
+        console.log("Setting sample: " + clip.sample);
+        $scope.sample = clip.sample; //AudioClip[0].SampleRef[0];
       });
       
     }
@@ -94,12 +103,40 @@ angular.module("keenaudio").directive("kAlsSample", function() {
       NG.attachScopeToElem($scope, $elem);
       console.log("sample view loaded");
       $scope.$watch('sample', function(sample) {
-        $scope.fileName = sample.FileRef[0].Name[0].$.Value;
+        if (!sample) {
+          console.log("No Sample passed to k-als-sample");
+          return;
+        }
+        $scope.fileRef = sample.fileRef; //FileRef[0].Name[0].$.Value;
       });
       
     }
   };
 });
 
+angular.module("keenaudio").directive("kAlsFileRef", function() {
+  return {
+    restrict: 'A',
+    templateUrl: 'views/als/als_file_ref.jade',
+    scope: {
+      fileRef: '='
+    },
+    link:function ($scope, $elem, attr) {
+      NG.attachScopeToElem($scope, $elem);
+      console.log("fileRef view loaded");
+      $scope.$watch('fileRef', function(fileRef) {
+        if (!fileRef) {
+          console.log("No Fileref passed to k-als-file-ref");
+          return;
+        }
+
+        $scope.fileName = fileRef.fileName; //FileRef[0].Name[0].$.Value;
+        $scope.fileRelPath = fileRef.fileRelPath;
+        //$scope.displayPath = './' + fileRef.fileRelPath + '/' + $scope.fileName;
+      });
+      
+    }
+  };
+});
 
 

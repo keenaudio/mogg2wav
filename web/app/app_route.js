@@ -24,7 +24,7 @@ module.exports = function(config) {
 
   app.use(function(req, res, next) {
     if (req.path === '/') {
-      res.render('pages/app.jade', {});
+      res.render('app/app.jade', {});
     } else {
       console.log("App: no handler for path: " + req.path);
       next();

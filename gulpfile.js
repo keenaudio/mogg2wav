@@ -11,6 +11,7 @@ var $ = require('gulp-load-plugins')(); // Load gulp plugins (lazy)
 $.merge = require('merge');
 $.merge($, {
   _: _,
+  assert: require('assert'),
   gulp: gulp,
   args: args,
   path: path,
@@ -39,28 +40,32 @@ $.mkdirs = function(dirs) {
 }
 
 // More advanced helpers
-var myHelpers = require('./lib/gulp')($);
+var myHelpers = require('./gulp')($);
 $.merge($,  myHelpers); // Load gulp helpers
 
 // Config
-var Config = require('./lib/common/config').Config;
+var Config = require('./lib/config').Config;
 $.config = new Config();
 require('./config')($.config);
 
 
+gulp.task('library', function(cb) {
+  $.sequence(
+    'ingest',
+    'als2json',
+    'als2daw',
+    'oggdec',
+     'meta',
+    'explode',
+    cb);
+
+});
 
 // Tasks
 gulp.task('default', ['prepare'], function(cb) {
   //$.util.log("mogg2wav, running with config: " + JSON.stringify($.config, null, 2));
-
   $.sequence(
-    'ingest',
-    'als2json',
-    'oggdec',
-     'meta',
-    'explode',
-    'server',
-   // 'publish',
+    'library',
     cb);
 });
 
@@ -111,15 +116,20 @@ gulp.task('explode', function() {
   return gulp.src($.config.get("explode.input"), { buffer: false })
     //.pipe($.debug({ verbose: true }))
     .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("explode.output"), { tracknum: 1 })) // only process new/changed files
-    .pipe($.explode())
+    .pipe($.explode());
 });
 
 gulp.task('als2json', function() {
   return gulp.src($.config.get("als2json.input"), { buffer: false })
     .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("als2json.output"))) // only process new/changed files
-    .pipe($.als2json($.config.getRaw("als2json.output")))
+    .pipe($.als2json($.config.getRaw("als2json.output")));
+});
 
-})
+gulp.task('als2daw', function() {
+  return gulp.src($.config.get("als2daw.input"), { buffer: false })
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("als2daw.output"))) // only process new/changed files
+    .pipe($.als2daw($.config.getRaw("als2daw.output")));
+});
 
 //gulp.task('publish', $.shell.task([
 //  'cp -R ' + $.config.publish.input + '/ ' + $.config.publish.output + '/'
@@ -150,7 +160,7 @@ gulp.task("app-templates", function() {
     }))
     .pipe($.concat('app-templates.js'))
     .pipe($.rename({
-      dirname: "web/app",
+      dirname: "web/app/scripts",
       basename: "app-templates"
     }))
     .pipe($.debug({ verbose: true }))
@@ -181,7 +191,8 @@ gulp.task('watch', function(cb) {
   var lr = livereload();
   gulp.src([
     "web/**/*",
-    ".tmp/web/**/*"
+    ".tmp/web/**/*",
+    "lib/**/*"
     ], { read: false })
     .pipe($.watch( { name: "server pages watch" }))
     .pipe(lr);
@@ -216,7 +227,7 @@ var serverArgs = function(dist) {
   }
 
   if (dist) {
-    args.push("--config-file=../src/config.json");
+    //args.push("--config-file=../src/config.json");
   }
   return args;
 };
@@ -261,7 +272,7 @@ gulp.task('dev-server', function(cb) {
     glob: [
       file,
       'config.json',
-      'lib/server/**/*'
+      'server/**/*'
     ],
     timeout: 1000,
     emitOnGlob: false,

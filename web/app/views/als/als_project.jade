@@ -1,7 +1,13 @@
 div(k-als-project='')
   h1 Ableton Project
 
-  table
+  table.tracks
     tr
+      th(ng-repeat='track in tracks') {{ track.name }}
+      th
+
+    tr(ng-repeat='scene in scenes')
       td(ng-repeat='track in tracks')
-        div(k-als-track='', track='track')
+        div(k-als-clip='', clip='track.getClip(scene.index)')
+      td.scene-label
+        {{ scene.name }}

@@ -24,6 +24,12 @@ module.exports = function(config, api) {
     });
   });
 
+  app.get('/als/daw/:project', function(req, res, next) {
+    api.alsDaw(req.params.project, function(err, data) {
+      res.json(data);
+    });
+  });
+
 
 	app.get('/folders', function(req, res, next) {
     api.folders(function(err, files) {

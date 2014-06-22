@@ -1,0 +1,21 @@
+extends ../layouts/master
+
+block head
+  link(rel="stylesheet", type="text/css", href="styles/app.css")
+
+block content
+  #app(ng-app="keenaudio")
+    div(ng-view="")
+
+  script(src="/bower_components/underscore/underscore.js")
+  script(src="/bower_components/angular/angular.js")
+  script(src="/bower_components/angular-route/angular-route.js")
+  script(src="/lib/formats/als.js")
+  script(src="/lib/formats/daw.js")
+  script(src="scripts/ng.js")
+  script(src="scripts/app.js")
+  script(src="scripts/app-templates.js")
+  script(src="views/main/main.js")
+  script(src="views/als/als.js")
+
+
