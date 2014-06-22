@@ -227,6 +227,15 @@ if (DEV) {
 
 app.use(config.get('routes.static'), express.static('web/static'));
 
+// //@if DEV
+// if (DEV) {
+//   app.use(config.get('routes.lib'), express.static('.tmp/lib', { hidden: true }));
+// }
+// //@end
+
+// app.use(config.get('routes.lib'), express.static('lib'));
+
+
 // Last handler, 404
 app.use(function(error, req, res, next) {
   if (error) {

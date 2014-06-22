@@ -129,7 +129,8 @@ gulp.task("app-templates", function() {
 
   var jadeVars = {
     "NG": true,
-    config: $.config
+    config: $.config,
+    baseUrl: $.config.get('routes.app')
   };
 
   return gulp.src("**/*.jade", { cwd: "web/app"})
@@ -147,6 +148,7 @@ gulp.task("app-templates", function() {
         }
       //  stripPrefix: config.cwd
     }))
+    .pipe($.concat('app-templates.js'))
     .pipe($.rename({
       dirname: "web/app",
       basename: "app-templates"

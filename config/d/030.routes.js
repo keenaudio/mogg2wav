@@ -6,7 +6,8 @@ module.exports = function(config) {
       "folders": "/folders",
       "als": "/als",
       "daw": "/daw",
-      "static": "/static"
+      "static": "/static",
+      "lib": "/lib"
     }
   });
 }

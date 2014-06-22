@@ -23,6 +23,12 @@ var Server; // injected by express in index.jade
       .when('/', {
         templateUrl: 'views/main/main.jade'
       })
+      .when('/als', {
+        templateUrl: 'views/als/als_index.jade'
+      })
+      .when('/als/project/:project', {
+        templateUrl: 'views/als/als_project.jade'
+      })
       .otherwise({redirect:'/'});
 
 

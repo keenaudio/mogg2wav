@@ -25,9 +25,8 @@ block content
             each track in tracks
               li.track
                 - var trackName=track.Name[0].UserName[0].$.Value
-                - VAR 
                 script(type='text/javascript').
-                  TRACKS['#{trackName}'] = { 
+                  var TRACKS['#{trackName}'] = { 
                     all: !{ JSON.stringify(Object.keys(track)) },
                     clips: !{ JSON.stringify(Object.keys(track.ClipSlotsListWrapper[0].$))}
                   };
