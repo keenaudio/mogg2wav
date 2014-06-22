@@ -48,6 +48,7 @@ $.config = new Config();
 require('./config')($.config);
 
 
+
 // Tasks
 gulp.task('default', ['prepare'], function(cb) {
   //$.util.log("mogg2wav, running with config: " + JSON.stringify($.config, null, 2));
@@ -58,6 +59,7 @@ gulp.task('default', ['prepare'], function(cb) {
     'oggdec',
      'meta',
     'explode',
+    'server',
    // 'publish',
     cb);
 });
@@ -126,7 +128,8 @@ gulp.task('als2json', function() {
 gulp.task("app-templates", function() {
 
   var jadeVars = {
-    "NG": true
+    "NG": true,
+    config: $.config
   };
 
   return gulp.src("**/*.jade", { cwd: "web/app"})
@@ -168,7 +171,7 @@ function livereload() {
 }
 
 
-gulp.task('watch', function() {
+gulp.task('watch', function(cb) {
 
   gulp.watch("web/app/**/*.jade", ["app-templates"]); // recompile jade templates to JS on file save
 
@@ -189,7 +192,13 @@ gulp.task('build', function(cb) {
 gulp.task('server', ['clean'], function(cb) {
   // start LR server
   livereload();
-  $.sequence('app-templates', 'dev-server', 'watch');
+  $.sequence('app-templates', function() {
+    $.util.log("Now starting server and watch");
+    $.gulp.start('dev-server', 'watch', function() {
+      $.util.log("Somehow it is all over?");
+    })
+
+  });
 });
 
 gulp.task('server:dist', ['build'], function(cb) {

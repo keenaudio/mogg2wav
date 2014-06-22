@@ -11,7 +11,8 @@
     "moggs": "<%= config.get('paths.library') %>/mogg",
     "mwavs": "<%= config.get('paths.library') %>/wav",
     "secretsJSON": "secrets.json",
-    "als": "<%= config.get('paths.library') %>/als"
+    "als": "<%= config.get('paths.library') %>/als",
+    "openDAW": "../OpenDAW"
   },
   "create_dirs": [
     "<%= config.get('paths.library') %>",

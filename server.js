@@ -169,9 +169,9 @@ app.use(function(req, res, next) {
 app.use('/bower_components', express.static('bower_components'));
 
 
-app.use('/folders', express.static(config.get('paths.folders')));
+app.use(config.get('routes.folders'), express.static(config.get('paths.folders')));
 
-app.use('/folders/:folder', function(req, res, next) {
+app.use(config.get('routes.folders') + '/:folder', function(req, res, next) {
   var folder = req.params.folder;
   api.wavs(folder, function(err, files) {
     res.render('pages/files.jade', {
@@ -181,7 +181,7 @@ app.use('/folders/:folder', function(req, res, next) {
   });
 });
 
-app.use('/folders', function(req, res, next) {
+app.use(config.get('routes.folders'), function(req, res, next) {
   api.folders(function(err, files) {
     res.render('pages/folders.jade', {
       folders: files
@@ -189,7 +189,7 @@ app.use('/folders', function(req, res, next) {
   });
 });
 
-app.use('/als/:project', function(req, res, next) {
+app.use(config.get('routes.als') + '/:project', function(req, res, next) {
 
   var folder = req.params.project;
   var filePath = path.join(config.get("paths.als"), folder, folder) + ".json";
@@ -207,7 +207,7 @@ app.use('/als/:project', function(req, res, next) {
 });
 
 
-app.use('/als', function(req, res, next) {
+app.use(config.get('routes.als'), function(req, res, next) {
   api.alsProjects(function(err, files) {
     res.render('pages/als.jade', {
       projects: files
@@ -215,9 +215,17 @@ app.use('/als', function(req, res, next) {
   });
 });
 
-app.use('/daw', express.static('OpenDAW'));
-app.use('/json', require('./lib/server/routes/json')(config, api));
-app.use('/', require('./lib/server/routes/app')(config));
+app.use(config.get('routes.daw'), express.static(config.get('paths.openDAW')));
+app.use(config.get('routes.json_api'), require('./lib/server/routes/json')(config, api));
+app.use(config.get('routes.app'), require('./lib/server/routes/app')(config));
+
+//@if DEV
+if (DEV) {
+  app.use(config.get('routes.static'), express.static('.tmp/web/static', { hidden: true }));
+}
+//@end
+
+app.use(config.get('routes.static'), express.static('web/static'));
 
 // Last handler, 404
 app.use(function(error, req, res, next) {
