@@ -39,7 +39,8 @@
     "streamqueue": "0.0.6",
     "through": "2.3.4",
     "through2": "0.4.1",
-    "touch": "0.0.3"
+    "touch": "0.0.3",
+    "xml2js": "^0.4.4"
   },
   "engines": {
     "node": ">=0.10.0"

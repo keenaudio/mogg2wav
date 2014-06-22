@@ -54,6 +54,7 @@ gulp.task('default', ['prepare'], function(cb) {
 
   $.sequence(
     'ingest',
+    'als2json',
     'oggdec',
      'meta',
     'explode',
@@ -74,10 +75,18 @@ gulp.task('prepare',function(cb) {
 
 // Ingest
 gulp.task('ingest', function() {
+  var moggFilter = $.filter("**/*.mogg");
+  var alsFilter = $.filter("**/*.als");
   return gulp.src($.config.get("ingest.input"), { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("ingest.output"))) // only process new/changed files
-    .pipe($.ingest())
-//    .pipe(gulp.dest($.config.ingest.output))
+    .pipe(moggFilter)
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("ingest.output.mogg"))) // only process new/changed files
+    .pipe($.ingest($.config.getRaw("ingest.output.mogg")))
+    .pipe(moggFilter.restore())
+    .pipe(alsFilter)
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("ingest.output.als"))) // only process new/changed files
+    .pipe($.ingest($.config.getRaw("ingest.output.als"), { folder: true }))
+    .pipe(alsFilter.restore())
+    //    .pipe(gulp.dest($.config.ingest.output))
 });
 
 
@@ -103,12 +112,10 @@ gulp.task('explode', function() {
     .pipe($.explode())
 });
 
-gulp.task('ableton', function() {
-  return gulp.src($.config.get("ableton.input"), { buffer: false })
-    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("ableton.output"))) // only process new/changed files
-    .pipe($.gunzip())
-    .pipe($.ableton())
-    .pipe($.debug({ verbose: true }))
+gulp.task('als2json', function() {
+  return gulp.src($.config.get("als2json.input"), { buffer: false })
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.getRaw("als2json.output"))) // only process new/changed files
+    .pipe($.als2json($.config.getRaw("als2json.output")))
 
 })
 

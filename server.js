@@ -54,6 +54,7 @@ var argv = yargs.usage('Usage: $0 <options>\n\nSome options can be specified in 
 
 // Load config
 var config = new Config();
+require('./config')(config);
 
 // Set config based on command-line
 config.set('base-url', argv.u);
@@ -62,8 +63,6 @@ config.set('base-url', argv.u);
 config.set('dev', DEV);
 //@end
 
-var configJSON = require('./config.json');
-config.merge(configJSON);
 if (argv.c) {
   // Load custom configs
   (function() {
@@ -149,7 +148,7 @@ app.locals.config = config;
 // Livereload
 //@if DEV
 if (DEV) {
- var lrPort = config.get('livereload');
+ var lrPort = config.get('ports.livereload');
  var liveReload = require('connect-livereload');
  console.log(_f("Injecting LR script into pages, port: " + lrPort)); //@strip
  app.use('/', liveReload({
@@ -170,7 +169,7 @@ app.use(function(req, res, next) {
 app.use('/bower_components', express.static('bower_components'));
 
 
-app.use('/folders', express.static(config.get('library.folders')));
+app.use('/folders', express.static(config.get('paths.folders')));
 
 app.use('/folders/:folder', function(req, res, next) {
   var folder = req.params.folder;
@@ -186,6 +185,32 @@ app.use('/folders', function(req, res, next) {
   api.folders(function(err, files) {
     res.render('pages/folders.jade', {
       folders: files
+    });
+  });
+});
+
+app.use('/als/:project', function(req, res, next) {
+
+  var folder = req.params.project;
+  var filePath = path.join(config.get("paths.als"), folder, folder) + ".json";
+  var jsonStr = fs.readFileSync(filePath);
+  var json = JSON.parse(jsonStr);
+
+  console.log(_f("ALS JSON: " + jsonStr)); //@strip
+  api.alsProjects(function(err, files) {
+    res.render('pages/als.jade', {
+      projects: files,
+      jsonStr: jsonStr,
+      json: json
+    });
+  });
+});
+
+
+app.use('/als', function(req, res, next) {
+  api.alsProjects(function(err, files) {
+    res.render('pages/als.jade', {
+      projects: files
     });
   });
 });

@@ -6,12 +6,12 @@
   "paths": {
     "library": "../library",
     "inbox": "../inbox",
-    "folders": "<%= config.get('paths.library') %>/wavs",
+    "folders": "<%= config.get('paths.library') %>/folders",
     "meta": "<%= config.get('paths.library') %>/meta",
     "moggs": "<%= config.get('paths.library') %>/mogg",
-    "mwavs": "<%= config.get('paths.library') %>/mwav",
+    "mwavs": "<%= config.get('paths.library') %>/wav",
     "secretsJSON": "secrets.json",
-    "ableton": "<%= config.get('paths.library') %>/als"
+    "als": "<%= config.get('paths.library') %>/als"
   },
   "create_dirs": [
     "<%= config.get('paths.library') %>",
@@ -20,11 +20,14 @@
     "<%= config.get('paths.meta') %>",
     "<%= config.get('paths.moggs') %>",
     "<%= config.get('paths.mwavs') %>",
-    "<%= config.get('paths.ableton') %>"
+    "<%= config.get('paths.als') %>"
   ],
   "ingest": {
-    "input": ".<%= config.get('paths.inbox') %>/**/*.mogg",
-    "output": "<%= config.get('paths.moggs') %>/<%= filename %>"
+    "input": "<%= config.get('paths.inbox') %>/**/*.{mogg,als}",
+    "output": {
+      "mogg": "<%= config.get('paths.moggs') %>/<%= filename %>",
+      "als": "<%= config.get('paths.als') %>/<%= folder %>/<%= folder %>.als"
+    }
   },
   "oggdec": {
     "input": "<%= config.get('paths.moggs') %>/**/*.mogg",
@@ -38,8 +41,8 @@
     "input": "<%= config.get('paths.mwavs') %>/**/*.wav",
     "output": "<%= config.get('paths.folders') %>/<%= folder %>/<%= $.pad(tracknum,2) %>.<%= folder %>.wav"
   },
-  "ableton": {
-    "input": "<%= config.get('paths.inbox') %>/**/*.als",
-    "output": "<%= config.get('paths.ableton') %>/<%= folder %>.json"
+  "als2json": {
+    "input": "<%= config.get('paths.als') %>/**/*.als",
+    "output": "<%= config.get('paths.als') %>/<%= folder %>/<%= folder %>.json"
   }
 }
