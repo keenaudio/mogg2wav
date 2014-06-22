@@ -24,8 +24,11 @@ module.exports = function(config) {
   var configPath = config.get("paths.configJSON");
   var defaultPath = config.get("paths.configJSONdefault");
   if (!fs.existsSync(configPath)) {
-    console.log(_f("Creating new config file: " + configPath)); //@strip
-    fs.writeFileSync(configPath, fs.readFileSync(defaultPath));
+    console.log(_f(configPath + " was not found, loading defaults from: " + defaultPath)); //@strip
+    //fs.writeFileSync(configPath, fs.readFileSync(defaultPath)); // copy, create config.json
+    
+    config.merge(require(defaultPath)); // load default config
+
   }
 
 

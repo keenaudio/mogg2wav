@@ -103,6 +103,15 @@ gulp.task('explode', function() {
     .pipe($.explode())
 });
 
+gulp.task('ableton', function() {
+  return gulp.src($.config.get("ableton.input"), { buffer: false })
+    .pipe($.args.force ? $.through() : $.hasChanged($.config.get("ableton.output"))) // only process new/changed files
+    .pipe($.gunzip())
+    .pipe($.ableton())
+    .pipe($.debug({ verbose: true }))
+
+})
+
 //gulp.task('publish', $.shell.task([
 //  'cp -R ' + $.config.publish.input + '/ ' + $.config.publish.output + '/'
 //]));

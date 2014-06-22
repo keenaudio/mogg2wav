@@ -10,7 +10,8 @@
     "meta": "<%= config.get('paths.library') %>/meta",
     "moggs": "<%= config.get('paths.library') %>/mogg",
     "mwavs": "<%= config.get('paths.library') %>/mwav",
-    "secretsJSON": "secrets.json"
+    "secretsJSON": "secrets.json",
+    "ableton": "<%= config.get('paths.library') %>/als"
   },
   "create_dirs": [
     "<%= config.get('paths.library') %>",
@@ -18,7 +19,8 @@
     "<%= config.get('paths.folders') %>",
     "<%= config.get('paths.meta') %>",
     "<%= config.get('paths.moggs') %>",
-    "<%= config.get('paths.mwavs') %>"
+    "<%= config.get('paths.mwavs') %>",
+    "<%= config.get('paths.ableton') %>"
   ],
   "ingest": {
     "input": ".<%= config.get('paths.inbox') %>/**/*.mogg",
@@ -35,5 +37,9 @@
   "explode": {
     "input": "<%= config.get('paths.mwavs') %>/**/*.wav",
     "output": "<%= config.get('paths.folders') %>/<%= folder %>/<%= $.pad(tracknum,2) %>.<%= folder %>.wav"
+  },
+  "ableton": {
+    "input": "<%= config.get('paths.inbox') %>/**/*.als",
+    "output": "<%= config.get('paths.ableton') %>/<%= folder %>.json"
   }
 }

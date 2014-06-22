@@ -23,7 +23,7 @@ module.exports = function(config) {
       revManifest: mkpath('rev-manifest.json'),
       buildInfo: mkpath('build_info.json'),
       configJSON: mkpath(configDir, 'config.json'),
-      configJSONdefault: mkpath('config.json.default')
+      configJSONdefault: mkpath('config.defaults.json')
     }
   });
 
