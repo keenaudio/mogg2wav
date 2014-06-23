@@ -39,7 +39,7 @@ module.exports = function(config, api) {
 		});
 	});
 
-	app.get('/folders/:folder', function(req, res, next) {
+	app.get('/folder/:folder', function(req, res, next) {
 		api.files(req.params.folder, function(err, files) {
 			res.json(files);
 		});

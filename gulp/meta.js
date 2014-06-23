@@ -4,14 +4,8 @@ module.exports = function($) {
   var path = $.path;
   return function meta() {
     return $.through2.obj(function (file, enc, cb) {
-      var ext = path.extname(file.path);
-      var folder = path.basename(file.path, ext);
-      var filename = folder + ext;
-      var targetPath = $.util.template($.config.get("meta.output"), {
-        file: file,
-        folder: folder,
-        filename: filename
-      });
+      var fileProps = $.fileProps(file);
+      var targetPath = $.util.template($.config.getRaw("meta.output"), fileProps);
       $.util.log("Extracting meta from: " + file.path + " to " + targetPath);
 
       var numChannels, duration;
@@ -28,7 +22,7 @@ module.exports = function($) {
 
       function writeMeta() {
         var meta = {
-          "name": folder,
+          "name": fileProps.folder,
           "numChannels": numChannels,
           "duration": duration,
           "metaVersion": 1,

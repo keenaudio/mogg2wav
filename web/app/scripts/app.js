@@ -24,6 +24,12 @@ var clientConfig; // injected in app.jade
       .when('/', {
         templateUrl: 'views/main/main.jade'
       })
+      .when('/folders', {
+        templateUrl: 'views/folders/folders_index.jade'
+      })
+      .when('/folder/:folder', {
+        templateUrl: 'views/folders/folder.jade'
+      })
       .when('/als', {
         templateUrl: 'views/als/als_index.jade'
       })

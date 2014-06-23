@@ -6,15 +6,8 @@ module.exports = function($) {
   return function explode() {
     return $.through2.obj(function (file, enc, next) {
 
-      var ext = path.extname(file.path);
-      var folder = path.basename(file.path, ext);
-      var filename = folder + ext;
-
-      var metaPath = $.util.template($.config.get("meta.output"), {
-        file: file,
-        folder: folder,
-        filename: filename
-      });
+      var fileProps = $.fileProps(file);
+      var metaPath = $.util.template($.config.getRaw("meta.output"), fileProps);
 
       var metaStr = fs.readFileSync(metaPath);
       $.util.log("meta: " + metaStr);
@@ -25,14 +18,9 @@ module.exports = function($) {
 
 
       function createTargetFolder(cb) {
-        var targetDir = path.resolve(path.dirname($.util.template($.config.get("explode.output"), {
-          file: file,
-          folder: folder,
-          filename: filename,
-          tracknum: 1,
-          $: $
-        })), '..');
-
+        var targetFile = $.util.template($.config.getRaw("explode.output"), $.merge(fileProps, { tracknum: 1 }));
+        var targetDir = path.resolve(path.dirname(targetFile),'..');
+        var folder = fileProps.folder;
         $.util.log("Creating folder " + folder + " in targetDir " + targetDir);
 
         $.exec([
@@ -46,13 +34,7 @@ module.exports = function($) {
 
       function createWav(tracknum, cb) {;
 
-        var targetFile = $.util.template($.config.get("explode.output"), {
-          file: file,
-          folder: folder,
-          filename: filename,
-          tracknum: tracknum,
-          $: $
-        });
+        var targetFile = $.util.template($.config.getRaw("explode.output"), $.merge(fileProps, { tracknum: tracknum }));
 
         $.exec([
           'sox -V0 -S "' + file.path + '" "' + targetFile + '" remix ' + tracknum

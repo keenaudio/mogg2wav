@@ -216,7 +216,7 @@ app.use(config.get('routes.folders'), function(req, res, next) {
 // });
 app.use(config.get('routes.als'), express.static(config.get('paths.als')));
 app.use(config.get('routes.daw'), express.static(config.get('paths.openDAW')));
-app.use(config.get('routes.json_api'), require('./server/routes/json')(config, api));
+app.use(config.get('routes.json_api'), require('./server/json_api')(config, api));
 app.use(config.get('routes.app'), require('./web/app/app_route')(config));
 
 //@if DEV
@@ -237,10 +237,13 @@ app.use(config.get('routes.lib'), express.static('lib'));
 
 
 // Last handler, 404
-app.use(function(error, req, res, next) {
-  if (error) {
-    console.error(error);
+app.use(function(req, res, next) {
+  if (req.path === '/') {
+    //res.render('pages/index.jade', {});
+    res.redirect(config.get('routes.app'));
+    return;
   }
+
   console.log(_f("404 Not found: " + req.path)); //@strip
   res.send(404);
 });

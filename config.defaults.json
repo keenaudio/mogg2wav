@@ -32,7 +32,7 @@
   },
   "oggdec": {
     "input": "<%= config.get('paths.moggs') %>/**/*.mogg",
-    "output": "../library/mwav/<%= folder %>.wav"
+    "output": "<%= config.get('paths.mwavs') %>/<%= folder %>.wav"
   },
   "meta": {
     "input": "<%= config.get('paths.mwavs') %>/**/*.wav",

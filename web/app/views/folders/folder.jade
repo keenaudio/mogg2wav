@@ -1,0 +1,16 @@
+div(k-folder='')
+  table.header
+    tr
+      td.larger {{ name }}
+      td.smaller {{ props.Creator }}
+
+  table.tracks
+    tr
+      th(ng-repeat='file in files') {{ file }}
+      th
+
+    tr      
+      td(ng-repeat='file in files')
+        div(k-file='', file='file')
+
+

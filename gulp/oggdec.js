@@ -5,12 +5,14 @@ module.exports = function($) {
       var ext = path.extname(file.path);
       var folder = path.basename(file.path, ext);
       var filename = folder + ext;
-      var targetPath = $.util.template($.config.get("oggdec.output"), {
+      $.util.log("Decoding " + filename);
+      var targetPath = $.util.template($.config.getRaw("oggdec.output"), {
+        config: $.config,
         file: file,
         folder: folder,
         filename: filename
       });
-      $.util.log("Decoding: " + file.path + " to " + targetPath);
+      $.util.log("Copying to " + targetPath);
       $.exec([
         'sox -S -t ogg "' + file.path + '" "' + targetPath + '"'
       ], {}, cb);
