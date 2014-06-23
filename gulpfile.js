@@ -48,7 +48,68 @@ var Config = require('./lib/common/config').Config;
 $.config = new Config();
 require('./config')($.config);
 
-gulp.task('test', function() {
+gulp.task('test2', function(cb) {
+
+  var alsProject;
+  var wavFilter = $.filter('**/*.wav');
+  var alsFilter = $.filter('**/*.als');
+
+
+  gulp.src($.config.get('paths.templates') + '/Untitled.als.json')
+    .pipe($.through(function(file) {
+      var json = JSON.parse(file.contents);
+      alsProject = require('./lib/formats/als').fromJSON(json);
+      $.util.log("Parsed ALS file");
+    }))
+    .on('end', function() {
+      $.util.log("reading wavs");
+      gulp.src($.config.get('paths.folders') + '/**/*.wav', { read: false })
+        .pipe($.debug({ verbose: true }))
+
+        .pipe($.through2.obj(function(file, enc, next) {
+          $.util.log("Getting duration for: " + file.path);
+          $.sox.duration(file.path, function(duration) {
+            $.util.log("duration is " + duration);
+            var fileProps = $.fileProps(file);
+            var liveSet = alsProject.liveSet;
+            var track = liveSet.addTrack(fileProps.folder);
+            $.util.log("Calling next");
+            next();
+          });
+        }))
+        .on('data', function() {
+          $.util.log("Got data");
+        })
+        .on('end', function() {
+          $.util.log("Writing new ALS file out")
+          var file = new $.util.File();
+          var data = JSON.stringify(alsProject.data, null, 2);
+          file.contents = new Buffer(data);
+          //file.base = $.config.get('paths.folders');
+          file.path = $.config.get('paths.outbox') + '/test2.als'
+      
+          var stream = $.through()
+            .pipe(gulp.dest($.config.get('paths.outbox')))
+            .on('data', function() {
+              $.util.log('data is pullling');
+              cb();
+            })
+            .on('end', function() {
+              $.util.log("thats all folks")
+              //cb();
+            });
+
+          stream.write(file);
+
+
+
+        })
+
+
+    });
+});
+
+gulp.task('test1', function() {
 
   var jsonFilter = $.filter('**/*.als.json');
 

@@ -13,7 +13,8 @@
     "mwavs": "<%= config.get('paths.library') %>/wav",
     "secretsJSON": "secrets.json",
     "als": "<%= config.get('paths.library') %>/als",
-    "openDAW": "../OpenDAW"
+    "openDAW": "../OpenDAW",
+    "templates": "./templates"
   },
   "create_dirs": [
     "<%= config.get('paths.library') %>",
