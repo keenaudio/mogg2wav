@@ -61,6 +61,21 @@ gulp.task('test', function() {
       $.util.log("Exporting ALS file: " + file.path);
       var json = JSON.parse(file.contents);
       var alsProject = require('./lib/formats/als').fromJSON(json);
+      var liveSet = alsProject.liveSet;
+      var tracks = liveSet.tracks;
+      _.each(tracks, function(track, index) {
+        track.setName( "haxor" + index);
+      });
+
+      var scenes = liveSet.scenes;
+      _.each(scenes, function(scene, sceneIndex) {
+        _.each(tracks, function(track, trackIndex) {
+          var clip = track.getClip(sceneIndex);
+          if (clip) {
+            clip.setName('Clip.' + sceneIndex + '.' + trackIndex);
+          }
+        });
+      });
       var data = JSON.stringify(alsProject.data, null, 2);
       file.contents = new Buffer(data);
       this.queue(file);
