@@ -48,6 +48,34 @@ var Config = require('./lib/common/config').Config;
 $.config = new Config();
 require('./config')($.config);
 
+gulp.task('test', function() {
+
+  var jsonFilter = $.filter('**/*.als.json');
+
+  return gulp.src([
+    '**/*',
+    '!**/*.als'
+    ], { cwd: $.config.get('paths.als') })
+    .pipe(jsonFilter)
+    .pipe($.through(function(file) {
+      $.util.log("Exporting ALS file: " + file.path);
+      var json = JSON.parse(file.contents);
+      var alsProject = require('./lib/formats/als').fromJSON(json);
+      var data = JSON.stringify(alsProject.data, null, 2);
+      file.contents = new Buffer(data);
+      this.queue(file);
+    }))
+    .pipe($.json2xml())
+   // .pipe($.debug({ verbose: true }))
+    .pipe($.tRename('<%= folder %>/<%= folder %>.als', {
+      extension: '.als.json'
+    }))
+   //.pipe($.debug({ verbose: true }))
+    .pipe($.gzip({ append: false }))
+    .pipe(jsonFilter.restore())
+    .pipe(gulp.dest($.config.get('paths.outbox')));
+
+});
 
 gulp.task('library', function(cb) {
   $.sequence(

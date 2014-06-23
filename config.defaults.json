@@ -6,6 +6,7 @@
   "paths": {
     "library": "../library",
     "inbox": "../inbox",
+    "outbox": "../outbox",
     "folders": "<%= config.get('paths.library') %>/folders",
     "meta": "<%= config.get('paths.library') %>/meta",
     "moggs": "<%= config.get('paths.library') %>/mogg",
