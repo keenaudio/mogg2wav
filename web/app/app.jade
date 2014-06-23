@@ -1,6 +1,7 @@
 extends ../layouts/master
 
 block head
+  link(rel="stylesheet", type="text/css", href="components/components.css")
   link(rel="stylesheet", type="text/css", href="styles/app.css")
   script(type='text/javascript')
     | var clientConfig = !{ JSON.stringify(clientConfig, null, 2) };

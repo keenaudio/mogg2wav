@@ -24,8 +24,10 @@ module.exports = function(config, api) {
     });
   });
 
-  app.get('/als/daw/:project', function(req, res, next) {
-    api.alsDaw(req.params.project, function(err, data) {
+  app.get('/als/daw/:project/:scene', function(req, res, next) {
+    var projectName = req.params.project;
+    var sceneNumber = req.params.scene;
+    api.alsDaw(projectName, sceneNumber, function(err, data) {
       res.json(data);
     });
   });

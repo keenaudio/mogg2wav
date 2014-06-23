@@ -10,12 +10,13 @@ angular.module("keenaudio").directive("kPlayButton", function(app) {
       console.log("play button loaded");
       $scope.enabled = false;
       $scope.status = '';
-      $scope.state = 'init';
+      $scope.state = 'loading';
+      $scope.percent = .5;
 
       function loadAudio() {
         app.loadAudio($scope.url, function onProgress(percent) {
           $scope.$apply(function() {
-            $scope.percentLoaded = percent;
+            $scope.percent = percent;
             $scope.status = Math.round(percent * 100) + '%';
           });
 

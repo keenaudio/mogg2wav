@@ -53,7 +53,7 @@ gulp.task('library', function(cb) {
   $.sequence(
     'ingest',
     'als2json',
-    'als2daw',
+ //   'als2daw',
     'oggdec',
      'meta',
     'explode',

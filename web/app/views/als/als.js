@@ -31,6 +31,26 @@ angular.module("keenaudio").directive("kAlsProject", function($http, $routeParam
   };
 });
 
+angular.module("keenaudio").directive("kAlsScene", function($routeParams, config) {
+  return {
+    restrict: 'A',
+    templateUrl: 'views/als/als_scene.jade',
+    scope: {
+      scene: '='
+    },
+    link:function ($scope, $elem, attr) {
+      NG.attachScopeToElem($scope, $elem);
+      console.log("scene view loaded: " + $scope.scene);
+      $scope.$watch('scene', function(scene) {
+        if (!scene) return;
+        $scope.name = scene.name;
+        $scope.dawJsonUrl = config.get('routes.json_api') + '/als/daw/' + $routeParams.project + '/' + $scope.scene.index;
+        $scope.dawUrl = config.get('routes.daw') + '/?data=' + encodeURIComponent($scope.dawJsonUrl);
+      });
+    }
+  };
+});
+
 angular.module("keenaudio").directive("kAlsTrack", function() {
   return {
     restrict: 'A',

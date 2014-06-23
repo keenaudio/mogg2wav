@@ -13,4 +13,7 @@ div(k-als-project='')
       td(ng-repeat='track in tracks')
         div(k-als-clip='', clip='track.getClip(scene.index)')
       td.scene-label
-        {{ scene.name }}
+        div(k-als-scene='', scene='scene')
+
+
+

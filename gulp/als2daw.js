@@ -1,4 +1,7 @@
 
+var Als = require('../lib/formats/als');
+var Daw = require('../lib/formats/daw');
+
 module.exports = function($) {
   var path = $.path;
   return function als2daw(outputTemplate) {
@@ -16,12 +19,19 @@ module.exports = function($) {
 
 
       $.gulp.src(file.path)
+        .pipe($.through(function(file) {
+          $.util.log("Loading Ableton project JSON")
+          var alsProject = Als.fromJSON(JSON.parse(file.contents));
+          var liveSet = alsProject.liveSet;
+          
+
+        }))
       //  .pipe($.gunzip())
       //  .pipe($.debug({ verbose: true }))
       //  .pipe($.xml2json())
         .pipe($.tRename(outputTemplate, { extension: '.als.json' }))
         .pipe($.debug({ verbose: true }))
-        .pipe($.gulp.dest($.config.get('paths.library')))
+       // .pipe($.gulp.dest($.config.get('paths.library')))
         .on('end', function() {
           $.util.log('als2daw complete');
           cb();
