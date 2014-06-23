@@ -2,20 +2,35 @@ extends ../layouts/master
 
 block head
   link(rel="stylesheet", type="text/css", href="styles/app.css")
+  script(type='text/javascript')
+    | var clientConfig = !{ JSON.stringify(clientConfig, null, 2) };
 
 block content
-  #app(ng-app="keenaudio")
+  #app
     div(ng-view="")
+
+
+  script(src="/lib/wavesurfer/wavesurfer.js")
+  script(src="/lib/wavesurfer/audio.js")
+  script(src="/lib/wavesurfer/webaudio.js")
+  script(src="/lib/wavesurfer/drawer.js")
+
+  script(src="/lib/common/assert.js")
+  script(src="/lib/common/config.js")
+  script(src="/lib/formats/als.js")
+  script(src="/lib/formats/daw.js")
 
   script(src="/bower_components/underscore/underscore.js")
   script(src="/bower_components/angular/angular.js")
   script(src="/bower_components/angular-route/angular-route.js")
-  script(src="/lib/formats/als.js")
-  script(src="/lib/formats/daw.js")
-  script(src="scripts/ng.js")
+
+  script(src="/lib/ng/ng.js")
+  script(src="/lib/ng/modules/config.js")
+
   script(src="scripts/app.js")
   script(src="scripts/app-templates.js")
   script(src="views/main/main.js")
   script(src="views/als/als.js")
+  script(src="components/play_button/play_button.js")
 
 

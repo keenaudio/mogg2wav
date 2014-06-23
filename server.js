@@ -11,7 +11,7 @@ var express = require('express')
   , fs = require('fs')
   , socket = require('socket.io')
 
-var Config = require('./lib/config').Config;
+var Config = require('./lib/common/config').Config;
 
 var env = process.env;
 
@@ -189,32 +189,32 @@ app.use(config.get('routes.folders'), function(req, res, next) {
   });
 });
 
-app.use(config.get('routes.als') + '/:project', function(req, res, next) {
+// app.use(config.get('routes.als') + '/:project', function(req, res, next) {
 
-  var folder = req.params.project;
-  var filePath = path.join(config.get("paths.als"), folder, folder) + ".als.json";
-  var jsonStr = fs.readFileSync(filePath);
-  var json = JSON.parse(jsonStr);
+//   var folder = req.params.project;
+//   var filePath = path.join(config.get("paths.als"), folder, folder) + ".als.json";
+//   var jsonStr = fs.readFileSync(filePath);
+//   var json = JSON.parse(jsonStr);
 
-  console.log(_f("ALS JSON: " + jsonStr)); //@strip
-  api.alsProjects(function(err, files) {
-    res.render('pages/als.jade', {
-      projects: files,
-      jsonStr: jsonStr,
-      json: json
-    });
-  });
-});
+//   console.log(_f("ALS JSON: " + jsonStr)); //@strip
+//   api.alsProjects(function(err, files) {
+//     res.render('pages/als.jade', {
+//       projects: files,
+//       jsonStr: jsonStr,
+//       json: json
+//     });
+//   });
+// });
 
 
-app.use(config.get('routes.als'), function(req, res, next) {
-  api.alsProjects(function(err, files) {
-    res.render('pages/als.jade', {
-      projects: files
-    });
-  });
-});
-
+// app.use(config.get('routes.als'), function(req, res, next) {
+//   api.alsProjects(function(err, files) {
+//     res.render('pages/als.jade', {
+//       projects: files
+//     });
+//   });
+// });
+app.use(config.get('routes.als'), express.static(config.get('paths.als')));
 app.use(config.get('routes.daw'), express.static(config.get('paths.openDAW')));
 app.use(config.get('routes.json_api'), require('./server/routes/json')(config, api));
 app.use(config.get('routes.app'), require('./web/app/app_route')(config));

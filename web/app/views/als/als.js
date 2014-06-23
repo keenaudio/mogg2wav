@@ -20,7 +20,9 @@ angular.module("keenaudio").directive("kAlsProject", function($http, $routeParam
       console.log("als view loaded");
       $http.get('/json/als/project/' + $routeParams.project).success(function(data) {
         $scope.data = data;
+        $scope.name = $routeParams.project;
         $scope.project = new AbletonProject(data);
+        $scope.props = $scope.project.props;
         $scope.liveSet = $scope.project.liveSet;
         $scope.tracks = $scope.liveSet.tracks; //data.Ableton.LiveSet[0].Tracks[0].AudioTrack;
         $scope.scenes = $scope.liveSet.scenes;
@@ -114,7 +116,7 @@ angular.module("keenaudio").directive("kAlsSample", function() {
   };
 });
 
-angular.module("keenaudio").directive("kAlsFileRef", function() {
+angular.module("keenaudio").directive("kAlsFileRef", function($routeParams, config) {
   return {
     restrict: 'A',
     templateUrl: 'views/als/als_file_ref.jade',
@@ -127,11 +129,27 @@ angular.module("keenaudio").directive("kAlsFileRef", function() {
       $scope.$watch('fileRef', function(fileRef) {
         if (!fileRef) {
           console.log("No Fileref passed to k-als-file-ref");
+          $scope.valid = false;
           return;
         }
-
+        $scope.valid = true;
         $scope.fileName = fileRef.fileName; //FileRef[0].Name[0].$.Value;
         $scope.fileRelPath = fileRef.fileRelPath;
+
+        // Generate URL for the file.  Walk back to the project
+        var sample = fileRef.parent;
+        var clip = sample.parent;
+        var slot = clip.parent;
+        var track = slot.parent;
+
+        var urlParts = [
+          config.get('routes.als'),
+          $routeParams.project,
+          $scope.fileRelPath,
+          $scope.fileName
+        ]
+        $scope.url = urlParts.join('/');
+
         //$scope.displayPath = './' + fileRef.fileRelPath + '/' + $scope.fileName;
       });
       

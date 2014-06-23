@@ -1,3 +1,7 @@
-div.als-file-ref
+div.als-file-ref(ng-if="valid")
   div.smaller {{ fileRelPath }}
-  div.bold.indent {{ fileName }}
+  ul.bold.nav.nav-pills
+    li
+      a(k-play-button='', url='url')
+  
+  a(ng-href="{{ url }}") {{ fileName }}

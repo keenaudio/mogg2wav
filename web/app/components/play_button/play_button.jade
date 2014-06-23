@@ -1,0 +1,5 @@
+div(ng-if="enabled")
+  div(ng-switch="state", ng-click="onClick()")
+    i.glyphicon.glyphicon-play(ng-switch-when="paused")
+    i.glyphicon.glyphicon-pause(ng-switch-when="playing")
+  div {{ status }}

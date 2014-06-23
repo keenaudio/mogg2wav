@@ -60,3 +60,7 @@ left: 300px;
 .indent {
   padding-left: 10px;
 }
+
+.vmiddle {
+  vertical-align: middle;
+}

@@ -16,3 +16,17 @@ table.tracks > tbody > tr > td {
   padding: 10px;
   border: 1px #eee solid;
 }
+
+table.header > tbody > tr > td {
+  padding: 5px;
+}
+
+td.larger {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+td.smaller {
+  font-size: smaller;
+  font-weight: lighter;
+}

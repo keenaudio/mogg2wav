@@ -44,7 +44,7 @@ var myHelpers = require('./gulp')($);
 $.merge($,  myHelpers); // Load gulp helpers
 
 // Config
-var Config = require('./lib/config').Config;
+var Config = require('./lib/common/config').Config;
 $.config = new Config();
 require('./config')($.config);
 
@@ -143,7 +143,7 @@ gulp.task("app-templates", function() {
     baseUrl: $.config.get('routes.app')
   };
 
-  return gulp.src("**/*.jade", { cwd: "web/app"})
+  return gulp.src("{views,components}/**/*.jade", { cwd: "web/app"})
    // .pipe(jadeFilter)
    // .pipe($.jsmacro($.options.jsmacro.client)) // unlike html, jade will be processed with jsmacro
    .pipe($.debug({ verbose: true }))
@@ -192,7 +192,8 @@ gulp.task('watch', function(cb) {
   gulp.src([
     "web/**/*",
     ".tmp/web/**/*",
-    "lib/**/*"
+    "lib/**/*",
+    "static/**/*"
     ], { read: false })
     .pipe($.watch( { name: "server pages watch" }))
     .pipe(lr);

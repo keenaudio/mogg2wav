@@ -1,7 +1,7 @@
 'use strict';
 
 // global externals
-var Server; // injected by express in index.jade
+var clientConfig; // injected in app.jade
 
 (function() {
 
@@ -15,6 +15,7 @@ var Server; // injected by express in index.jade
   // Define the global app instance.
   var app = angular.module('keenaudio', [ // Module dependencies
     'ngRoute',
+    'config',
     'app-templates'
   ]);
 
@@ -36,7 +37,60 @@ var Server; // injected by express in index.jade
     //$locationProvider.html5Mode(true);
   });
 
+  app.service('app', function() {
+    var ac = new (window.AudioContext || window.webkitAudioContext);
+
+    return {
+      audioContext: function() {
+        return ac;
+      },
+      loadAudio: function(url, progressCallback, doneCallback) {
+
+        var my = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'arraybuffer';
+        xhr.addEventListener('progress', function (e) {
+            if (e.lengthComputable) {
+                var percentComplete = e.loaded / e.total;
+            } else {
+                // TODO
+                percentComplete = 0;
+            }
+            if (progressCallback) {
+              progressCallback(percentComplete, e.loaded, e.total);
+            }
+            //my.drawer.drawLoading(percentComplete);
+        }, false);
+
+        xhr.addEventListener('load', function (e) {
+          if (doneCallback) {
+            doneCallback(e.target.response);
+          }
+            // my.backend.loadData(
+            //     e.target.response,
+            //     my.drawBuffer.bind(my)
+            // );
+        }, false);
+        xhr.send();
+      }
+    }
+  });
+
   app.run(function()  {
     console.log(_f("keenaudio app running")); //@strip
   });
+
+    // Load the config, then bootstrap the app
+  var initConfig = angular.module('config').init(clientConfig);
+  var bootstrap = function(config) {
+    console.log(_f("Doing bootstrap now")); //@strip
+    angular.element(document).ready(function() {
+        angular.bootstrap(document, ['keenaudio']);
+    });
+  };
+
+  if (initConfig) {
+    initConfig.then(bootstrap);
+  }
 })();
