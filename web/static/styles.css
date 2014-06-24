@@ -74,3 +74,19 @@ left: 300px;
 .h100p {
   height: 100%;
 }
+
+.w100p {
+  width: 100%;
+}
+
+.mr200 {
+  margin-right: 200px;
+}
+
+.w200 {
+  width: 200px;
+}
+
+.relative {
+  position: relative;
+}

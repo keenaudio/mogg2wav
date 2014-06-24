@@ -1,22 +1,31 @@
-div(k-als-project='')
-  table.header
-    tr
-      td.larger {{ name }}
-      td.smaller {{ props.Creator }}
+div.relative.h100p(k-als-project='')
+  div.project-header
+    h2 {{ name }}
+    span.label.label-default {{ props.Creator }}
 
-  table.table.table-striped.table-bordered
-    tr
-      th(ng-repeat='(index, track) in tracks') 
-        input.form-control(type='input', ng-model='track.name', placeholder='Edit track name')
-        button.btn.btn-warning.btn-sm(ng-click='removeTrack(index)', type='button') [X]
-      th
-        button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
+  div.project-content.scroll-container.scroll-y.relative
+    .track-list
+      .scroll-container.scroll-x
+        .scroll-content.h100p.relative
+          .grid-row
+            .grid-cell.p5(ng-repeat='(index, track) in tracks')
+              table
+                tr
+                  td
+                    input.form-control(type='input', ng-model='track.name', placeholder='Edit track name')
+                  td
+                    button.btn.btn-warning.btn-sm(ng-click='removeTrack(index)', type='button') [X]
 
-    tr(ng-repeat='scene in scenes')
-      td(ng-repeat='track in tracks')
-        div.h100p(k-als-clip='', clip='track.getClip(scene.index)')
-      td.scene-label(style='position: fixed; right: 0; max-width: 200px;')
-        div(k-als-scene='', scene='scene')
-
+          .grid-row(ng-repeat='scene in scenes')
+            .grid-cell(ng-repeat='track in tracks')
+              div.h100p(k-als-clip='', clip='track.getClip(scene.index)')
+    .scene-list
+      .scroll-content
+        .grid-row
+          .grid-cell.p5
+             button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
+        .grid-row(ng-repeat='scene in scenes')
+           .grid-cell.scene-label
+              div(k-als-scene='', scene='scene')
 
 

@@ -1,3 +1,7 @@
+#app {
+  height: 100%;
+}
+
 table.tracks {
   border: 1px #ccc solid;
   vertical-align: top;
@@ -29,21 +33,80 @@ td.smaller {
 }
 
 
-table.play-clip {
+.play-clip {
   background-color: #777;
   border: 1px #999 solid;
-  min-width: 100%;
   white-space: nowrap;
+  margin: 5px;
+  text-align: center;
+}
+
+.play-clip > table {
+  background: transparent !important;
 }
 
 .grid-cell {
   width: 200px;
   height: 80px;
-  background: orange;
-  display: inline-block;
+  /*background: orange;
+*/  display: inline-block;
+border: 1px #777 solid;
 }
 
 .grid-row {
   display: block;
-  background: blue;
+  /*background: blue;
+*/  height: 80px;
+  width: auto;
+  white-space: nowrap;
+}
+
+.scroll-container {
+  overflow: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.scroll-container.scroll-x {
+  overflow-y: hidden;
+}
+
+.scroll-container.scroll-y {
+  overflow-x: hidden;
+}
+
+
+.scroll-container.h100p {
+  max-height: none;
+  height: 100% !important;
+}
+
+.track-list {
+  position: absolute;
+  left: 0px;
+  right: 200px;
+  height: auto;
+}
+.scene-list {
+  width: 200px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+/*
+.scene-list > .scroll-content {
+  padding-top: 80px;
+}
+*/
+.project-header {
+  height: 80px;
+  padding-left: 20px;
+  border-bottom: 2px #CCC solid;
+}
+
+.project-content {
+  position: absolute;
+  top: 80px;
+  bottom: 0px;
+  width: 100%;
 }
