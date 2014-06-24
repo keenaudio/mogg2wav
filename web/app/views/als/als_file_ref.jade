@@ -1,10 +1,8 @@
 div.als-file-ref(ng-if="valid")
-  table
+  table.play-clip
     tr
-      td
-        ul.bold.nav.nav-pills
-          li
-            a(k-play-button='', url='url')
-      td.smaller
-        a(ng-href="{{ url }}") {{ fileName }}
+      td.p5
+        a.btn.btn-primary(k-play-button='', url='url')
+      td.smaller.p5
+        a.smaller(ng-href="{{ url }}") {{ fileName }}
         div.smaller {{ fileRelPath }}

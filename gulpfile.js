@@ -48,6 +48,83 @@ var Config = require('./lib/common/config').Config;
 $.config = new Config();
 require('./config')($.config);
 
+gulp.task('test3', function() {
+
+  var jsonFilter = $.filter('**/*.json');
+  var xmlFilter = $.filter('**/*.xml');
+
+  function outputPath(baseName, ext) {
+    return './' + baseName + '/json/' + baseName + ext;
+  }
+
+  return gulp.src([
+    '**/*.als.json'
+    ], { cwd: $.config.get('paths.als') })
+    .pipe($.through(function(file) {
+      var stream = this;
+      $.util.log("Ra Exploding ALS JSON file: " + file.path);
+      var json = JSON.parse(file.contents);
+      var alsProject = require('./lib/formats/als').fromJSON(json);
+      var liveSet = alsProject.liveSet;
+      var tracks = liveSet.tracks;
+      var baseName = path.basename(file.path, '.als.json');
+
+      _.each(tracks, function(track, index) {
+
+        var trackFile = new $.util.File();
+        trackFile.contents = new Buffer(JSON.stringify(track.data, null, 2));
+        trackFile.path = outputPath(baseName, ".track" + $.pad(index, 2) + ".json");
+        stream.queue(trackFile);
+
+        //track.setName( "haxor" + index);
+      });
+
+      var scenes = liveSet.scenes;
+      _.each(scenes, function(scene, sceneIndex) {
+        var sceneFile = new $.util.File();
+        sceneFile.contents = new Buffer(JSON.stringify(scene.data, null, 2));
+        sceneFile.path = outputPath(baseName, ".scene" + $.pad(sceneIndex, 2) + ".json");
+        stream.queue(sceneFile);
+
+        _.each(tracks, function(track, trackIndex) {
+          var clip = track.getClip(sceneIndex);
+          if (clip) {
+            //clip.setName('Clip.' + sceneIndex + '.' + trackIndex);
+            var clipFile = new $.util.File();
+            clipFile.contents = new Buffer(JSON.stringify(clip.data, null, 2));
+            clipFile.path = outputPath(baseName, ".clip-s" + $.pad(sceneIndex, 2) + "-t" + $.pad(trackIndex, 2) + ".json");
+            stream.queue(clipFile);
+          }
+        });
+      });
+      var data = JSON.stringify(alsProject.data, null, 2);
+      file.contents = new Buffer(data);
+      this.queue(file);
+      $.util.log("End explosion");
+    })) 
+   // .pipe(jsonFilter.restore())
+    .pipe($.through(function(file) {
+      $.util.log("Here: " + path.extname(file.path));
+      if (path.extname(file.path) === '.json') {
+        var xmlFile = file.clone();
+        xmlFile.path = xmlFile.path.replace(/json/g, 'xml');
+        //xmlFile.base = xmlFile.base.replace('json', 'xml');
+        $.util.log("Adding XML file: " + xmlFile.path + ", " + xmlFile.base);
+        this.queue(xmlFile);
+      }
+      $.util.log("Just passing through: " + file.path);
+
+      this.queue(file);
+    }))
+    .pipe(xmlFilter)
+    .pipe($.json2xml())
+    .pipe(xmlFilter.restore())
+    .pipe(gulp.dest($.config.get('paths.outbox')));
+    
+
+});
+
+
 gulp.task('test2', function(cb) {
 
   var alsProject;

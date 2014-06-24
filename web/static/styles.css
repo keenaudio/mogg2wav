@@ -6,8 +6,6 @@ html,body {
 
 #wrap {
   height: 100%;
-  background: #333;
-  color: #eee;
   overflow: hidden;
 }
 
@@ -67,4 +65,12 @@ left: 300px;
 
 .w100p {
   width: 100%;
+}
+
+.p5 {
+  padding: 5px;
+}
+
+.h100p {
+  height: 100%;
 }

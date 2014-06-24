@@ -6,14 +6,12 @@ table.tracks {
 table.tracks > tbody > tr > th,
 td.scene-label {
   padding: 10px;
-  background: #666;
-  color: #eee;
-  border: 1px #eee solid;
+  border-style: solid;
 }
 
 table.tracks > tbody > tr > td {
-  padding: 10px;
-  border: 1px #eee solid;
+/*  padding: 10px;*/
+  border: 1px #777 solid;
 }
 
 table.header > tbody > tr > td {
@@ -28,4 +26,24 @@ td.larger {
 td.smaller {
   font-size: smaller;
   font-weight: lighter;
+}
+
+
+table.play-clip {
+  background-color: #777;
+  border: 1px #999 solid;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.grid-cell {
+  width: 200px;
+  height: 80px;
+  background: orange;
+  display: inline-block;
+}
+
+.grid-row {
+  display: block;
+  background: blue;
 }

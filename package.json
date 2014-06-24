@@ -18,6 +18,7 @@
     "gulp": "3.8.1",
     "gulp-changed": "^0.4.0",
     "gulp-clean": "0.2.4",
+    "gulp-clone": "^1.0.0",
     "gulp-concat": "^2.2.0",
     "gulp-debug": "0.3.0",
     "gulp-expect-file": "0.0.4",
