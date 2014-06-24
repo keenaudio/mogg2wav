@@ -1,16 +1,27 @@
-div(k-folder='')
-  table.header
-    tr
-      td.larger {{ name }}
-      td.smaller {{ props.Creator }}
+div.relative.h100p(k-folder='')
+  div.project-header
+    h2 {{ name }}
+    span.label.label-default wavs
 
-  table.tracks
-    tr
-      th(ng-repeat='file in files') {{ file }}
-      th
+  div.project-content.scroll-container.scroll-y.relative
+    .track-list
+      .scroll-container.scroll-x
+        .scroll-content.h100p.relative
+          .grid-row
+            .grid-cell.p5(ng-repeat='(index, track) in tracks')
+              div(k-track-header='', track='track')
+          .grid-row
+            .grid-cell(ng-repeat='clip in clips')
+              div.h100p(k-play-clip='', clip='clip')
+    .scene-list
+      .scroll-content
+        .grid-row
+          .grid-cell.p5
+             button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
+        .grid-row
+          .grid-cell.scene-label
+              button.btn.btn-success(ng-click='addTrack()', type='button') Play All
 
-    tr      
-      td(ng-repeat='file in files')
-        div(k-file='', file='file')
+
 
 

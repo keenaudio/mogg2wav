@@ -368,15 +368,12 @@ gulp.task('watch', function(cb) {
 
   gulp.watch("web/app/**/*.jade", ["app-templates"]); // recompile jade templates to JS on file save
 
-
   var lr = livereload();
-  gulp.src([
-    "web/**/*",
-    ".tmp/web/**/*",
-    "lib/**/*",
-    "static/**/*"
-    ], { read: false })
-    .pipe($.watch( { name: "server pages watch" }))
+  $.watch({ 
+      glob: "{web,.tmp,lib,static}/**/*", 
+      emitOnGlob: false, 
+      emit: "all" 
+    })
     .pipe(lr);
 });
 

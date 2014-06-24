@@ -51,6 +51,8 @@ td.smaller {
   /*background: orange;
 */  display: inline-block;
 border: 1px #777 solid;
+overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .grid-row {
@@ -59,6 +61,7 @@ border: 1px #777 solid;
 */  height: 80px;
   width: auto;
   white-space: nowrap;
+
 }
 
 .scroll-container {

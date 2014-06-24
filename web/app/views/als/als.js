@@ -153,22 +153,19 @@ angular.module("keenaudio").directive("kAlsFileRef", function($routeParams, conf
           return;
         }
         $scope.valid = true;
-        $scope.fileName = fileRef.fileName; //FileRef[0].Name[0].$.Value;
-        $scope.fileRelPath = fileRef.fileRelPath;
-
-        // Generate URL for the file.  Walk back to the project
-        var sample = fileRef.parent;
-        var clip = sample.parent;
-        var slot = clip.parent;
-        var track = slot.parent;
 
         var urlParts = [
           config.get('routes.als'),
           $routeParams.project,
-          $scope.fileRelPath,
-          $scope.fileName
+          fileRef.fileRelPath,
+          fileRef.fileName
         ]
-        $scope.url = urlParts.join('/');
+  
+        $scope.playClip = {
+          fileName: fileRef.fileName,
+          fileRelPath: fileRef.fileRelPath,
+          url: urlParts.join('/')
+        }
 
         //$scope.displayPath = './' + fileRef.fileRelPath + '/' + $scope.fileName;
       });
