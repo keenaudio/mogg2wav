@@ -10,7 +10,8 @@
     "angular-sanitize": "v1.3.0-build.2623+sha.92e8289",
     "blueimp-file-upload": "9.5.7",
     "blueimp-load-image": "1.11.1",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "angular-ui-slider": "~0.0.2"
   },
   "devDependencies": {
     "angular-mocks": "v1.3.0-build.2623+sha.92e8289",

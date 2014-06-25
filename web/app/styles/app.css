@@ -89,6 +89,7 @@ overflow: hidden;
   left: 0px;
   right: 200px;
   height: auto;
+  min-height: 100%;
 }
 .scene-list {
   width: 200px;

@@ -5,14 +5,15 @@ div.relative.h100p(k-folder='')
 
   div.project-content.scroll-container.scroll-y.relative
     .track-list
-      .scroll-container.scroll-x
-        .scroll-content.h100p.relative
-          .grid-row
-            .grid-cell.p5(ng-repeat='(index, track) in tracks')
-              div(k-track-header='', track='track')
-          .grid-row
-            .grid-cell(ng-repeat='clip in clips')
-              div.h100p(k-play-clip='', clip='clip')
+      .relative.h100p
+        .scroll-container.scroll-x.h100p
+          .scroll-content.h100p.relative
+            .grid-row
+              .grid-cell.p5(ng-repeat='(index, track) in tracks')
+                div(k-track-header='', track='track')
+            .grid-row
+              .grid-cell(ng-repeat='clip in clips')
+                div.h100p(k-play-clip='', clip='clip')
     .scene-list
       .scroll-content
         .grid-row
