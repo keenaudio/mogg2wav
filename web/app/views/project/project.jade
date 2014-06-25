@@ -1,0 +1,27 @@
+div.project.relative.h100p
+  div.project-header
+    h2 {{ project.name }}
+    span.label.label-default {{ project.type }}
+
+  div.project-content.scroll-container.relative
+    .track-list
+      .grid-row
+        .grid-cell.p5(ng-repeat='(index, track) in project.tracks')
+          div(k-track-header='', track='track')
+
+      .grid-row(ng-repeat='set in project.sets')
+          .grid-cell(ng-repeat='track in project.tracks')
+            div.h100p(k-play-clip='', clip='set.getSample(track)')
+
+      .mixer-spacer
+      .mixer.grid-row
+        .mixer.grid-cell(ng-repeat='track in tracks')
+          div(k-fader='', track='track')
+
+    .scene-list
+      .grid-row
+        .grid-cell.p5
+           button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
+       .grid-row(ng-repeat='set in project.sets')
+         .grid-cell.set-label
+            div(k-set='', set='set')

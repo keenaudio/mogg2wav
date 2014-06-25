@@ -47,7 +47,7 @@ td.smaller {
 
 .grid-cell {
   width: 200px;
-  height: 80px;
+  height: 100%;
   /*background: orange;
 */  display: inline-block;
 border: 1px #777 solid;
@@ -62,6 +62,16 @@ overflow: hidden;
   width: auto;
   white-space: nowrap;
 
+}
+.mixer.grid-row {
+  height: 400px;
+  position: absolute;
+  bottom: 0px;
+  background: orange;
+}
+.mixer-spacer {
+  display: block;
+  height: 400px;
 }
 
 .scroll-container {
@@ -86,6 +96,7 @@ overflow: hidden;
 
 .track-list {
   position: absolute;
+  z-index: 1;
   left: 0px;
   right: 200px;
   height: auto;
@@ -93,9 +104,13 @@ overflow: hidden;
 }
 .scene-list {
   width: 200px;
+  z-index: 2;
   position: absolute;
   top: 0px;
   right: 0px;
+    height: auto;
+  min-height: 100%;
+
 }
 /*
 .scene-list > .scroll-content {

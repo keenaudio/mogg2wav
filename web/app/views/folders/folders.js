@@ -25,23 +25,35 @@ angular.module("keenaudio").directive("kFolder", function($http, $routeParams, c
           };
         })
 
-        $scope.clips = _.map(data, function(file) {
+        $scope.samples = _.map(data, function(file) {
             return {
               fileName: file,
               url: config.get('routes.folders') + '/' + $routeParams.folder + '/' + file
             };
           });
 
+        var project = new Project($routeParams.folder, 'wavs');
+        var set = new Project.Set();
 
-        app.clearAudio();
-        var mixer = app.getMixer();
-        var scheduler = app.getScheduler();
-
-        _.each($scope.clips, function(clip) {
-          var sample = audio.createSample(clip);
-          var track = mixer.createTrack();
-          scheduler.addItem(sample, track, 0);
+        _.each($scope.tracks, function(track) {
+          project.addTrack(new Project.Track(track.name, 'wav')); 
         });
+
+        _.each($scope.samples, function(sample, index) {
+          set.addSample(sample, $scope.tracks[index]);       
+        });
+        project.addSet(set);
+        $scope.project = project;
+
+        // app.clearAudio();
+        // var mixer = app.getMixer();
+        // var scheduler = app.getScheduler();
+
+        // _.each($scope.clips, function(clip) {
+        //   var sample = audio.createSample(clip);
+        //   var track = mixer.createTrack();
+        //   scheduler.addItem(sample, track, 0);
+        // });
 
       });
     }
