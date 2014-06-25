@@ -1,8 +1,13 @@
 extends ../layouts/master
 
 block head
+  link(rel="stylesheet", type="text/css", href="/bower_components/jquery-ui/themes/start/jquery-ui.css")
+  //link(rel="stylesheet", type="text/css", href="/bower_components/jquery-ui/themes/smoothness/jquery.ui.theme.css")
+
+
   link(rel="stylesheet", type="text/css", href="components/components.css")
   link(rel="stylesheet", type="text/css", href="styles/app.css")
+  script(type="text/javascript", src="/bower_components/jquery-ui/ui/jquery-ui.js")
   script(type='text/javascript')
     | var clientConfig = !{ JSON.stringify(clientConfig, null, 2) };
 
@@ -35,7 +40,7 @@ block content
   script(src="/bower_components/underscore/underscore.js")
   script(src="/bower_components/angular/angular.js")
   script(src="/bower_components/angular-route/angular-route.js")
-
+  script(src="/bower_components/angular-ui-slider/src/slider.js")
   script(src="/lib/ng/ng.js")
   script(src="/lib/ng/modules/config.js")
 
@@ -49,5 +54,7 @@ block content
   script(src="components/play_clip/play_clip.js")
   script(src="components/track_header/track_header.js")
   script(src="components/main_nav/main_nav.js")
+  script(src="components/fader/fader.js")
+  script(src="components/set/set.js")
 
 

@@ -1,3 +1,28 @@
+(function() {
+
+
+function clip2sample(clip, baseUrl) {
+  if (!clip) return;
+  if (!clip.sample) return;
+  if (!clip.sample.fileRef) return;
+
+  var fileRef = clip.sample.fileRef;
+
+  var urlParts = [
+    baseUrl,
+    fileRef.fileRelPath,
+    fileRef.fileName
+  ]
+
+  var sample = {
+    fileName: fileRef.fileName,
+    fileRelPath: fileRef.fileRelPath,
+    url: urlParts.join('/')
+  }
+
+  return sample;
+}
+
 angular.module("keenaudio").directive("kAlsProjects", function($http, $routeParams) {
   return {
     restrict: 'A',
@@ -12,7 +37,7 @@ angular.module("keenaudio").directive("kAlsProjects", function($http, $routePara
   };
 });
 
-angular.module("keenaudio").directive("kAlsProject", function($http, $routeParams) {
+angular.module("keenaudio").directive("kAlsProject", function($http, $routeParams, config, app) {
   return {
     restrict: 'A',
     link:function ($scope, $elem, attr) {
@@ -21,11 +46,31 @@ angular.module("keenaudio").directive("kAlsProject", function($http, $routeParam
       $http.get('/json/als/project/' + $routeParams.project).success(function(data) {
         $scope.data = data;
         $scope.name = $routeParams.project;
-        $scope.project = new AbletonProject(data);
-        $scope.props = $scope.project.props;
-        $scope.liveSet = $scope.project.liveSet;
+        $scope.alsProject = new AbletonProject(data);
+        $scope.props = $scope.alsProject.props;
+        $scope.liveSet = $scope.alsProject.liveSet;
         $scope.tracks = $scope.liveSet.tracks; //data.Ableton.LiveSet[0].Tracks[0].AudioTrack;
         $scope.scenes = $scope.liveSet.scenes;
+
+        var baseUrl = [config.get('routes.als'),$routeParams.project].join('/');
+
+        var project = new Project($scope.name, $scope.props.Creator);
+        $scope.tracks.forEach(function(track) {
+          project.addTrack(new Project.Track(track.name));
+        });
+        $scope.scenes.forEach(function(scene) {
+
+          var set = new Project.Set(scene.name, "als");
+          project.addSet(set);
+
+          $scope.tracks.forEach(function(track) {
+            var clip = track.getClip(set.id);
+            var sample = clip2sample(clip, baseUrl);
+            set.addSample(sample, track.index);
+          });
+        })
+        $scope.project = project;
+        app.setProject(project);
       });
     }
   };
@@ -175,3 +220,4 @@ angular.module("keenaudio").directive("kAlsFileRef", function($routeParams, conf
 });
 
 
+})();

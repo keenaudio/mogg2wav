@@ -15,6 +15,7 @@ var clientConfig; // injected in app.jade
   // Define the global app instance.
   var app = angular.module('keenaudio', [ // Module dependencies
     'ngRoute',
+    'ui.slider',
     'config',
     'app-templates'
   ]);
@@ -92,6 +93,9 @@ var clientConfig; // injected in app.jade
       clearAudio: function() {
         $rootScope.mixer = new audio.Mixer(ac);
         $rootScope.scheduler = new audio.Scheduler(ac);
+      },
+      setProject: function(project) {
+        $rootScope.project = project;
       }
     }
   });

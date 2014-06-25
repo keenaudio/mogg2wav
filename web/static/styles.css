@@ -10,13 +10,13 @@ html,body {
 }
 
 #header {
-  height: 30px;
+  height: 50px;
   position: relative;
 }
 
 #content {
   position: absolute;
-  top: 30px;
+  top: 50px;
   bottom: 30px;
   width: 100%;
 /*  overflow-y: auto;
@@ -50,6 +50,10 @@ left: 300px;
 
 .smaller {
   font-size: smaller;
+}
+
+.larger {
+  font-size: larger;
 }
 
 .bold {
@@ -94,4 +98,11 @@ left: 300px;
 
 .absolute {
   position: absolute;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.center {
+  text-align: center;
 }

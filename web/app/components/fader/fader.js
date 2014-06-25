@@ -8,6 +8,7 @@ angular.module("keenaudio").directive("kFader", function($http, $routeParams) {
     link:function ($scope, $elem, attr) {
       NG.attachScopeToElem($scope, $elem);
 
+      $scope.level = 80;
     }
   };
 });

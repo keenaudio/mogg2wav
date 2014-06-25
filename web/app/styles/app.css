@@ -51,7 +51,7 @@ td.smaller {
 }
 
 .grid-cell {
-  width: 200px;
+  width: 160px;
   height: 100%;
   /*background: orange;
 */  display: inline-block;
@@ -68,15 +68,25 @@ overflow: hidden;
   white-space: nowrap;
 
 }
-.mixer.grid-row {
-  height: 400px;
+.master-mixer.grid-row {
+  background: #fff;
+}
+.track-mixer.grid-row,
+.master-mixer.grid-row {
+  height: 200px;
   position: absolute;
   bottom: 0px;
-  background: orange;
 }
-.mixer-spacer {
+
+.track-mixer.grid-row {
+  background: #aaa;
+  color: #000;
+
+}
+
+.track-mixer-spacer {
   display: block;
-  height: 400px;
+  height: 200px;
 }
 
 .scroll-container {
@@ -103,7 +113,7 @@ overflow: hidden;
   position: absolute;
   z-index: 1;
   left: 0px;
-  right: 200px;
+  right: 160px;
 /*  height: auto;
   min-height: 100%;
 */
@@ -112,13 +122,14 @@ overflow: hidden;
 }
 
 .scene-list {
-  width: 200px;
+  width: 160px;
   z-index: 2;
   position: absolute;
   top: 0px;
   right: 0px;
     height: auto;
   min-height: 100%;
+  overflow: hidden;
 
 }
 /*
@@ -132,15 +143,58 @@ overflow: hidden;
 }
 
 .project-header {
-  height: 80px;
+  height: 50px;
+  display: inline-block;
   padding-left: 20px;
-  border-bottom: 2px #CCC solid;
-  overflow: hidden;
+/*  border-bottom: 2px #CCC solid;
+*/  overflow: hidden;
+vertical-align: top;
+line-height: 50px;
 }
 
+.project-name {
+  font-size: 2em;
+  font-weight: bold;
+  margin-right: 20px;
+}
 .project-content {
   position: absolute;
   top: 80px;
   bottom: 0px;
   width: 100%;
 }
+
+.track-headers {
+  background: #ccc;
+  color: #000;
+  z-index: 2;
+}
+
+.set-controls {
+  position: relative;
+  z-index: 2;
+  background: #AAA;
+  color: #555;
+}
+
+.fader.ui-slider.vertical {
+  width: 80px;
+  height: 160px;
+  margin: 20px auto 0px auto;
+}
+
+.fader.ui-slider > .ui-slider-handle {
+  width: 90px;
+  height: 40px;
+  left: -5px;
+  /*margin-bottom: 10px;*/
+}
+
+.main-nav {
+  vertical-align: top;
+}
+.main-nav > .navbar {
+  display: inline-block;
+  height: 50px;
+}
+

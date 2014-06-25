@@ -25,11 +25,18 @@ angular.module("keenaudio").directive("kProject", function($http, $routeParams, 
 
       var $sets = $elem.find('.project-sets');
       var $trackHeaders = $elem.find('.track-headers');
+      var $trackMixer = $elem.find('.track-mixer');
+
       var $scrollContainer = $elem.find('.scroll-container');
       $scrollContainer.scroll(function(e) {
         console.log('scroll: ' + $scrollContainer.scrollLeft() + " , " + $scrollContainer.scrollTop());
-        $trackHeaders.css('left', -$scrollContainer.scrollLeft());
-        $sets.css('top', -$scrollContainer.scrollTop());
+        var l = $scrollContainer.scrollLeft();
+        var t = $scrollContainer.scrollTop();
+        $trackHeaders.css('left', -l);
+        $sets.css('top', -t);
+        //$trackMixer.css('left', -l);
+        $trackMixer.css('bottom', -t);
+
       });
     }
   };

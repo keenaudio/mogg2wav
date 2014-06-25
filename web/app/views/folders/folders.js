@@ -45,6 +45,8 @@ angular.module("keenaudio").directive("kFolder", function($http, $routeParams, c
         project.addSet(set);
         $scope.project = project;
 
+        app.setProject(project);
+        
         // app.clearAudio();
         // var mixer = app.getMixer();
         // var scheduler = app.getScheduler();

@@ -1,31 +1,4 @@
 div.relative.h100p(k-als-project='')
-  div.project-header
-    h2 {{ name }}
-    span.label.label-default {{ props.Creator }}
-
-  div.project-content.scroll-container.scroll-y.relative
-    .track-list
-      .scroll-container.scroll-x
-        .scroll-content.h100p.relative
-          .grid-row
-            .grid-cell.p5(ng-repeat='(index, track) in tracks')
-              table
-                tr
-                  td
-                    input.form-control(type='input', ng-model='track.name', placeholder='Edit track name')
-                  td
-                    button.btn.btn-warning.btn-sm(ng-click='removeTrack(index)', type='button') [X]
-
-          .grid-row(ng-repeat='scene in scenes')
-            .grid-cell(ng-repeat='track in tracks')
-              div.h100p(k-als-clip='', clip='track.getClip(scene.index)')
-    .scene-list
-      .scroll-content
-        .grid-row
-          .grid-cell.p5
-             button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
-        .grid-row(ng-repeat='scene in scenes')
-           .grid-cell.scene-label
-              div(k-als-scene='', scene='scene')
+  div.h100p(k-project='', project='project')
 
 
