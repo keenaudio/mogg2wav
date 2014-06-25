@@ -46,6 +46,9 @@ var clientConfig; // injected in app.jade
   app.service('app', function($rootScope) {
     var ac = new (window.AudioContext || window.webkitAudioContext);
 
+    $rootScope.mixer = new audio.Mixer(ac);
+    $rootScope.scheduler = new audio.Scheduler(ac);
+
     return {
       audioContext: function() {
         return ac;
@@ -80,9 +83,15 @@ var clientConfig; // injected in app.jade
         }, false);
         xhr.send();
       },
-      setScheduler: function(scheduler) {
-        $rootScope.scheduler = scheduler;
-
+      getMixer: function() {
+        return $rootScope.mixer;
+      },
+      getScheduler: function() {
+        return $rootScope.scheduler;
+      },
+      clearAudio: function() {
+        $rootScope.mixer = new audio.Mixer(ac);
+        $rootScope.scheduler = new audio.Scheduler(ac);
       }
     }
   });

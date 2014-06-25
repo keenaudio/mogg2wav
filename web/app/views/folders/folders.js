@@ -10,7 +10,7 @@ angular.module("keenaudio").directive("kFolders", function($http) {
   };
 });
 
-angular.module("keenaudio").directive("kFolder", function($http, $routeParams, config) {
+angular.module("keenaudio").directive("kFolder", function($http, $routeParams, config, app) {
   return {
     restrict: 'A',
     link:function ($scope, $elem, attr) {
@@ -31,6 +31,18 @@ angular.module("keenaudio").directive("kFolder", function($http, $routeParams, c
               url: config.get('routes.folders') + '/' + $routeParams.folder + '/' + file
             };
           });
+
+
+        app.clearAudio();
+        var mixer = app.getMixer();
+        var scheduler = app.getScheduler();
+
+        _.each($scope.clips, function(clip) {
+          var sample = audio.createSample(clip);
+          var track = mixer.createTrack();
+          scheduler.addSample(sample, track, 0);
+        });
+
       });
     }
   };
