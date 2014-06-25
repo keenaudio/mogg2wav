@@ -22,6 +22,15 @@ angular.module("keenaudio").directive("kProject", function($http, $routeParams, 
         });
 
       });
+
+      var $sets = $elem.find('.project-sets');
+      var $trackHeaders = $elem.find('.track-headers');
+      var $scrollContainer = $elem.find('.scroll-container');
+      $scrollContainer.scroll(function(e) {
+        console.log('scroll: ' + $scrollContainer.scrollLeft() + " , " + $scrollContainer.scrollTop());
+        $trackHeaders.css('left', -$scrollContainer.scrollLeft());
+        $sets.css('top', -$scrollContainer.scrollTop());
+      });
     }
   };
 });

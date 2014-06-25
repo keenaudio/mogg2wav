@@ -10,24 +10,25 @@ html,body {
 }
 
 #header {
-  height: 50px;
+  height: 30px;
   position: relative;
 }
 
 #content {
   position: absolute;
-  top: 50px;
-  bottom: 50px;
+  top: 30px;
+  bottom: 30px;
   width: 100%;
-  overflow-y: auto;
-}
+/*  overflow-y: auto;
+*/}
 
 #footer {
-  height: 50px;
+  height: 30px;
   position: absolute;
   left: 0px;
   bottom: 0px;
   width: 100%;
+  background: orange;
 }
 
 
@@ -89,4 +90,8 @@ left: 300px;
 
 .relative {
   position: relative;
+}
+
+.absolute {
+  position: absolute;
 }
