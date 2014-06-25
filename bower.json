@@ -12,7 +12,8 @@
     "blueimp-load-image": "1.11.1",
     "underscore": "~1.6.0",
     "angular-ui-slider": "~0.0.2",
-    "jquery-ui": "~1.10.4"
+    "jquery-ui": "~1.10.4",
+    "bootstrap": "~3.1.1"
   },
   "devDependencies": {
     "angular-mocks": "v1.3.0-build.2623+sha.92e8289",

@@ -38,24 +38,24 @@ td.smaller {
 }
 
 
-.play-clip {
+/*.play-clip {
   background-color: #777;
   border: 1px #999 solid;
   white-space: nowrap;
   margin: 5px;
   text-align: center;
 }
-
-.play-clip > table {
+*/
+/*.play-clip > table {
   background: transparent !important;
-}
+}*/
 
 .grid-cell {
   width: 160px;
   height: 100%;
   /*background: orange;
 */  display: inline-block;
-border: 1px #777 solid;
+border: 1px #222 solid;
 overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -73,7 +73,7 @@ overflow: hidden;
 }
 .track-mixer.grid-row,
 .master-mixer.grid-row {
-  height: 200px;
+  height: 300px;
   position: absolute;
   bottom: 0px;
 }
@@ -113,7 +113,7 @@ overflow: hidden;
   position: absolute;
   z-index: 1;
   left: 0px;
-  right: 160px;
+  right: 0px;
 /*  height: auto;
   min-height: 100%;
 */
@@ -121,16 +121,25 @@ overflow: hidden;
   overflow: hidden;
 }
 
-.scene-list {
+.corner-controls,
+.master-mixer {
   width: 160px;
-  z-index: 2;
+  z-index: 3;
   position: absolute;
-  top: 0px;
+
   right: 0px;
-    height: auto;
-  min-height: 100%;
   overflow: hidden;
 
+}
+
+.corner-controls {
+    top: 0px;
+  background: #666;
+  color: #aaa;
+}
+
+.master-mixer {
+  bottom: 0px;
 }
 /*
 .scene-list > .scroll-content {
@@ -178,15 +187,15 @@ line-height: 50px;
 }
 
 .fader.ui-slider.vertical {
-  width: 80px;
+  width: 60px;
   height: 160px;
   margin: 20px auto 0px auto;
 }
 
 .fader.ui-slider > .ui-slider-handle {
-  width: 90px;
+  width: 80px;
   height: 40px;
-  left: -5px;
+  left: -10px;
   /*margin-bottom: 10px;*/
 }
 
@@ -198,3 +207,46 @@ line-height: 50px;
   height: 50px;
 }
 
+.project-sets {
+  position: absolute;
+  z-index: 2;
+  right: 0px;
+  top: 0px;
+}
+
+.set-label {
+  background: #aaa;
+  color: black;
+}
+
+.project-grid {
+  margin-bottom: -200px;
+}
+
+.play-set > table {
+  background: transparent;
+}
+
+.play-clip {
+  position: relative;
+  height: 100%;
+}
+
+.play-clip > .clip-border {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  background-color: #777;
+  border: 1px #999 solid;
+  white-space: nowrap;
+  border-radius: 6px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.clip-border > table {
+  background: transparent !important;
+  margin-top: 5px;
+}

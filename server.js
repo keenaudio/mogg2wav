@@ -167,6 +167,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/bower_components', express.static('bower_components'));
+app.use('/fonts', express.static('bower_components/bootstrap/dist/fonts'));
 
 
 app.use(config.get('routes.folders'), express.static(config.get('paths.folders')));

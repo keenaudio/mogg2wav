@@ -1,33 +1,38 @@
 div.project.relative.h100p
   .track-list
-    .grid-row.absolute.track-headers
-      .grid-cell.center.p5(ng-repeat='(index, track) in project.tracks')
-        div(k-track-header='', track='track')
     .scroll-container.relative
-      .scroll-content
-        .grid-row.spacer
+      .project-grid.scroll-content
+        .grid-row.relative.track-headers
+          .grid-cell.center(ng-repeat='(index, track) in project.tracks')
+            div(k-track-header='', track='track')
+
         .grid-row(ng-repeat='set in project.sets')
             .grid-cell(ng-repeat='track in project.tracks')
               div.h100p(k-play-clip='', clip='set.getSample(track.id)')
         //.track-mixer-spacer
+        .project-sets.absolute
+          .grid-row.spacer
+          .grid-row(ng-repeat='set in project.sets')
+           .grid-cell.set-label
+              div.h100p(k-set='', set='set')
 
         .track-mixer.grid-row
           .grid-cell.center(ng-repeat='track in project.tracks')
+            div.btn-group.btn-group-sm
+              button.btn.btn-default
+                i.glyphicon.glyphicon-headphones
+              button.btn.btn-default
+                i.glyphicon.glyphicon-volume-off
             div.center(k-fader='', track='track')
             strong {{ track.name }}
 
 
-  .scene-list
-    .grid-row.set-controls
-      .grid-cell.p5
-         button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
-    .relative
-      .project-sets.absolute
-        .grid-row(ng-repeat='set in project.sets')
-         .grid-cell.set-label
-            div(k-set='', set='set')
-    .master-mixer.grid-row
-      .grid-cell.center
-        div.center(k-fader='')
-        strong Master
+  .corner-controls.grid-row
+    .grid-cell
+       button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
+
+  .master-mixer.grid-row
+    .grid-cell.center
+      div.center(k-fader='')
+      strong Master
 

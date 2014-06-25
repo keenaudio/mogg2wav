@@ -1,6 +1,6 @@
-.k-play-button(ng-if="enabled")
-  .w100p(ng-switch="state", ng-click="onClick()")
+.k-play-button
+  .w100p(ng-switch="model.state", ng-click="onClick()")
     i.glyphicon.glyphicon-play(ng-switch-when="paused")
     i.glyphicon.glyphicon-pause(ng-switch-when="playing")
     .w100p(ng-switch-when="loading")
-      div.loading-bar(style="width: {{ percent * 100 }}%;")
+      div.loading-bar(style="width: {{ model.percent * 100 }}%;")

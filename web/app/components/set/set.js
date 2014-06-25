@@ -9,6 +9,8 @@ angular.module("keenaudio").directive("kSet", function($http, $routeParams) {
     link:function ($scope, $elem, attr) {
       NG.attachScopeToElem($scope, $elem);
 
+      $scope.model = new PlayerModel();
+      
      }
   };
 });

@@ -32,8 +32,9 @@ angular.module("keenaudio").directive("kProject", function($http, $routeParams, 
         console.log('scroll: ' + $scrollContainer.scrollLeft() + " , " + $scrollContainer.scrollTop());
         var l = $scrollContainer.scrollLeft();
         var t = $scrollContainer.scrollTop();
-        $trackHeaders.css('left', -l);
-        $sets.css('top', -t);
+        $trackHeaders.css('top', t);
+        $sets.css('right', -l)
+        //$sets.css('top', -t);
         //$trackMixer.css('left', -l);
         $trackMixer.css('bottom', -t);
 

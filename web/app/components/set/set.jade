@@ -1,1 +1,8 @@
-div {{ set.name }}
+div.play-set.h100p(ng-if='set')
+  table.h100p
+    tr
+      td.p5
+        a.btn.btn-primary(k-play-button='', model='model')
+      td.p5
+        .smaller {{ set.name }}
+        //div.smaller {{ set.type }}
