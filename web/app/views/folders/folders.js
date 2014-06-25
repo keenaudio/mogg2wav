@@ -40,7 +40,7 @@ angular.module("keenaudio").directive("kFolder", function($http, $routeParams, c
         _.each($scope.clips, function(clip) {
           var sample = audio.createSample(clip);
           var track = mixer.createTrack();
-          scheduler.addSample(sample, track, 0);
+          scheduler.addItem(sample, track, 0);
         });
 
       });

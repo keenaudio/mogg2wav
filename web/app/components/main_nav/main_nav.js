@@ -16,7 +16,7 @@ angular.module("keenaudio").directive("kMainNav", function($http, $routeParams, 
       $scope.stop = function() {
         console.log('stop');
         if ($rootScope.scheduler) {
-          $rootScope.scheduler.stop();
+          $rootScope.scheduler.stopAll();
         }
 
       }
