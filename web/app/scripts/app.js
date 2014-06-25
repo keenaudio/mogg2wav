@@ -43,7 +43,7 @@ var clientConfig; // injected in app.jade
     //$locationProvider.html5Mode(true);
   });
 
-  app.service('app', function() {
+  app.service('app', function($rootScope) {
     var ac = new (window.AudioContext || window.webkitAudioContext);
 
     return {
@@ -79,6 +79,10 @@ var clientConfig; // injected in app.jade
             // );
         }, false);
         xhr.send();
+      },
+      setScheduler: function(scheduler) {
+        $rootScope.scheduler = scheduler;
+
       }
     }
   });

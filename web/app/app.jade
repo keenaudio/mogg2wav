@@ -6,6 +6,9 @@ block head
   script(type='text/javascript')
     | var clientConfig = !{ JSON.stringify(clientConfig, null, 2) };
 
+block header
+  div(k-main-nav='')
+
 block content
   #app
     div.h100p(ng-view="")
@@ -20,6 +23,13 @@ block content
   script(src="/lib/common/config.js")
   script(src="/lib/formats/als.js")
   script(src="/lib/formats/daw.js")
+
+  script(src="/lib/audio/audio.js")
+  script(src="/lib/audio/audio_sample.js")
+  script(src="/lib/audio/audio_track.js")
+  script(src="/lib/audio/audio_mixer.js")
+  script(src="/lib/audio/audio_scheduler.js")
+  script(src="/lib/audio/audio_player.js")
 
   script(src="/bower_components/underscore/underscore.js")
   script(src="/bower_components/angular/angular.js")
@@ -36,5 +46,6 @@ block content
   script(src="components/play_button/play_button.js")
   script(src="components/play_clip/play_clip.js")
   script(src="components/track_header/track_header.js")
+  script(src="components/main_nav/main_nav.js")
 
 

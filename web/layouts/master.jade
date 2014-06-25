@@ -17,10 +17,13 @@ html
     #wrap
       #header
         include header
+        block header
+
       #content
         block content
 
       #footer
+        block footer
         include footer
 //    script.
 //      document.write('<script src="http://' + (location.host ||      'localhost').split(':')[0] + ':#{ config.get("livereload") }/livereload.js?snipver=1"></' + 'script>')
