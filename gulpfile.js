@@ -334,12 +334,13 @@ gulp.task("app-templates", function() {
     //.pipe(jadeFilter.restore())
     .pipe($.ngHtml2js({
         moduleName: "app-templates",
+        declareModule: false,
         rename: function(filename) {
            return filename.replace('.html', '.jade');
         }
       //  stripPrefix: config.cwd
     }))
-    .pipe($.concat('app-templates.js'))
+    .pipe($.concatUtil('app-templates.js'))
     .pipe($.rename({
       dirname: "web/app/scripts",
       basename: "app-templates"
@@ -352,6 +353,16 @@ gulp.task("app-templates", function() {
 
 });
 
+gulp.task('coffee', function() {
+
+  var src = gulp.src('{lib,server,web}/**/*.coffee')
+    .pipe($.changed('.tmp'))
+    .pipe($.sourcemaps.init())
+      .pipe($.coffee({ bare: true }).on('error', $.util.log))
+    .pipe($.sourcemaps.write({ sourceRoot: './' }))
+    .pipe(gulp.dest('.tmp'));
+
+});
 
 var lrServer;
 function livereload() {
@@ -366,6 +377,7 @@ function livereload() {
 
 gulp.task('watch', function(cb) {
 
+  gulp.watch('{lib,server,web}/**/*.coffee', ['coffee']);
   gulp.watch("web/app/**/*.jade", ["app-templates"]); // recompile jade templates to JS on file save
 
   var lr = livereload();
@@ -384,7 +396,7 @@ gulp.task('build', function(cb) {
 gulp.task('server', ['clean'], function(cb) {
   // start LR server
   livereload();
-  $.sequence('app-templates', function() {
+  $.sequence('app-templates', 'coffee', function() {
     $.util.log("Now starting server and watch");
     $.gulp.start('dev-server', 'watch', function() {
       $.util.log("Somehow it is all over?");
