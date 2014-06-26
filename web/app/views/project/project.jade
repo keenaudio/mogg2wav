@@ -23,7 +23,7 @@ div.project.relative.h100p
                 i.glyphicon.glyphicon-headphones
               button.btn.btn-default
                 i.glyphicon.glyphicon-volume-off
-            div.center(k-fader='', track='track')
+            div.center(k-fader='', track='track', gain-node='track.nodes.gain')
             strong {{ track.name }}
 
 
@@ -33,6 +33,6 @@ div.project.relative.h100p
 
   .master-mixer.grid-row
     .grid-cell.center
-      div.center(k-fader='')
+      div.center(k-fader='', gain-node='mixer.nodes.masterGain')
       strong Master
 

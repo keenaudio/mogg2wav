@@ -2,7 +2,8 @@ angular.module("keenaudio").directive("kFader", function($http, $routeParams) {
   return {
     restrict: 'A',
     scope: {
-      track: '='
+      track: '=',
+      gainNode: '='
     },
     templateUrl: 'components/fader/fader.jade',
     link:function ($scope, $elem, attr) {

@@ -8,19 +8,17 @@ angular.module("keenaudio").directive("kProject", function($http, $routeParams, 
     link:function ($scope, $elem, attr) {
       NG.attachScopeToElem($scope, $elem);
       
+
       $scope.$watch('project', function(project) {
         if (!project) return;
 
-        app.clearAudio();
+
         var mixer = app.getMixer();
         var scheduler = app.getScheduler();
 
-        _.each(project.samples, function(elem) {
-          var sample = audio.createSample(elem);
-          var track = mixer.createTrack();
-          scheduler.addItem(sample, track, 0);
-        });
 
+        $scope.mixer = mixer;
+        $scope.scheduler = scheduler;
       });
 
       var $sets = $elem.find('.project-sets');

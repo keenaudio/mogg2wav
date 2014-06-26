@@ -50,7 +50,7 @@ var clientConfig; // injected in app.jade
     $rootScope.mixer = new audio.Mixer(ac);
     $rootScope.scheduler = new audio.Scheduler(ac);
 
-    return {
+    var appSvc = {
       audioContext: function() {
         return ac;
       },
@@ -96,8 +96,33 @@ var clientConfig; // injected in app.jade
       },
       setProject: function(project) {
         $rootScope.project = project;
+
+  
+        appSvc.clearAudio();
+        var mixer = $rootScope.mixer;
+        _.each(project.tracks, function(track) {
+          mixer.createTrack();
+        });
+
+
+      },
+      playSet: function(set) {
+        var project = $rootScope.project;
+        var scheduler = $rootScope.scheduler;
+        var mixer = $rootScope.mixer;
+
+        _.each(mixer.tracks, function(track) {
+          var sampleData = set.getSample(track.id);
+          if (sampleData) {
+            var sample = audio.createSample(sampleData);
+            scheduler.addItem(sample, track, 0);
+          }
+        });
+        scheduler.play();
       }
-    }
+    };
+
+    return appSvc;
   });
 
   app.run(function()  {

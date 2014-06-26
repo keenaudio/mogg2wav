@@ -106,3 +106,7 @@ left: 300px;
 .center {
   text-align: center;
 }
+
+.block {
+  display: block;
+}
