@@ -1,3 +1,5 @@
+define(['angular'], function(angular) {
+
 angular.module("keenaudio").directive("kFolders", function($http) {
   return {
     restrict: 'A',
@@ -46,7 +48,7 @@ angular.module("keenaudio").directive("kFolder", function($http, $routeParams, c
         $scope.project = project;
 
         app.setProject(project);
-        
+
         // app.clearAudio();
         // var mixer = app.getMixer();
         // var scheduler = app.getScheduler();
@@ -78,4 +80,6 @@ angular.module("keenaudio").directive("kFile", function($routeParams, config) {
       });
     }
   };
+});
+
 });

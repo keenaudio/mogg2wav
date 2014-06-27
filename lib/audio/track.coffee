@@ -1,5 +1,4 @@
-audio = undefined # global import
-do ->
+define () ->
   AudioTrack = (audioContext, masterGainNode) ->
     ac = @audioContext = audioContext
     trackMasterGainNode = ac.createGain()
@@ -17,5 +16,4 @@ do ->
 
   
   # export
-  audio.Track = AudioTrack
-  return
+  return AudioTrack

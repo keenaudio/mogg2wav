@@ -1,13 +1,12 @@
-audio = undefined # global import
-do ->
-  AudioScheduler = (audioContext) ->
-    @audioContext = audioContext
-    
-    #this.mixer = mixer;
-    @items = []
-    @activeSources = []
-    @samplesToLoad = 0
-    return
+define ["audio/playable", "assert"], (Playable, assert) ->
+  
+  class AudioScheduler extends Playable
+    constructor: (@audioContext) ->
+      super()
+      @items = []
+      @activeSources = []
+      @samplesToLoad = 0
+      return
 
   AudioScheduler::clearAll = ->
     @stopAll()
@@ -88,5 +87,4 @@ do ->
 
   
   # export
-  audio.Scheduler = AudioScheduler
-  return
+  return AudioScheduler

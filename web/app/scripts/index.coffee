@@ -1,33 +1,70 @@
 #the require library is configuring paths
 require.config
   paths:
-    
+    ng: "/lib/ng"
+    audio: "/lib/audio"
+    formats: "/lib/formats"
+    views: "../views"
+    components: "../components"
+    appTemplates: "app-templates"
+    lib: "/lib"
+    merge: "/lib/common/merge"
+    assert: "/lib/common/assert"
+
     #tries to load jQuery from Google's CDN first and falls back
     #to load locally
     jquery: [
       "//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min"
       "/bower_components/jquery/dist/jquery"
     ]
-    jqueryUi: "/bower_components/jquery-ui/ui/jquery-ui"
+    jqueryUI: "/bower_components/jquery-ui/ui/jquery-ui"
     underscore: "/bower_components/underscore/underscore"
     angular: [
-      "//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min"
+     # "//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min"
       "/bower_components/angular/angular"
     ]
     angularRoute: [
       "//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min"
       "/bower_components/angular/angular-route"
     ]
-    angularUiSlider: "/bower_components/angular-ui-slider/src/slider"
+    angularUISlider: "/bower_components/angular-ui-slider/src/slider"
 
   shim:
     angular:
+      deps: ["jquery"]
       exports: "angular"
 
     angularRoute: ["angular"]
     angularMocks:
       deps: ["angular"]
       exports: "angular.mock"
+    angularUISlider:
+      deps: ["angular", "jqueryUI"]
+      exports: "angular"
+
+    #jquery
+    #  exports: "jQuery"
+    jqueryUI:
+      deps: ["jquery"]
+      exports: "$"
+
+    appTemplates:
+      deps: ["angular"]
+      exports: "angular"
+
+    app:
+      deps: [
+        "jquery"
+        "jqueryUI"
+        "underscore"
+        "angular"
+        "angularRoute"
+        "angularUISlider"
+        "ng/config"
+        "appTemplates"
+        "audio"
+      ]
+
 
   priority: ["angular"]
   
@@ -38,23 +75,36 @@ require.config
 # requiring the scripts in the first argument and then passing the library namespaces into a callback
 # you should be able to console log all of the callback arguments
 require [
-  "jquery"
-  "underscore"
   "angular"
   "app"
-], ($, _, angular) ->
+], (angular, app) ->
   
-  # Load the config, then bootstrap the app
-  serverConfig = app.config()["serverConfig"])
-  initConfig = angular.module("config").init(serverConfig)
-  bootstrap = (config) ->
-    console.log _f("Doing bootstrap now") #@strip
-    angular.element(document).ready ->
-      angular.bootstrap document, [app["name"]]
+  require [
+    "views/main/main"
+    "views/als/als"
+    "views/folders/folders"
+    "views/project/project"
+    "components/fader/fader"
+    "components/main_nav/main_nav"
+    "components/play_button/play_button"
+    "components/play_clip/play_clip"
+    "components/set/set"
+    "components/vu_meter/vu_meter"
+
+  ], () ->
+
+    # Load the config, then bootstrap the app
+    serverConfig = window["serverConfig"]
+    initConfig = angular.module("config").init(serverConfig)
+    bootstrap = (config) ->
+      console.log "Doing bootstrap now" #@strip
+      angular.element(document).ready ->
+        angular.bootstrap document, [app["name"]]
+        return
+
       return
 
+    initConfig.then bootstrap if initConfig
     return
-
-  initConfig.then bootstrap  if initConfig
 
   return

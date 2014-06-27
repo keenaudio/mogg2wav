@@ -1,7 +1,7 @@
 define [
-  "module"
   "angular"
-], (module, angular) ->
+  "audio"
+], (angular, audio) ->
   
   #@if LOG
   _ls = "App.app"
@@ -37,12 +37,9 @@ define [
   # configure html5 to get links working on jsfiddle
   #$locationProvider.html5Mode(true);
   app.service "app", ($rootScope) ->
-    ac = new (window.AudioContext or window.webkitAudioContext)
-    $rootScope.mixer = new audio.Mixer(ac)
-    $rootScope.scheduler = new audio.Scheduler(ac)
     appSvc =
       audioContext: ->
-        ac
+        audio.context()
 
       loadAudio: (url, progressCallback, doneCallback) ->
         my = this
@@ -80,8 +77,8 @@ define [
         $rootScope.scheduler
 
       clearAudio: ->
-        $rootScope.mixer = new audio.Mixer(ac)
-        $rootScope.scheduler = new audio.Scheduler(ac)
+        $rootScope.mixer = audio.createMixer()
+        $rootScope.scheduler = audio.createScheduler()
         return
 
       setProject: (project) ->
@@ -108,7 +105,8 @@ define [
         scheduler.play()
         return
 
-    appSvc
+    appSvc.clearAudio()
+    return appSvc
 
   app.run ->
     console.log _f("keenaudio app running") #@strip

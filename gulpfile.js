@@ -44,7 +44,7 @@ var myHelpers = require('./gulp')($);
 $.merge($,  myHelpers); // Load gulp helpers
 
 // Config
-var Config = require('./lib/common/config').Config;
+var Config = require('./lib/common/config');
 $.config = new Config();
 require('./config')($.config);
 
@@ -334,7 +334,7 @@ gulp.task("app-templates", function() {
     //.pipe(jadeFilter.restore())
     .pipe($.ngHtml2js({
         moduleName: "app-templates",
-        declareModule: false,
+       // declareModule: false,
         rename: function(filename) {
            return filename.replace('.html', '.jade');
         }

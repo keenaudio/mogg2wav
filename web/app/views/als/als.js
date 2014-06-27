@@ -1,5 +1,4 @@
-(function() {
-
+define(['angular', 'ng', 'formats'], function(angular, NG, formats) {
 
 function clip2sample(clip, baseUrl) {
   if (!clip) return;
@@ -46,7 +45,7 @@ angular.module("keenaudio").directive("kAlsProject", function($http, $routeParam
       $http.get('/json/als/project/' + $routeParams.project).success(function(data) {
         $scope.data = data;
         $scope.name = $routeParams.project;
-        $scope.alsProject = new AbletonProject(data);
+        $scope.alsProject = new formats.Als(data);
         $scope.props = $scope.alsProject.props;
         $scope.liveSet = $scope.alsProject.liveSet;
         $scope.tracks = $scope.liveSet.tracks; //data.Ableton.LiveSet[0].Tracks[0].AudioTrack;
@@ -54,13 +53,13 @@ angular.module("keenaudio").directive("kAlsProject", function($http, $routeParam
 
         var baseUrl = [config.get('routes.als'),$routeParams.project].join('/');
 
-        var project = new Project($scope.name, $scope.props.Creator);
+        var project = new formats.Project($scope.name, $scope.props.Creator);
         $scope.tracks.forEach(function(track) {
           project.addTrack(new Project.Track(track.name));
         });
         $scope.scenes.forEach(function(scene) {
 
-          var set = new Project.Set(scene.name, "als");
+          var set = new formats.Project.Set(scene.name, "als");
           project.addSet(set);
 
           $scope.tracks.forEach(function(track) {
@@ -220,4 +219,4 @@ angular.module("keenaudio").directive("kAlsFileRef", function($routeParams, conf
 });
 
 
-})();
+});

@@ -11,7 +11,7 @@ var express = require('express')
   , fs = require('fs')
   , socket = require('socket.io')
 
-var Config = require('./lib/common/config').Config;
+var Config = require('./lib/common/config');
 
 var env = process.env;
 

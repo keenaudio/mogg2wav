@@ -1,5 +1,4 @@
-audio = undefined # global import
-do ->
+define () ->
   AudioSample = (audioContext, props) ->
     @audioContext = audioContext
     @props = props
@@ -32,5 +31,4 @@ do ->
 
   
   # export
-  audio.Sample = AudioSample
-  return
+  return AudioSample

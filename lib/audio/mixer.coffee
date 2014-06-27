@@ -1,5 +1,6 @@
-audio = undefined # global import
-do ->
+define [
+  "audio/track"
+], (Track) ->
   AudioMixer = (audioContext) ->
     @audioContext = audioContext
     @tracks = []
@@ -18,7 +19,7 @@ do ->
     return
 
   AudioMixer::createTrack = ->
-    track = new audio.Track(@audioContext, @nodes.masterGain)
+    track = new Track(@audioContext, @nodes.masterGain)
     nodes = @nodes
     nodes.trackGain.push
       node: track.nodes.gain
@@ -36,5 +37,4 @@ do ->
 
   
   # export
-  audio.Mixer = AudioMixer
-  return
+  return AudioMixer
