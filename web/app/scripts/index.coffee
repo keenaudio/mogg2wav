@@ -41,6 +41,20 @@ require [
   "jquery"
   "underscore"
   "angular"
+  "app"
 ], ($, _, angular) ->
-  debugger
+  
+  # Load the config, then bootstrap the app
+  serverConfig = app.config()["serverConfig"])
+  initConfig = angular.module("config").init(serverConfig)
+  bootstrap = (config) ->
+    console.log _f("Doing bootstrap now") #@strip
+    angular.element(document).ready ->
+      angular.bootstrap document, [app["name"]]
+      return
+
+    return
+
+  initConfig.then bootstrap  if initConfig
+
   return

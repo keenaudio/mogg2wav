@@ -8,8 +8,14 @@ block head
   link(rel="stylesheet", type="text/css", href="components/components.css")
   link(rel="stylesheet", type="text/css", href="styles/app.css")
   //script(type="text/javascript", src="/bower_components/jquery-ui/ui/jquery-ui.js")
-  script(type='text/javascript')
-    | var clientConfig = !{ JSON.stringify(clientConfig, null, 2) };
+  script(type='text/javascript').
+    var require = {
+      config: { 
+        'app': {
+          'serverConfig': !{ JSON.stringify(clientConfig, null, 2) }
+        }
+      }
+    };
 block header
   div(k-main-nav='')
 

@@ -129,16 +129,5 @@ var clientConfig; // injected in app.jade
     console.log(_f("keenaudio app running")); //@strip
   });
 
-    // Load the config, then bootstrap the app
-  var initConfig = angular.module('config').init(clientConfig);
-  var bootstrap = function(config) {
-    console.log(_f("Doing bootstrap now")); //@strip
-    angular.element(document).ready(function() {
-        angular.bootstrap(document, ['keenaudio']);
-    });
-  };
 
-  if (initConfig) {
-    initConfig.then(bootstrap);
-  }
 })();
