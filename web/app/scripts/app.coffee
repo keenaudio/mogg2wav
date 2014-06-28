@@ -111,6 +111,10 @@ define [
         scheduler.play()
         return
 
+      pauseSet: (set) ->
+        $rootScope.scheduler.stop()
+        return
+
     appSvc.clearAudio()
     return appSvc
 

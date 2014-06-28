@@ -76,7 +76,7 @@ define ["audio/playable", "assert"], (Playable, assert) ->
   AudioScheduler::stopAll = ->
     console.log "stopAll"
     @activeItems.forEach (item) ->
-      item.stop
+      item.clip.stop()
       return
 
     return

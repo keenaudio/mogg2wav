@@ -14,6 +14,8 @@ define(['angular', 'ng', 'audio'], function(angular, NG, audio) {
           console.log('Set playable.state: ' + prev + ' => ' + state);
           if (state === 'playing') {
             app.playSet($scope.set);
+          } else if (state === 'paused') {
+            app.pauseSet($scope.set);
           }
         });
        }
