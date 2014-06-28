@@ -1,4 +1,8 @@
-define ['audio/loadable', 'merge'], (Loadable, merge) ->
+define [
+  'audio/loadable'
+  'merge'
+  'audio/buffer'
+], (Loadable, merge, AudioBuffer) ->
   class Sample extends Loadable
     constructor: (audioContext, props) ->
       super()
@@ -7,17 +11,23 @@ define ['audio/loadable', 'merge'], (Loadable, merge) ->
       return
 
   Sample::load = loadAudioSample = (cb) ->
+    @startLoading()
     if @buffer
       cb()
       return
 
     that = this
-    @loadBuffer @url, (buffer)->
+    post = (err) ->
+      that.finishLoading();
+      cb(err) if cb
+      return
+
+    AudioBuffer.load @url, (buffer)->
       that.audioContext.decodeAudioData buffer, ((buffer) ->
         that.setBuffer buffer
-        cb()  if cb
+        post()
         return
-      ), cb
+      ), post
       return
 
     # xhr = new XMLHttpRequest()

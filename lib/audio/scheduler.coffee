@@ -2,7 +2,7 @@ define ["audio/playable", "assert"], (Playable, assert) ->
   
   class AudioScheduler extends Playable
     constructor: (@audioContext) ->
-      super()
+      super("Scheduler")
       @items = []
       @activeItems = []
       @clipsToLoad = 0

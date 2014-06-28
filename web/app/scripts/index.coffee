@@ -10,6 +10,7 @@ require.config
     lib: "/lib"
     merge: "/lib/common/merge"
     assert: "/lib/common/assert"
+    dispatcher: "/lib/common/dispatcher"
 
     #tries to load jQuery from Google's CDN first and falls back
     #to load locally

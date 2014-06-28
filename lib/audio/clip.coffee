@@ -6,15 +6,12 @@ define ['audio/playable', 'assert'], (Playable, assert) ->
       @source = false
       return
     load: (cb) ->
-      assert !@loading, "Already loading this clip"
-      assert !@loaded, "Already loaded this clip"
-
-      @loading = true
+      @startLoading()
 
       that = this
 
       onLoad = (err) ->
-        that.loaded = true
+        that.finishLoading()
         if err
           console.error "Error loading sample: " + that.sample.url + " : " + err
         else
@@ -31,8 +28,9 @@ define ['audio/playable', 'assert'], (Playable, assert) ->
         cb err
         return
 
-      onProgress = (@percentComplete) ->
-        console.log "Loading " + (@percentComplete * 100) + "%"
+      onProgress = (percent) ->
+        that.setPercentComplete(percent)
+        console.log "Loading " + (that.percentComplete * 100) + "%"
         return
 
       @sample.load onLoad, onProgress
@@ -46,5 +44,7 @@ define ['audio/playable', 'assert'], (Playable, assert) ->
       else
         console.log "Stopping audio source: " + @sample.url
         @source.stop 0
+      return
+      
   return Clip
 
