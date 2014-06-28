@@ -5,7 +5,7 @@ define [
 ], (Loadable, merge, AudioBuffer) ->
   class Sample extends Loadable
     constructor: (audioContext, props) ->
-      super()
+      super("Sample")
       @audioContext = audioContext
       merge this, props
       return

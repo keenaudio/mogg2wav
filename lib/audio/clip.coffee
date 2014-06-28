@@ -1,7 +1,7 @@
 define ['audio/playable', 'assert'], (Playable, assert) ->
   class Clip extends Playable
     constructor: (@sample, @track) ->
-      super()
+      super("Clip")
       @loaded = false
       @source = false
       return

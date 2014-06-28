@@ -1,4 +1,4 @@
-define(['angular', 'ng', 'assert'], function(angular, NG, assert) {
+define(['assert', 'angular', 'ng', 'ng/receiver'], function(assert, angular, NG, Receiver) {
   angular.module("keenaudio").directive("kPlayButton", function(app) {
     return {
       restrict: 'A',
@@ -39,6 +39,8 @@ define(['angular', 'ng', 'assert'], function(angular, NG, assert) {
         // }
 
         $scope.state = 'init';
+
+        var receiver = new Receiver($scope);
 
         function updateState() {
           var prev = $scope.state;
@@ -87,15 +89,26 @@ define(['angular', 'ng', 'assert'], function(angular, NG, assert) {
           play();
         }
 
-        // $scope.$watch('url', function(url) {
-        //   if (url) {
-        //     $scope.enabled = true;
-        //     $scope.state = "paused";
-        //   }
-        // });
+        function propListener(prop, val, prev) {
+          console.log("CHANGE: " + prop + " : " + val + " : " + prev);
+          updateState();
+        }
+
+        function attachReceiver(cur, prev) {
+          if (prev && prev !== cur) {
+            receiver.stopListening("change", prev);
+          }
+          if (cur) {
+            receiver.listen("change", cur);
+          }
+        }
+
+        $scope.$watch('playable', attachReceiver);
+        $scope.$watch('loadable', attachReceiver);
 
         $scope.$watch('playable.state', updateState);
         $scope.$watch('loadable.loading', updateState);
+
 
       }
     };

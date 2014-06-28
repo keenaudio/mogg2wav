@@ -22,7 +22,7 @@ define () ->
 
     getClip: (index) ->
       clip = @clips[index]
-      console.log "Getting clip at index " + index + " : " + clip
+      #console.log "Getting clip at index " + index + " : " + clip
       return clip
 
   # export

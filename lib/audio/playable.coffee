@@ -32,6 +32,7 @@ define ["audio/loadable"], (Loadable) ->
       return
     onStateChange: (state, prev) ->
       console.log _f "onStateChange " + prev + " => " + state
+      @notifyChange "state", state, prev
       return
 
   
