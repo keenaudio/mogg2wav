@@ -1,13 +1,26 @@
-define () ->
+define ["audio/loadable"], (Loadable) ->
 
-  class Playable
+  class Playable extends Loadable
     constructor: ->
-      @status = ''
       @state = 'paused'
-      @percent = 0
-      @audio = undefined;
+      return
     isPaused: ->
-      @state == 'paused'
+      return @state == 'paused'
     isPlaying: ->
-      @state == 'playing'
+      return @state == 'playing'
+    play: (@playTime) ->
+      prev = @state
+      @state = (if (@state is "playing") then "paused" else "playing")
+      @onStateChange @state, prev
+      return
+    stop: ->
+      prev = @state
+      @state = "paused"
+      if prev != @state
+        @onStateChange @state, prev
+      return
+    onStateChange: (state, prev) ->
+      console.log "Playable::stateChange " + prev + " => " + state
+      return
+
   

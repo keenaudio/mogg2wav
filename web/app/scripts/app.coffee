@@ -50,7 +50,6 @@ define [
           if e.lengthComputable
             percentComplete = e.loaded / e.total
           else
-            
             # TODO
             percentComplete = 0
           progressCallback percentComplete, e.loaded, e.total  if progressCallback
@@ -85,8 +84,14 @@ define [
         $rootScope.project = project
         appSvc.clearAudio()
         mixer = $rootScope.mixer
-        _.each project.tracks, (track) ->
-          mixer.createTrack()
+        _.each project.tracks, (trackData) ->
+          track = mixer.createTrack()
+          _.each project.sets, (set) ->
+            sampleData = set.getSample(track.id)
+            if sampleData
+              sample = audio.createSample(sampleData)
+              clip = new audio.Clip(sample, track)
+              track.addClip(clip, set.id)
           return
 
         return
@@ -96,10 +101,11 @@ define [
         scheduler = $rootScope.scheduler
         mixer = $rootScope.mixer
         _.each mixer.tracks, (track) ->
-          sampleData = set.getSample(track.id)
-          if sampleData
-            sample = audio.createSample(sampleData)
-            scheduler.addItem sample, track, 0
+          clip = track.getClip(set.id)
+          if clip
+            #sample = audio.createSample(sampleData)
+            #clip = new audio.Clip(sample, track)
+            scheduler.addClip clip, 0
           return
 
         scheduler.play()

@@ -4,8 +4,8 @@ define ["audio/playable", "assert"], (Playable, assert) ->
     constructor: (@audioContext) ->
       super()
       @items = []
-      @activeSources = []
-      @samplesToLoad = 0
+      @activeItems = []
+      @clipsToLoad = 0
       return
 
   AudioScheduler::clearAll = ->
@@ -13,74 +13,70 @@ define ["audio/playable", "assert"], (Playable, assert) ->
     @activeSources = []
     return
 
-  AudioScheduler::addItem = (sample, track, startTime) ->
-    assert sample and track #@strip
+  AudioScheduler::addClip = (clip, startTime) ->
+    assert clip #@strip
     item =
-      sample: sample
-      track: track
+      clip: clip
       startTime: startTime
-      loaded: false
-      source: `undefined`
 
     @items.push item
     item.id = @items.length - 1
-    item
+    return item
 
-  AudioScheduler::play = ->
-    if @samplesToLoad
-      console.log "AudioScheduler: cannot play beause waiting for samples"
+  AudioScheduler::onStateChange = (state, prev) ->
+    super(state, prev)
+    if state == 'playing'
+      @playAll()
+    else
+      @stopAll()
+
+  AudioScheduler::playAll = () ->
+    console.log "playAll"
+    if @clipsToLoad
+      console.log "AudioScheduler: cannot play beause waiting for clips to load"
       return
     currentTime = @audioContext.currentTime
     console.log "AudioScheduler: play(): " + currentTime
-    @samplesToLoad = 0
+    @clipsToLoad = 0
     that = this
     @items.forEach (item) ->
-      if item.startTime <= currentTime and item.loaded is false
-        that.samplesToLoad++
-        sample = item.sample
-        track = item.track
-        assert sample and track #@strip
-        sample.load (err) ->
-          that.samplesToLoad--
-          item.loaded = true
+      if item.startTime <= currentTime and item.clip.loaded is false
+        that.clipsToLoad++
+        clip = item.clip
+        clip.load (err) ->
+          that.clipsToLoad--
+          assert clip.loaded #@strip
           if err
-            console.error "Error loading sample: " + sample.url + " : " + err
+            console.error "Error loading clip: " + clip.sample.url + " : " + err
           else
-            source = that.audioContext.createBufferSource()
-            dest = track.nodes.input
-            source.connect dest
-            source.buffer = sample.buffer
-            
-            #push source node and the scheduled start time of the sample
-            that.activeSources.push
-              source: source
-              startTime: item.startTime
-              item: item
+            assert clip.source #@strip
+            that.activeItems.push item
 
-          
           # source.start(startTime);
-          that.play()  if that.samplesToLoad is 0
+          that.playAll() if that.clipsToLoad is 0
           return
 
       return
 
-    if @samplesToLoad
-      console.log "AudioScheduler: returning from play waiting for samples"
+    if @clipsToLoad
+      console.log "AudioScheduler: returning from play waiting for " + @clipsToLoad + " clips to load"
       return
+
     console.log "AudioScheduler: playing all activeSources at currentTime"
     currentTime = @audioContext.currentTime
-    @activeSources.forEach (element, index) ->
+    @activeItems.forEach (item, index) ->
       
       #var percent = (current16thNote-element.sourceStartBar) / (element.sourceNode.buffer.duration/(secondsPerBeat*0.25));
       #element.sourceNode.start(element.sourceNode.buffer.duration * percent);
-      element.source.start currentTime
+      item.clip.play currentTime
       return
 
     return
 
   AudioScheduler::stopAll = ->
-    @activeSources.forEach (element) ->
-      element.source.stop 0
+    console.log "stopAll"
+    @activeItems.forEach (item) ->
+      item.stop
       return
 
     return

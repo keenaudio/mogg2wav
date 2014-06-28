@@ -90,6 +90,7 @@ require [
     "components/play_clip/play_clip"
     "components/set/set"
     "components/vu_meter/vu_meter"
+    "components/track_header/track_header"
 
   ], () ->
 

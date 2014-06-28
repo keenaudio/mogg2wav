@@ -1,34 +1,44 @@
-define () ->
-  AudioSample = (audioContext, props) ->
-    @audioContext = audioContext
-    @props = props
-    @url = props.url
-    @duration = props.duration
-    return
+define ['audio/loadable', 'merge'], (Loadable, merge) ->
+  class Sample extends Loadable
+    constructor: (audioContext, props) ->
+      super()
+      @audioContext = audioContext
+      merge this, props
+      return
 
-  AudioSample::load = loadAudioSample = (cb) ->
+  Sample::load = loadAudioSample = (cb) ->
     if @buffer
       cb()
       return
-    xhr = new XMLHttpRequest()
-    xhr.open "GET", @url, true
-    xhr.responseType = "arraybuffer"
+
     that = this
-    xhr.addEventListener "load", ((e) ->
-      that.audioContext.decodeAudioData e.target.response, ((buffer) ->
+    @loadBuffer @url, (buffer)->
+      that.audioContext.decodeAudioData buffer, ((buffer) ->
         that.setBuffer buffer
         cb()  if cb
         return
       ), cb
       return
-    ), false
-    xhr.send()
+
+    # xhr = new XMLHttpRequest()
+    # xhr.open "GET", @url, true
+    # xhr.responseType = "arraybuffer"
+    # that = this
+    # xhr.addEventListener "load", ((e) ->
+    #   that.audioContext.decodeAudioData e.target.response, ((buffer) ->
+    #     that.setBuffer buffer
+    #     cb()  if cb
+    #     return
+    #   ), cb
+    #   return
+    # ), false
+    # xhr.send()
     return
 
-  AudioSample::setBuffer = (buffer) ->
+  Sample::setBuffer = (buffer) ->
     @buffer = buffer
     return
 
   
   # export
-  return AudioSample
+  return Sample

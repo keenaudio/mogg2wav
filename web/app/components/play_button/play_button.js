@@ -1,10 +1,11 @@
-define(['angular', 'ng'], function(angular, NG) {
+define(['angular', 'ng', 'assert'], function(angular, NG, assert) {
   angular.module("keenaudio").directive("kPlayButton", function(app) {
     return {
       restrict: 'A',
       templateUrl: 'components/play_button/play_button.jade',
       scope: {
-        model: '='
+        playable: '=',
+        loadable: '='
       },
       link:function ($scope, $elem, attr) {
         NG.attachScopeToElem($scope, $elem);
@@ -37,22 +38,53 @@ define(['angular', 'ng'], function(angular, NG) {
 
         // }
 
+        $scope.state = 'init';
+
+        function updateState() {
+          var prev = $scope.state;
+          if (loading()) {
+            $scope.state = 'loading';
+          } else {
+            $scope.state = $scope.playable ? $scope.playable.state : 'empty';
+          }
+          console.log("playButton: state " + prev + " => " + $scope.state);
+        }
+
+        function loading() {
+          var loadable = $scope.loadable;
+          if (!loadable) return false;
+          return loadable.loading;
+        }
+
+        function loaded() {
+          var loadable = $scope.loadable;
+          if (!loadable) return true;
+          return loadable.loaded;
+        }
+
+        function play() {
+          var playable = $scope.playable;
+          assert(playable, "need a playable object");
+          playable.play();
+        }
+
         $scope.onClick = function() {
-          if (!$scope.model.state === 'loading') {
+          if (loading()) {
             return;
           }
 
+          if (!loaded()) {
+            console.log("play button: Loading clip and then playing");
+            $scope.loadable.load(play);
+            return;
+          }
           // if (!$scope.loaded) {
           //   $scope.state = 'loading';
           //   loadAudio();
           //   return;
           // }
 
-          if ($scope.model.state === "paused") {
-            $scope.model.state = "playing";
-          } else {
-            $scope.model.state = "paused";
-          }
+          play();
         }
 
         // $scope.$watch('url', function(url) {
@@ -62,20 +94,9 @@ define(['angular', 'ng'], function(angular, NG) {
         //   }
         // });
 
-        $scope.$watch('model.state', function(state) {
-          if (!state) return;
-          if (!$scope.model.audio) return;
-          var audio = $scope.model.audio;
-          if (state === 'playing') {
-            if (audio.isPaused()) {
-              audio.play();
-            }
-          } else if (state === 'paused') {
-            if (!audio.isPaused()) {
-              audio.pause();
-            }
-          }
-        });
+        $scope.$watch('playable.state', updateState);
+        $scope.$watch('loadable.loading', updateState);
+
       }
     };
   });

@@ -7,8 +7,8 @@ div.project.relative.h100p
             div(k-track-header='', track='track')
 
         .grid-row(ng-repeat='set in project.sets')
-            .grid-cell(ng-repeat='track in project.tracks')
-              div.h100p(k-play-clip='', clip='set.getSample(track.id)')
+            .grid-cell(ng-repeat='track in mixer.tracks')
+              div.h100p(k-play-clip='', clip='track.getClip(set.id)')
         //.track-mixer-spacer
         .project-sets.absolute
           .grid-row.spacer

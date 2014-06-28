@@ -1,10 +1,12 @@
 define [
   "audio/playable"
+  "audio/loadable"
   "audio/sample"
   "audio/track"
+  "audio/clip"
   "audio/mixer"
   "audio/scheduler"
-], (Playable, Sample, Track, Mixer, Scheduler)->
+], (Playable, Loadable, Sample, Track, Clip, Mixer, Scheduler)->
   ac = new (window.AudioContext or window.webkitAudioContext)
   audio =
     context: ->
@@ -19,7 +21,7 @@ define [
     createScheduler: ->
       new Scheduler(ac)
 
-    Playable: 
-      Playable
+    Playable: Playable
+    Clip: Clip
 
   return audio

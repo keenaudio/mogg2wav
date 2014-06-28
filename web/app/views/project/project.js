@@ -12,12 +12,8 @@ define(['angular', 'ng'], function(angular, NG) {
 
         $scope.$watch('project', function(project) {
           if (!project) return;
-
-
           var mixer = app.getMixer();
           var scheduler = app.getScheduler();
-
-
           $scope.mixer = mixer;
           $scope.scheduler = scheduler;
         });
@@ -38,6 +34,12 @@ define(['angular', 'ng'], function(angular, NG) {
           $trackMixer.css('bottom', -t);
 
         });
+
+
+        $scope.getClip = function(setId, trackId) {
+
+        }
+        
       }
     };
   });
