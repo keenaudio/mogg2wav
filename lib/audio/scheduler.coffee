@@ -49,7 +49,7 @@ define ["audio/playable", "assert"], (Playable, assert) ->
           if err
             console.error "Error loading clip: " + clip.sample.url + " : " + err
           else
-            assert clip.source #@strip
+            #assert clip.source #@strip
             that.activeItems.push item
 
           # source.start(startTime);

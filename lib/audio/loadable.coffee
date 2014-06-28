@@ -12,6 +12,9 @@ define [
       @loading = false
       return
     
+    isLoading: ->
+      return @loading
+
     load: (cb) ->
       assert false, "load is pure virtual"
 

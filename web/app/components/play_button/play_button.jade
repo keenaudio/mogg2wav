@@ -1,5 +1,6 @@
 .k-play-button
   .w100p(ng-switch="state", ng-click="onClick()")
+    i.glyphicon.glyphicon-play(ng-switch-when="stopped")
     i.glyphicon.glyphicon-play(ng-switch-when="paused")
     i.glyphicon.glyphicon-pause(ng-switch-when="playing")
     .w100p(ng-switch-when="loading")

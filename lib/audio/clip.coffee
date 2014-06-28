@@ -1,9 +1,13 @@
 define ['audio/playable', 'assert'], (Playable, assert) ->
+  _f = (msg) ->
+    "Clip: " + msg
+
   class Clip extends Playable
     constructor: (@sample, @track) ->
       super("Clip")
       @loaded = false
       @source = false
+      @startOffset = 0
       return
     load: (cb) ->
       @startLoading()
@@ -16,15 +20,7 @@ define ['audio/playable', 'assert'], (Playable, assert) ->
           console.error "Error loading sample: " + that.sample.url + " : " + err
         else
           console.log "Loaded clip sample: " + that.sample.url
-          track = that.track
-          sample = that.sample
-          ac = track.audioContext
-          source = ac.createBufferSource()
-          dest = track.nodes.input
-          source.connect dest
-          source.buffer = sample.buffer
-          that.source = source
-          that.loaded = true
+  
         cb err
         return
 
@@ -37,11 +33,32 @@ define ['audio/playable', 'assert'], (Playable, assert) ->
       return
 
     onStateChange: (state, prev) ->
+      console.log _f "onStateChange " + prev + " => " + state
       super(state, prev)
-      if state == 'playing'
+      ac = @track.audioContext
+      if state is 'playing'
         console.log "Starting audio source: " + @sample.url
-        @source.start @playTime
+        source = ac.createBufferSource()
+        dest = @track.nodes.input
+        source.connect dest
+        source.buffer = @sample.buffer
+        @source = source
+        offset = 0
+        if @startOffset
+          offset = @startOffset % source.buffer.duration
+          console.log "Starting with offst: " + offset + " (" + @startOffset + ")"
+
+        @playTime = ac.currentTime
+        @source.start 0, offset
       else
+
+        if prev is 'playing' && state is 'paused'
+          @startOffset += ac.currentTime - @playTime
+          console.log "Set startOffset: " + @startOffset + " ac.currentTime: " + ac.currentTime + " playTime: " + @playTime
+        else
+          @startOffset = 0
+          console.log "Resetting startOffset to 0"
+
         console.log "Stopping audio source: " + @sample.url
         @source.stop 0
       return

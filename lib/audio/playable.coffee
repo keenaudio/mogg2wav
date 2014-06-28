@@ -1,4 +1,4 @@
-define ["audio/loadable"], (Loadable) ->
+define ["assert", "audio/loadable"], (assert, Loadable) ->
   _f = (msg) ->
     "Playable: " + msg
 
@@ -12,23 +12,30 @@ define ["audio/loadable"], (Loadable) ->
       return @state == 'paused'
     isPlaying: ->
       return @state == 'playing'
-    isLoading: ->
-      return @state == 'loading'
-    play: (@playTime) ->
+    isStopped: ->
+      return @state == 'stopped'
+
+    play: () ->
       if @state == 'loading'
         console.log _f "cannot play/pause because state=loading"
         return
-
-      prev = @state
-      @state = (if (@state is "playing") then "paused" else "playing")
-      console.log _f "changing state " + prev + " => " + @state
-      @onStateChange @state, prev
+      if @state is "playing"
+        @pause()
+        return
+      @setState "playing"
+      return
+    pause: ->
+      assert @state is "playing"
+      @setState "paused"
       return
     stop: ->
+      @setState "stopped"
+      return
+    setState: (state) ->
       prev = @state
-      @state = "paused"
-      if prev != @state
-        @onStateChange @state, prev
+      @state = state
+      console.log _f "changing state " + prev + " => " + @state
+      @onStateChange @state, prev
       return
     onStateChange: (state, prev) ->
       console.log _f "onStateChange " + prev + " => " + state
