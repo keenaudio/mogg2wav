@@ -9,7 +9,7 @@ define(['angular', 'ng', 'audio'], function(angular, NG, audio) {
       link:function ($scope, $elem, attr) {
         NG.attachScopeToElem($scope, $elem);
 
-        $scope.playable = new audio.Playable();
+        $scope.playable = new audio.Playable("Set");
         $scope.$watch('playable.state', function(state, prev) {
           console.log('Set playable.state: ' + prev + ' => ' + state);
           if (state === 'playing') {
