@@ -47,6 +47,7 @@ define [
 
   Sample::setBuffer = (buffer) ->
     @buffer = buffer
+    @notifyChange "buffer", buffer
     return
 
   

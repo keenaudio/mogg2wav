@@ -6,11 +6,11 @@ define ["dispatcher"], (Dispatcher) ->
     constructor: (audioContext, masterGainNode) ->
       super("Track")
       ac = @audioContext = audioContext
-      trackMasterGainNode = ac.createGain()
+      trackOutputNode = ac.createGain()
       trackInputNode = ac.createGain()
       trackVolumeNode = ac.createGain()
-      trackMasterGainNode.connect masterGainNode
-      trackVolumeNode.connect trackMasterGainNode
+      #trackMasterGainNode.connect masterGainNode
+      trackVolumeNode.connect trackOutputNode
       trackInputNode.connect trackVolumeNode
       @nodes =
         gain: trackMasterGainNode
@@ -21,6 +21,7 @@ define ["dispatcher"], (Dispatcher) ->
 
       @solo = false
       @mute = false
+      @numChannels = 2
 
       return
     addClip: (clip, index) ->
@@ -49,6 +50,12 @@ define ["dispatcher"], (Dispatcher) ->
       # console.log _f "muteToggle, now: " + @mute + " gain: " + node.gain.value
       @notifyChange "mute", @mute, prev
       return
+
+    setNumChannels: (numChannels) ->
+      prev = @numChannels
+      @numChannels = numChannels
+      console.log _f("Changing numChannels %i => %i"), prev, @numChannels
+      @notifyChange "numChannels", @numChannels, prev
 
   # export
   return Track

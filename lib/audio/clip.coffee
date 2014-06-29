@@ -1,4 +1,4 @@
-define ['audio/playable', 'assert'], (Playable, assert) ->
+define ['assert', 'audio/playable'], (assert, Playable) ->
   _f = (msg) ->
     "Clip: " + msg
 
@@ -20,7 +20,10 @@ define ['audio/playable', 'assert'], (Playable, assert) ->
           console.error "Error loading sample: " + that.sample.url + " : " + err
         else
           console.log "Loaded clip sample: " + that.sample.url
-  
+          buffer = that.sample.buffer
+          assert buffer, "Sample has no buffer"
+          numChannels = buffer.numberOfChannels
+          that.track.setNumChannels numChannels
         cb err
         return
 
