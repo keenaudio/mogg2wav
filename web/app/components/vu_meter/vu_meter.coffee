@@ -5,7 +5,10 @@ define [
   _f = (msg) ->
     "VUMeter: " + msg
 
+  WIDTH = 32
+  MARGIN = 4
   HEIGHT = 120
+  MAX = 128
   angular.module("keenaudio").directive "kVuMeter", ($http, $routeParams) ->
     restrict: "A"
     scope:
@@ -27,8 +30,8 @@ define [
       ctx = canvas.getContext("2d")
       gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT)
       gradient.addColorStop 1, "#00ff00"
-      gradient.addColorStop 0.75, "#ffff00"
-      gradient.addColorStop 0.25, "#ff0000"
+      gradient.addColorStop 0.2, "#ffff00"
+      gradient.addColorStop 0.1, "#ff0000"
       gradient.addColorStop 0, "#ffffff"
 
 
@@ -87,16 +90,16 @@ define [
         average2 = getAverageVolume(array2)
         
         # clear the current state
-        ctx.clearRect 0, 0, 30, HEIGHT
+        ctx.clearRect 0, 0, WIDTH, HEIGHT
         
         # set the fill style
         ctx.fillStyle = gradient
         
         # create the meters
-        lh = HEIGHT * (average/256)
-        ctx.fillRect 0, HEIGHT - lh, 10, HEIGHT
-        rh = HEIGHT * (average2/256)
-        ctx.fillRect 15, HEIGHT - rh, 10, HEIGHT
+        lh = HEIGHT * (average/MAX)
+        ctx.fillRect MARGIN, HEIGHT - lh, 10, HEIGHT
+        rh = HEIGHT * (average2/MAX)
+        ctx.fillRect 10 + (2*MARGIN), HEIGHT - rh, 10, HEIGHT
 
 
         if average or average2 then console.log _f("Left: %d %d, Right: %d %d"), average, lh, average2, rh

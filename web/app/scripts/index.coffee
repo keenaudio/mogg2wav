@@ -98,6 +98,7 @@ require [
     "components/vu_meter/vu_meter"
     "components/track_header/track_header"
     "components/track_controls/track_controls"
+    "components/master_controls/master_controls"
   ], () ->
 
     # Load the config, then bootstrap the app

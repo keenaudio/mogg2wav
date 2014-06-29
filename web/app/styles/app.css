@@ -259,10 +259,23 @@ line-height: 50px;
   position: absolute;
   bottom: 10px;
   left: 5px;
-  border: 1px black solid;
+  border: 1px #333 solid;
+  background: #000;
 }
 .vu-meter-canvas {
-  width: 30px;
+  width: 32px;
   height: 120px;
 
+}
+
+.btn-solo {
+  background: #777;
+  color: #333;
+  border-color: #777;
+}
+
+.btn-solo.active {
+  background: #ffff00;
+  border-color: #ffff00;
+  color: #000;
 }

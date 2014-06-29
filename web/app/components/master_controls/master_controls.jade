@@ -1,0 +1,8 @@
+div.btn-group.btn-group-sm
+  label.btn.btn-solo(
+    ng-click='mixer.clearSolo()'
+    ng-class='{ active: mixer.soloActive }'
+    ng-disabled='!mixer.soloActive'
+  ) Clear Solo
+div.center(k-fader='', gain-node='mixer.nodes.masterGain')
+strong Master
