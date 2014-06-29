@@ -4,7 +4,7 @@ define(['angular', 'ng'], function(angular, NG) {
       restrict: 'A',
       scope: {
         track: '=',
-        gainNode: '='
+        node: '='
       },
       templateUrl: 'components/fader/fader.jade',
       link:function ($scope, $elem, attr) {

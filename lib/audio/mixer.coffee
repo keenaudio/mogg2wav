@@ -1,25 +1,34 @@
 define [
   "audio/track"
 ], (Track) ->
-  AudioMixer = (audioContext) ->
-    @audioContext = audioContext
-    @tracks = []
-    @samples = []
-    @activeSources = []
-    @buffers = []
-    masterGainNode = audioContext.createGain()
-    masterGainNode.gain.value = .8
-    masterGainNode.connect audioContext.destination
-    @nodes =
-      masterGain: masterGainNode
-      trackGain: []
-      trackVolume: []
-      trackInput: []
+  _f = (msg) ->
+    "Mixer: " + msg
 
-    return
+  class AudioMixer
+    constructor: (@audioContext) ->
+      @tracks = []
+      @samples = []
+      @activeSources = []
+      @buffers = []
+      masterGainNode = audioContext.createGain()
+      masterGainNode.gain.value = .8
+      masterGainNode.connect audioContext.destination
+      @nodes =
+        masterGain: masterGainNode
+        trackGain: []
+        trackVolume: []
+        trackInput: []
+
+      return
 
   AudioMixer::createTrack = ->
     track = new Track(@audioContext, @nodes.masterGain)
+    track.addHandler "change", (prop, val, last) ->
+      console.log _f("Track %i change: %s : %s => %s"), track.id, prop, last, val
+      if prop is "mute"
+        node = track.nodes.gain
+        node.gain.value = if val then 0 else 1
+        console.log _f("Track %i mute: %s, gain %i"), track.id, track.mute, node.gain.value
     nodes = @nodes
     nodes.trackGain.push
       node: track.nodes.gain

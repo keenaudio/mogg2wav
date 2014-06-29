@@ -17,9 +17,10 @@ div.project.relative.h100p
               div.h100p(k-set='', set='set')
 
         .track-mixer.grid-row
-          .grid-cell.center(ng-repeat='track in mixer.tracks')
+          .grid-cell.center.relative(ng-repeat='track in mixer.tracks')
             div(k-track-controls='', track='track')
-            div.center(k-fader='', track='track', gain-node='track.nodes.gain')
+            div.center(k-fader='', track='track', node='track.nodes.volume')
+            div.vu-meter(k-vu-meter='', node='track.nodes.gain')
             strong {{ track.name }}
 
 

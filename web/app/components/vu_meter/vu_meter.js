@@ -3,7 +3,7 @@ define(['angular', 'ng'], function(angular, NG) {
     return {
       restrict: 'A',
       scope: {
-        gainNode: '='
+        node: '='
       },
       templateUrl: 'components/vu_meter/vu_meter.jade',
       link:function ($scope, $elem, attr) {
@@ -108,7 +108,7 @@ define(['angular', 'ng'], function(angular, NG) {
             return average;
         }
 
-        $scope.$watch('gainNode', function(gainNode) {
+        $scope.$watch('node', function(gainNode) {
           if (!gainNode) return;
 
           setupAudioNodes(gainNode);

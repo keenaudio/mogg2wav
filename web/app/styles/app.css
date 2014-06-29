@@ -121,6 +121,10 @@ overflow: hidden;
   overflow: hidden;
 }
 
+.track-list > .scroll-container {
+  height: 100%;
+}
+
 .corner-controls,
 .master-mixer {
   width: 160px;
@@ -220,8 +224,8 @@ line-height: 50px;
 }
 
 .project-grid {
-  margin-bottom: -200px;
-}
+/*  margin-bottom: -200px;
+*/}
 
 .play-set > table {
   background: transparent;
@@ -249,4 +253,10 @@ line-height: 50px;
 .clip-border > table {
   background: transparent !important;
   margin-top: 5px;
+}
+
+.vu-meter {
+  position: absolute;
+  top: 0px;
+  border: 1px black solid;
 }

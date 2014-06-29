@@ -1,9 +1,10 @@
-define () ->
+define ["dispatcher"], (Dispatcher) ->
   _f = (msg) ->
     "Track: " + msg
 
-  class Track
+  class Track extends Dispatcher
     constructor: (audioContext, masterGainNode) ->
+      super("Track")
       ac = @audioContext = audioContext
       trackMasterGainNode = ac.createGain()
       trackInputNode = ac.createGain()
@@ -32,16 +33,21 @@ define () ->
       #console.log "Getting clip at index " + index + " : " + clip
       return clip
 
-    soloToggle: (event) ->
-      console.log _f "soloToggle"
-      @solo = !@solo
+    soloToggle: () ->
+      console.log _f "soloToggle, was: " + @solo
+      prev = @solo
+      @solo = not @solo
+      @notifyChange "solo", @solo, prev
       return
 
-    muteToggle: (event) ->
-      console.log _f "muteToggle"
-      @mute = !@mute
-      node = @nodes.gain
-      node.gain.value = @mute ? 0 : 1 
+    muteToggle: () ->
+      console.log _f "muteToggle, was: " + @mute
+      prev = @mute
+      @mute = not @mute
+      # node = @nodes.gain
+      # node.gain.value = if @mute then 0 else 1
+      # console.log _f "muteToggle, now: " + @mute + " gain: " + node.gain.value
+      @notifyChange "mute", @mute, prev
       return
 
   # export
