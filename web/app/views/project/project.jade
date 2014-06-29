@@ -17,12 +17,8 @@ div.project.relative.h100p
               div.h100p(k-set='', set='set')
 
         .track-mixer.grid-row
-          .grid-cell.center(ng-repeat='track in project.tracks')
-            div.btn-group.btn-group-sm
-              button.btn.btn-default
-                i.glyphicon.glyphicon-headphones
-              button.btn.btn-default
-                i.glyphicon.glyphicon-volume-off
+          .grid-cell.center(ng-repeat='track in mixer.tracks')
+            div(k-track-controls='', track='track')
             div.center(k-fader='', track='track', gain-node='track.nodes.gain')
             strong {{ track.name }}
 

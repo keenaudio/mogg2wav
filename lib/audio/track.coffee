@@ -1,4 +1,7 @@
 define () ->
+  _f = (msg) ->
+    "Track: " + msg
+
   class Track
     constructor: (audioContext, masterGainNode) ->
       ac = @audioContext = audioContext
@@ -14,6 +17,10 @@ define () ->
         input: trackInputNode
 
       @clips = []
+
+      @solo = false
+      @mute = false
+
       return
     addClip: (clip, index) ->
       console.log "Adding clip " + clip + " at index " + index
@@ -24,6 +31,18 @@ define () ->
       clip = @clips[index]
       #console.log "Getting clip at index " + index + " : " + clip
       return clip
+
+    soloToggle: (event) ->
+      console.log _f "soloToggle"
+      @solo = !@solo
+      return
+
+    muteToggle: (event) ->
+      console.log _f "muteToggle"
+      @mute = !@mute
+      node = @nodes.gain
+      node.gain.value = @mute ? 0 : 1 
+      return
 
   # export
   return Track

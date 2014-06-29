@@ -20,6 +20,7 @@ require.config
     ]
     jqueryUI: "/bower_components/jquery-ui/ui/jquery-ui"
     underscore: "/bower_components/underscore/underscore"
+    bootstrap: "/bower_components/bootstrap/dist/js/bootstrap"
     angular: [
      # "//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min"
       "/bower_components/angular/angular"
@@ -31,6 +32,9 @@ require.config
     angularUISlider: "/bower_components/angular-ui-slider/src/slider"
 
   shim:
+    bootstrap:
+      deps: ["jqueryUI"]
+
     angular:
       deps: ["jquery"]
       exports: "angular"
@@ -58,6 +62,7 @@ require.config
         "jquery"
         "jqueryUI"
         "underscore"
+        "bootstrap"
         "angular"
         "angularRoute"
         "angularUISlider"
@@ -92,7 +97,7 @@ require [
     "components/set/set"
     "components/vu_meter/vu_meter"
     "components/track_header/track_header"
-
+    "components/track_controls/track_controls"
   ], () ->
 
     # Load the config, then bootstrap the app
