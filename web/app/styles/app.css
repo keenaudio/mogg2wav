@@ -181,6 +181,8 @@ line-height: 50px;
   background: #ccc;
   color: #000;
   z-index: 2;
+  overflow: visible;
+  width: auto;
 }
 
 .set-controls {
@@ -224,8 +226,9 @@ line-height: 50px;
 }
 
 .project-grid {
-/*  margin-bottom: -200px;
-*/}
+  width: auto;
+  overflow: visible;
+}
 
 .play-set > table {
   background: transparent;
