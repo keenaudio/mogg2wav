@@ -99,6 +99,7 @@ require [
     "components/track_header/track_header"
     "components/track_controls/track_controls"
     "components/master_controls/master_controls"
+    "components/panner/panner"
   ], () ->
 
     # Load the config, then bootstrap the app

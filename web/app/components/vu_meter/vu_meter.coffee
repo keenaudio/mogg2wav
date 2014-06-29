@@ -35,6 +35,13 @@ define [
       gradient.addColorStop 0, "#ffffff"
 
 
+      timeout  = false
+
+      clearRect = () ->
+        console.log "clearRect"
+        # clear the current state
+        ctx.clearRect 0, 0, WIDTH, HEIGHT
+
       # create a gradient for the fill. Note the strange
       # offset, since the gradient is calculated based on
       # the canvas, not the specific element we draw
@@ -103,6 +110,8 @@ define [
 
 
         if average or average2 then console.log _f("Left: %d %d, Right: %d %d"), average, lh, average2, rh
+        #clearTimeout timeout if timeout
+        #timeout = setTimeout clearRect, 100
         return
       getAverageVolume = (array) ->
         values = 0
@@ -119,7 +128,9 @@ define [
         return average
 
       $scope.$watch "node", (gainNode) ->
-        return  unless gainNode
+        if !gainNode
+          clearRect()
+          return
         setupAudioNodes gainNode
         return
 

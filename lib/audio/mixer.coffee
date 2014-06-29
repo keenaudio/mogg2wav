@@ -1,7 +1,8 @@
 define [
   "dispatcher"
   "audio/track"
-], (Dispatcher, Track) ->
+  "audio/panner"
+], (Dispatcher, Track, Panner) ->
   _f = (msg) ->
     "Mixer: " + msg
 
@@ -9,6 +10,7 @@ define [
     constructor: (@audioContext) ->
       super("AudioMixer")
       @tracks = []
+      @panners = []
       @samples = []
       @activeSources = []
       @buffers = []
@@ -35,33 +37,38 @@ define [
       @notifyChange "soloActive", @soloActive, prev if prev isnt @soloActive
       return
 
-  AudioMixer::createTrack = ->
-    track = new Track(@audioContext, @nodes.masterGain)
+    createTrack: () ->
+      track = new Track(@audioContext, @nodes.masterGain)
 
-    that = this
-    track.addHandler "change", (prop, val, last) ->
-      console.log _f("Track %i change: %s : %s => %s"), track.id, prop, last, val
-      if prop is "mute"
-        node = track.nodes.gain
-        node.gain.value = if val then 0 else 1
-        console.log _f("Track %i mute: %s, gain %i"), track.id, track.mute, node.gain.value
-      else if prop is "solo"
-        that.updateSolo()
+      that = this
+      track.addHandler "change", (prop, val, last) ->
+        console.log _f("Track %i change: %s : %s => %s"), track.id, prop, last, val
+        if prop is "mute"
+          node = track.nodes.gain
+          node.gain.value = if val then 0 else 1
+          console.log _f("Track %i mute: %s, gain %i"), track.id, track.mute, node.gain.value
+        else if prop is "solo"
+          that.updateSolo()
 
-    nodes = @nodes
-    nodes.trackGain.push
-      node: track.nodes.gain
-      isMuted: false
-      isSolo: false
+      nodes = @nodes
+      nodes.trackGain.push
+        node: track.nodes.gain
+        isMuted: false
+        isSolo: false
 
-    nodes.trackVolume.push track.nodes.volume
-    nodes.trackInput.push track.nodes.input
-    @tracks.push track
-    track.id = @tracks.length - 1
-    track
+      nodes.trackVolume.push track.nodes.volume
+      nodes.trackInput.push track.nodes.input
+      @tracks.push track
+      track.id = @tracks.length - 1
 
-  AudioMixer::getTrack = (id) ->
-    @tracks[id]
+      panner = new Panner(track.nodes.output)
+      panner.nodes.output.connect @nodes.masterGain
+      @panners.push(panner)
+      panner.id = @panners.length - 1
+      return track
+
+    getTrack: (id) ->
+      @tracks[id]
 
   
   # export
