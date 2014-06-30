@@ -27,6 +27,7 @@ define [
       return
     clearSolo: ->
       track.soloToggle() for track in @tracks when track.solo
+      @updateSolo()
       return
 
     updateSolo: () ->
@@ -35,6 +36,15 @@ define [
       prev = @soloActive
       @soloActive = soloTracks.length > 0
       @notifyChange "soloActive", @soloActive, prev if prev isnt @soloActive
+      
+      if @soloActive
+        console.log _f("Updating tracks following solo Rules")
+        for track in @tracks
+          track.nodes.output.gain.value = if track.solo then 1 else 0
+      else
+        for track in @tracks
+          console.log _f("Updating tracks following regular Rules")
+          track.nodes.output.gain.value = if track.mute then 0 else 1
       return
 
     createTrack: () ->

@@ -1,0 +1,1 @@
+launchctl limit maxfiles 900000 900000

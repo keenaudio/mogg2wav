@@ -86,6 +86,7 @@ require [
 ], (angular, app) ->
   
   require [
+    "directives/sortable"
     "views/main/main"
     "views/als/als"
     "views/folders/folders"
@@ -100,6 +101,7 @@ require [
     "components/track_controls/track_controls"
     "components/master_controls/master_controls"
     "components/panner/panner"
+    "components/track_mixer/track_mixer"
   ], () ->
 
     # Load the config, then bootstrap the app

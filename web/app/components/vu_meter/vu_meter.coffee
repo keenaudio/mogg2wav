@@ -109,7 +109,7 @@ define [
         ctx.fillRect 10 + (2*MARGIN), HEIGHT - rh, 10, HEIGHT
 
 
-        if average or average2 then console.log _f("Left: %d %d, Right: %d %d"), average, lh, average2, rh
+        #if average or average2 then console.log _f("Left: %d %d, Right: %d %d"), average, lh, average2, rh
         #clearTimeout timeout if timeout
         #timeout = setTimeout clearRect, 100
         return

@@ -9,6 +9,12 @@ define [
     "[" + _ls + "] " + msg
 
   
+  hathBroken = false
+  window["onerror"] = ()->
+    debugger if !hathBroken
+    hathBroken = true
+    return
+
   #@end
   locals = {}
   

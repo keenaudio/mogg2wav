@@ -377,14 +377,15 @@ function livereload() {
 
 gulp.task('watch', function(cb) {
 
-  gulp.watch('{lib,server,web}/**/*.coffee', ['coffee']);
-  gulp.watch("web/app/**/*.jade", ["app-templates"]); // recompile jade templates to JS on file save
+  gulp.watch('{lib,server,web}/**/*.coffee', { mode: 'poll'}, ['coffee']);
+  gulp.watch("web/app/**/*.jade", { mode: 'poll'}, ["app-templates"]); // recompile jade templates to JS on file save
 
   var lr = livereload();
   $.watch({ 
       glob: "{web,.tmp,lib,static}/**/*", 
       emitOnGlob: false, 
-      emit: "all" 
+      emit: "all",
+      gaze: { mode: 'poll'}
     })
     .pipe(lr);
 });
