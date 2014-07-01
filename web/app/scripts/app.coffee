@@ -18,7 +18,7 @@ define [
   #@end
   locals = {}
   
-  # Define the global app instance.
+  # Define the app instance.
   app = angular.module("keenaudio", [ # Module dependencies
     "ngRoute"
     "ui.slider"

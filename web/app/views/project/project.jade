@@ -2,28 +2,23 @@ div.project.relative.h100p
   .track-list
     .scroll-container.relative
       .project-grid.scroll-content
-        .grid-row.relative.track-headers
-          .grid-cell.center(ng-repeat='(index, track) in project.tracks')
+        .track-headers.grid-row
+          .grid-cell.short(ng-repeat='(index, track) in project.tracks')
             div(k-track-header='', track='track')
-
-        .grid-row(ng-repeat='set in project.sets')
-            .grid-cell(ng-repeat='track in mixer.tracks')
-              div.h100p(k-play-clip='', clip='track.getClip(set.id)')
-        //.track-mixer-spacer
-        .project-sets.absolute
-          .grid-row.spacer
-          .grid-row(ng-repeat='set in project.sets')
-           .grid-cell.set-label
+        .track-clips.grid-row(ng-repeat='set in project.sets')
+          .grid-cell(ng-repeat='track in mixer.tracks')
+            div.h100p(k-play-clip='', clip='track.getClip(set.id)')
+        .set-labels.grid-row
+           .grid-cell(ng-repeat='set in project.sets')
               div.h100p(k-set='', set='set')
-
-        .track-mixer.grid-row
-          .grid-cell.center.relative(ng-repeat='track in mixer.tracks', k-track-mixer='')
+        .track-mixers.grid-row
+          .grid-cell.tall(ng-repeat='track in mixer.tracks', k-track-mixer='')
 
   .corner-controls.grid-row
-    .grid-cell
+    .grid-cell.short
        button.btn.btn-primary(ng-click='addTrack()', type='button') [+] Add Track
 
   .master-mixer.grid-row
-    .grid-cell.center
+    .grid-cell.tall
       div(k-master-controls='')
 

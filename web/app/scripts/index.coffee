@@ -6,6 +6,7 @@ require.config
     formats: "/lib/formats"
     views: "../views"
     components: "../components"
+    directives: "../directives"
     appTemplates: "app-templates"
     lib: "/lib"
     merge: "/lib/common/merge"

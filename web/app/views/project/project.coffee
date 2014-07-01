@@ -18,10 +18,12 @@ define [
         $scope.scheduler = scheduler
         return
 
-      $sets = $elem.find(".project-sets")
+      $sets = $elem.find(".set-labels")
       $trackHeaders = $elem.find(".track-headers")
-      $trackMixer = $elem.find(".track-mixer")
+      $trackMixer = $elem.find(".track-mixers")
       $scrollContainer = $elem.find(".scroll-container")
+      $scrollContent = $elem.find(".scroll-content")
+
       $scrollContainer.scroll (e) ->
         console.log "scroll: " + $scrollContainer.scrollLeft() + " , " + $scrollContainer.scrollTop()
         l = $scrollContainer.scrollLeft()
@@ -32,9 +34,11 @@ define [
         #$sets.css('top', -t);
         #$trackMixer.css('left', -l);
         $trackMixer.css "bottom", -t
-        return
+        return false
 
-      $scope.getClip = (setId, trackId) ->
+      $scope.$watch "project.tracks.length", (numTracks) ->
+        console.log "Rendering for " + numTracks + " tracks"
+        $scrollContent.width(numTracks * 160);
 
       return
 

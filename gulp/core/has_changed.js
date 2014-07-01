@@ -27,10 +27,10 @@ module.exports = function($) {
         var stream = this;
         fs.stat(targetPath, function (err, targetStat) {
             if (err && err.code === 'ENOENT') {
-              $.util.log("Processing NEW track: " + folder);
+              $.util.log("Processing NEW source: " + folder);
               stream.push(sourceFile);
             } else if (sourceFile.stat.mtime > targetStat.mtime) {
-              $.util.log("Processing NEWER track: " + folder);
+              $.util.log("Processing NEWER source: " + folder);
               stream.push(sourceFile);
             } else {
               $.util.log("NOT changed: " + filename);

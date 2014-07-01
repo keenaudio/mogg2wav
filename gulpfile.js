@@ -356,7 +356,25 @@ gulp.task("app-templates", function() {
 gulp.task('coffee', function() {
 
   var src = gulp.src('{lib,server,web}/**/*.coffee')
-    .pipe($.changed('.tmp'))
+    .pipe($.changed('.tmp', { 
+      extension: ".js",
+      hasChanged: function(stream, cb, sourceFile, targetPath) {
+
+        fs.stat(targetPath, function (err, targetStat) {
+            if (err && err.code === 'ENOENT') {
+              $.util.log("Processing NEW source: " + sourceFile.relative);
+              stream.push(sourceFile);
+            } else if (sourceFile.stat.mtime > targetStat.mtime) {
+              $.util.log("Processing NEWER source: " + sourceFile.relative);
+              stream.push(sourceFile);
+            } else {
+              //$.util.log("NO change needed: " + sourceFile.relative);
+            }
+            cb();
+        });
+
+      }
+    }))
     .pipe($.sourcemaps.init())
       .pipe($.coffee({ bare: true }).on('error', $.util.log))
     .pipe($.sourcemaps.write({ sourceRoot: './' }))
@@ -381,13 +399,17 @@ gulp.task('watch', function(cb) {
   gulp.watch("web/app/**/*.jade", { mode: 'poll'}, ["app-templates"]); // recompile jade templates to JS on file save
 
   var lr = livereload();
-  $.watch({ 
-      glob: "{web,.tmp,lib,static}/**/*", 
-      emitOnGlob: false, 
-      emit: "all",
-      gaze: { mode: 'poll'}
-    })
-    .pipe(lr);
+  gulp.watch("{web,.tmp,lib,static}/**/*.!{jade,coffee}", { 
+      // glob: , 
+      // emitOnGlob: false, 
+      // emit: "all",
+     // mode: 'poll'
+    }, function(event) {
+      $.util.log('WATCH CHANGE: ' + event.type + ' ' + event.path);
+
+    });
+
+    //.pipe(lr);
 });
 
 gulp.task('build', function(cb) {
