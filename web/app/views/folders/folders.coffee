@@ -35,6 +35,8 @@ define ["angular", "ng", "formats"], (angular, NG, formats) ->
           return
 
         project.addSet set
+        project.addSet new formats.Project.Set("Empty 1", "wav")
+        
         $scope.project = project
         app.setProject project
         return

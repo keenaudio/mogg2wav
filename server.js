@@ -162,7 +162,7 @@ if (DEV) {
 var api = require('./server/api')(config);
 
 app.use(function(req, res, next) {
-  console.log(_f("START REQUEST: " + req.url));
+  //console.log(_f("START REQUEST: " + req.url));
   next();
 });
 

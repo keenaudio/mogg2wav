@@ -39,6 +39,25 @@ $.mkdirs = function(dirs) {
   return $.shell.task(cmds);
 }
 
+// hasChanged callback handler for gulp-changed
+// Build if source is newer or if target does not exist
+$.needBuild = function(stream, cb, sourceFile, targetPath) {
+
+  fs.stat(targetPath, function (err, targetStat) {
+      if (err && err.code === 'ENOENT') {
+        $.util.log("Processing NEW source: " + sourceFile.relative);
+        stream.push(sourceFile);
+      } else if (sourceFile.stat.mtime > targetStat.mtime) {
+        $.util.log("Processing NEWER source: " + sourceFile.relative);
+        stream.push(sourceFile);
+      } else {
+        //$.util.log("NO change needed: " + sourceFile.relative);
+      }
+      cb();
+  });
+
+}
+
 // More advanced helpers
 var myHelpers = require('./gulp')($);
 $.merge($,  myHelpers); // Load gulp helpers
@@ -355,25 +374,10 @@ gulp.task("app-templates", function() {
 
 gulp.task('coffee', function() {
 
-  var src = gulp.src('{lib,server,web}/**/*.coffee')
+  return gulp.src('{lib,server,web}/**/*.coffee')
     .pipe($.changed('.tmp', { 
       extension: ".js",
-      hasChanged: function(stream, cb, sourceFile, targetPath) {
-
-        fs.stat(targetPath, function (err, targetStat) {
-            if (err && err.code === 'ENOENT') {
-              $.util.log("Processing NEW source: " + sourceFile.relative);
-              stream.push(sourceFile);
-            } else if (sourceFile.stat.mtime > targetStat.mtime) {
-              $.util.log("Processing NEWER source: " + sourceFile.relative);
-              stream.push(sourceFile);
-            } else {
-              //$.util.log("NO change needed: " + sourceFile.relative);
-            }
-            cb();
-        });
-
-      }
+      hasChanged: $.needBuild
     }))
     .pipe($.sourcemaps.init())
       .pipe($.coffee({ bare: true }).on('error', $.util.log))
@@ -381,6 +385,21 @@ gulp.task('coffee', function() {
     .pipe(gulp.dest('.tmp'));
 
 });
+
+gulp.task('less', function() {
+
+  return gulp.src('{lib,server,web}/**/*.less')
+    .pipe($.changed('.tmp', { 
+      extension: ".css",
+      hasChanged: $.needBuild
+    }))
+    .pipe($.sourcemaps.init())
+      .pipe($.less().on('error', $.util.log))
+    .pipe($.sourcemaps.write({ sourceRoot: './' }))
+    .pipe(gulp.dest('.tmp'));
+
+});
+
 
 var lrServer;
 function livereload() {
@@ -397,16 +416,20 @@ gulp.task('watch', function(cb) {
 
   gulp.watch('{lib,server,web}/**/*.coffee', { mode: 'poll'}, ['coffee']);
   gulp.watch("web/app/**/*.jade", { mode: 'poll'}, ["app-templates"]); // recompile jade templates to JS on file save
+  gulp.watch('{lib,server,web}/**/*.less', { mode: 'poll'}, ['less']);
 
   var lr = livereload();
-  gulp.watch("{web,.tmp,lib,static}/**/*.!{jade,coffee}", { 
+  gulp.watch([
+      "{web,.tmp,lib,static}/**/*",
+      "!**/*.{jade,coffee,less}"
+    ], { 
       // glob: , 
       // emitOnGlob: false, 
       // emit: "all",
      // mode: 'poll'
     }, function(event) {
       $.util.log('WATCH CHANGE: ' + event.type + ' ' + event.path);
-
+      lr.changed(event.path);
     });
 
     //.pipe(lr);
@@ -419,7 +442,7 @@ gulp.task('build', function(cb) {
 gulp.task('server', ['clean'], function(cb) {
   // start LR server
   livereload();
-  $.sequence('app-templates', 'coffee', function() {
+  $.sequence('app-templates', 'coffee', 'less', function() {
     $.util.log("Now starting server and watch");
     $.gulp.start('dev-server', 'watch', function() {
       $.util.log("Somehow it is all over?");
@@ -454,7 +477,7 @@ gulp.task('dev-server', function(cb) {
   var env = $.merge(process.env, {
     NODE_ENV: 'development',
   //  NODE_DEBUG: "livereload,express:*",
-    DEBUG: "tinylr:*,send"
+   // DEBUG: "tinylr:*,send"
   });
 
   $.util.log("Server env: " + JSON.stringify(env, null, 2));
