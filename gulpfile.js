@@ -388,15 +388,19 @@ gulp.task('coffee', function() {
 
 gulp.task('less', function() {
 
-  return gulp.src('{lib,server,web}/**/*.less')
+  return gulp.src('web/**/*.less')
     .pipe($.changed('.tmp', { 
       extension: ".css",
       hasChanged: $.needBuild
     }))
+    .pipe($.debug({ verbose: true }))
     .pipe($.sourcemaps.init())
-      .pipe($.less().on('error', $.util.log))
-    .pipe($.sourcemaps.write({ sourceRoot: './' }))
-    .pipe(gulp.dest('.tmp'));
+      .pipe($.less({
+        paths: path.join(__dirname, 'web/app/styles'),
+        sourceMapBasepath: path.join(__dirname, 'web')
+      }).on('error', $.util.log))
+    .pipe($.sourcemaps.write({ sourceRoot: '/' }))
+    .pipe(gulp.dest('.tmp/web'));
 
 });
 
@@ -416,7 +420,7 @@ gulp.task('watch', function(cb) {
 
   gulp.watch('{lib,server,web}/**/*.coffee', { mode: 'poll'}, ['coffee']);
   gulp.watch("web/app/**/*.jade", { mode: 'poll'}, ["app-templates"]); // recompile jade templates to JS on file save
-  gulp.watch('{lib,server,web}/**/*.less', { mode: 'poll'}, ['less']);
+  gulp.watch('web/**/*.less', { mode: 'poll'}, ['less']);
 
   var lr = livereload();
   gulp.watch([
