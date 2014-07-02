@@ -14,11 +14,14 @@ define [
       @samples = []
       @activeSources = []
       @buffers = []
-      masterGainNode = audioContext.createGain()
-      masterGainNode.gain.value = .8
-      masterGainNode.connect audioContext.destination
+      masterVolume = audioContext.createGain()
+      masterGain = audioContext.createGain()
+      masterGain.connect masterVolume
+      masterVolume.gain.value = .8
+      masterVolume.connect audioContext.destination
       @nodes =
-        masterGain: masterGainNode
+        masterGain: masterGain,
+        masterVolume: masterVolume
         trackGain: []
         trackVolume: []
         trackInput: []

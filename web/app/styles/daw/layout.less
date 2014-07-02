@@ -1,4 +1,37 @@
 
+.grid-cell {
+  width: 160px;
+  height: 80px;
+  /*background: orange;
+*/  
+  display: inline-block;
+  border: 1px #222 solid;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grid-cell.tall {
+  height: 240px;
+}
+
+.grid-cell.short {
+  height: 40px;
+}
+
+.grid-row {
+  display: block;
+  /*background: blue;
+*/  /*height: 80px;*/
+  width: auto;
+  white-space: nowrap;
+}
+
+.grid-col {
+  width: 160px;
+  min-height: 100%;
+  display: inline-block;
+}
+
 .track-list {
   position: absolute;
   z-index: 1;
@@ -103,4 +136,5 @@
 .track-mixer {
   margin: 0px 10px;
   text-align: center;
+  position: relative;
 }

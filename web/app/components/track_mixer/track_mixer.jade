@@ -1,6 +1,7 @@
 .track-mixer
   div(k-track-controls='', track='track')
   div(k-panner='', panner='track.panner')
-  div.center(k-fader='', track='track', node='track.nodes.volume')
-  div.vu-meter(k-vu-meter='', node='track.nodes.output')
+  .relative
+    .center(k-fader='', track='track', node='track.nodes.volume')
+    .vu-meter(k-vu-meter='', node='track.nodes.output')
   strong {{ track.name }}
