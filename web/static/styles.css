@@ -94,6 +94,14 @@ left: 300px;
   padding: 5px;
 }
 
+.p10 {
+  padding: 10px;
+}
+
+.p20 {
+  padding: 20px;
+}
+
 .h100p {
   height: 100%;
 }

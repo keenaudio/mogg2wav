@@ -2,7 +2,7 @@ define [
   "angular"
   "ng"
 ], (angular, NG) ->
-  angular.module("keenaudio").directive "kMainNav", ($http, $routeParams, $rootScope) ->
+  angular.module("keenaudio").directive "kMainNav", ($http, $routeParams, $rootScope, app) ->
     restrict: "A"
     templateUrl: "components/main_nav/main_nav.jade"
     link: ($scope, $elem, attr) ->
@@ -28,6 +28,10 @@ define [
           if mt.linked
             pt.link = mt.linkedTo.id
           return
+
+        app.showOverlay "export",
+          project: project
+
 
         console.log JSON.stringify project, null, 2
         return

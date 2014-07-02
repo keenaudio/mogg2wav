@@ -88,10 +88,12 @@ require [
   
   require [
     "directives/sortable"
+    "directives/overlay"
     "views/main/main"
     "views/als/als"
     "views/folders/folders"
     "views/project/project"
+    "views/export/export"
     "components/fader/fader"
     "components/main_nav/main_nav"
     "components/play_button/play_button"

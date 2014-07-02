@@ -134,6 +134,24 @@ define [
           nextTrack.panner.setValue 1
         return
 
+      showOverlay: (name, props) ->
+        if name
+          $("#overlay").addClass("visible")
+        else
+          $("#overlay").removeClass("visible")
+          $rootScope.overlay = false
+          return
+          
+        $rootScope.overlay =
+          name: name
+          props: props or {}
+
+        return
+
+    $rootScope.closeOverlay = ->
+      appSvc.showOverlay false
+      return
+
     appSvc.clearAudio()
     return appSvc
 

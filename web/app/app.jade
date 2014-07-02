@@ -14,12 +14,18 @@ block head
 block header
   div(k-main-nav='')
 
+block overlay
+  .overlay-container.w100p.h100p(ng-if="overlay")
+    .overlay-content(k-overlay='')
+      .overlay-close
+        a.btn.btn-lg.btn-danger(ng-click='closeOverlay()')
+          span.glyphicon.glyphicon-remove-sign
+
 block content
   #app
     div.h100p(ng-view="")
 
   script(type='text/javascript', data-main='scripts/index.js', src='/bower_components/requirejs/require.js')
-
 
   // script(src="/lib/wavesurfer/wavesurfer.js")
   // script(src="/lib/wavesurfer/audio.js")
