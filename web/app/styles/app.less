@@ -123,18 +123,27 @@ line-height: 50px;
   overflow: hidden;
 }
 
+.overlay-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 80%;
+  height: 80%;
+}
+
 .overlay-content {
   min-height: 40%;
-  max-width: 80%;
-  max-height: 80%;
-  margin: 10% auto;
+  // max-width: 80%;
+  // max-height: 80%;
   position: relative;
+  left: -50%;
+  top: -50%;
 }
 
 .overlay-close {
   position: absolute;
-  right: -10px;
-  top: -10px;
+  right: -30px;
+  top: -30px;
 }
 
 .export-view {

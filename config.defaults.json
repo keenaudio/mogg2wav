@@ -11,6 +11,7 @@
     "meta": "<%= config.get('paths.library') %>/meta",
     "moggs": "<%= config.get('paths.library') %>/mogg",
     "mwavs": "<%= config.get('paths.library') %>/wav",
+    "posted": "<%= config.get('paths.library') %>/posted",
     "secretsJSON": "secrets.json",
     "als": "<%= config.get('paths.library') %>/als",
     "openDAW": "../OpenDAW",
@@ -23,7 +24,8 @@
     "<%= config.get('paths.meta') %>",
     "<%= config.get('paths.moggs') %>",
     "<%= config.get('paths.mwavs') %>",
-    "<%= config.get('paths.als') %>"
+    "<%= config.get('paths.als') %>",
+    "<%= config.get('paths.posted') %>"
   ],
   "ingest": {
     "input": "<%= config.get('paths.inbox') %>/**/*.{mogg,als}",

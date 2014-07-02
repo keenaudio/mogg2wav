@@ -3,6 +3,7 @@ var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
 var _ = require('underscore');
+var bodyParser = require('body-parser')
 
 //@if DEV
 var DEV = (process.env.NODE_ENV === "development");
@@ -15,6 +16,25 @@ module.exports = function(config) {
     routes: config.get('routes')
   };
 
+  app.post('/post', bodyParser());
+  app.post('/post', function(req, res, next) {
+    console.log("Post: " + JSON.stringify(req.body, null, 2));
+    var response = {};
+    var json = req.body;
+    if (json.filename && json.contents) {
+      try {
+        var filePath = path.join(config.get('paths.posted'), json.filename);
+        console.log("Writing file " + filePath);
+        fs.writeFileSync(filePath, json.contents);
+        response.message = "OK";
+      } catch (e) {
+        response.error = e;
+      }
+    } else {
+      response.error = "Bad format";
+    }
+    res.json(response);
+  });
 
   //@if DEV
   if (DEV) {

@@ -1,5 +1,5 @@
 define ["angular", "ng"], (angular, NG) ->
-  angular.module("keenaudio").directive "kExport", ->
+  angular.module("keenaudio").directive "kExport", ($http, config) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -10,6 +10,12 @@ define ["angular", "ng"], (angular, NG) ->
         $scope.saveAs = project.name + "." + new Date().getTime() + ".json"
         return
         
+      $scope.post = ->
+        req = $http.post config.get("routes.app") + "/post",
+          filename: $scope.saveAs
+          contents: $scope.text
+        return
+
       return
 
   return
