@@ -4,6 +4,7 @@ div.panner
     ui-slider="{ orientation: 'horizontal', range: 'min'}"
     min="0"
     max="100"
+    step="10"
     ng-model="value")
       
   a.btn.btn-xs.btn-default.col3(ng-click="pan(100)", ng-class="{ active: value==100 }") R

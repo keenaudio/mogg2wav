@@ -122,6 +122,13 @@ define [
         return
 
       linkTrack: (track) ->
+        if track.linked
+          track.linked = false
+          track.linkedTo.linked = false
+          delete track.linkedTo.linkedTo
+          delete track.linkedTo
+          return
+
         mixer = $rootScope.mixer
         tracks = mixer.tracks
         if track.id < tracks.length - 2
@@ -131,6 +138,7 @@ define [
           track.panner.setValue 0
           nextTrack.linked = true
           nextTrack.linkedTo = track
+          nextTrack.setVolume track.volume
           nextTrack.panner.setValue 1
         return
 
