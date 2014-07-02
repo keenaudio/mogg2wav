@@ -23,7 +23,10 @@ define [
         mixer = $rootScope.mixer
         mixerTracks = mixer.tracks
         projectTracks.forEach (pt, i) ->
-          pt.pan = mixerTracks[i].panner.getValue()
+          mt = mixerTracks[i];
+          pt.pan = mt.panner.getValue()
+          if mt.linked
+            pt.link = mt.linkedTo.id
           return
 
         console.log JSON.stringify project, null, 2

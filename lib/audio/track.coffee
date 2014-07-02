@@ -80,6 +80,12 @@ define ["dispatcher", "audio/panner"], (Dispatcher, Panner) ->
         @panner.setStereo()
       @notifyChange "numChannels", @numChannels, prev
       return
+    setVolume: (value) ->
+      prev = @nodes.volume.gain.value;
+      @volume = value
+      @nodes.volume.gain.value = value;
+      @notifyChange "volume", value, prev
+      return
 
   # export
   return Track

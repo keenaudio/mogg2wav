@@ -1,13 +1,15 @@
-define () ->
+define ["dispatcher"], (Dispatcher) ->
   _f = (msg) ->
     "Panner: " + msg
 
-  class Panner
+  class Panner extends Dispatcher
     constructor: (inputNode) ->
+      super("Panner")
       ac = inputNode.context
       splitter = ac.createChannelSplitter(2)
       inputNode.connect splitter
 
+      @value = .5;
       left = ac.createGain()
       left.channelCount = 1
       left.gain.value = .5
@@ -29,15 +31,18 @@ define () ->
         right: right
         output: merger
       return
-    setValue: (value, range) ->
+    setValue: (value, range=1) ->
+      prev = @value
       rval = value/range
       lval = 1 - rval
       console.log _f("setValue: %s, r: %s, l: %s"), value, rval, lval
       @nodes.left.gain.value = lval
       @nodes.right.gain.value = rval
+      @value = rval
+      @notifyChange "value", @value, prev
       return
     getValue: ->
-      return @nodes.right.gain.value
+      return @value
 
     setDualMono: () ->
       console.log _f("setDualMono")

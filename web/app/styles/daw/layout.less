@@ -12,7 +12,7 @@
 
 .grid-cell.tall,
 .grid-row.tall {
-  height: 240px;
+  height: 200px;
 }
 
 .grid-cell.short,
@@ -90,14 +90,12 @@
   display: block;
 }
 
-.master-mixer.grid-row {
-  background: #fff;
+.master-mixer {
   text-align: center;
 }
 
-.track-mixer.grid-row,
-.master-mixer.grid-row {
-  height: 240px;
+.track-mixers,
+.master-mixer {
   position: absolute;
   bottom: 0px;
 }
@@ -149,7 +147,13 @@ z-index: 2;
 }
 
 .track-mixer {
-  margin: 0px 10px;
+  margin: 2px 10px;
   text-align: center;
   position: relative;
+}
+
+.track-link {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
 }

@@ -121,6 +121,19 @@ define [
         $rootScope.scheduler.stop()
         return
 
+      linkTrack: (track) ->
+        mixer = $rootScope.mixer
+        tracks = mixer.tracks
+        if track.id < tracks.length - 2
+          nextTrack = tracks[track.id+1]
+          track.linked = true
+          track.linkedTo = nextTrack
+          track.panner.setValue 0
+          nextTrack.linked = true
+          nextTrack.linkedTo = track
+          nextTrack.panner.setValue 1
+        return
+
     appSvc.clearAudio()
     return appSvc
 
