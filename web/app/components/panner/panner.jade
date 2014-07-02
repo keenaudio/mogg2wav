@@ -1,10 +1,9 @@
-div.panner.container
-  div.row
-    label.btn.btn-xs.btn-default.col-lg-2 L
-    div.panner-fader.fader.horizontal.col-lg-8(
-      ui-slider="{ orientation: 'horizontal', range: 'min'}"
-      min="0"
-      max="100"
-      ng-model="value")
-        
-    label.btn.btn-xs.btn-default.col-lg-2 R
+div.panner
+  label.btn.btn-xs.btn-default.col1 L
+  div.panner-fader.fader.horizontal.col2(
+    ui-slider="{ orientation: 'horizontal', range: 'min'}"
+    min="0"
+    max="100"
+    ng-model="value")
+      
+  label.btn.btn-xs.btn-default.col3 R

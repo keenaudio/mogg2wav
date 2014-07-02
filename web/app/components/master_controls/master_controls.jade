@@ -4,5 +4,7 @@ div.btn-group.btn-group-sm
     ng-class='{ active: mixer.soloActive }'
     ng-disabled='!mixer.soloActive'
   ) Clear Solo
-div.center(k-fader='', gain-node='mixer.nodes.masterGain')
+div.center(k-fader='', gain-node='mixer.nodes.masterVolume')
+div.vu-meter(k-vu-meter='', node='mixer.nodes.masterVolume')
+
 strong Master

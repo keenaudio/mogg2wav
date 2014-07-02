@@ -33,6 +33,16 @@
   bottom: 0px;
 }
 
+.set-bg {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 160px;
+  background: orange;
+  height: 100%;
+  z-index: 2;
+}
+
 .set-labels {
   position: absolute;
   z-index: 3;
@@ -42,7 +52,6 @@
 }
 
 .set-labels > .grid-cell {
-  border-color: #bbb;
   display: block;
 }
 
@@ -68,7 +77,6 @@
 .corner-controls,
 .master-mixer {
   width: 160px;
-  z-index: 3;
   position: absolute;
 
   right: 0px;
@@ -76,14 +84,19 @@
 
 }
 
+.master-controls {
+  position: relative;
+}
+
 .corner-controls {
+z-index: 2;
     top: 0px;
-  background: #666;
-  color: #aaa;
 }
 
 .master-mixer {
   bottom: 0px;
+    z-index: 3;
+
 }
 
 .set-controls {
@@ -103,4 +116,5 @@
 .track-mixer {
   margin: 0px 10px;
   text-align: center;
+  position: relative;
 }

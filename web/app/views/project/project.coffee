@@ -19,6 +19,7 @@ define [
         return
 
       $sets = $elem.find(".set-labels")
+      $setBg = $elem.find('.set-bg')
       $trackHeaders = $elem.find(".track-headers")
       $trackMixer = $elem.find(".track-mixers")
       $scrollContainer = $elem.find(".scroll-container")
@@ -30,7 +31,8 @@ define [
         t = $scrollContainer.scrollTop()
         $trackHeaders.css "top", t
         $sets.css "right", -l
-        
+        $setBg.css "top", t
+        $setBg.css "right", -l
         #$sets.css('top', -t);
         #$trackMixer.css('left', -l);
         $trackMixer.css "bottom", -t
