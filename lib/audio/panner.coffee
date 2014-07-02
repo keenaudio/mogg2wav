@@ -10,10 +10,12 @@ define () ->
 
       left = ac.createGain()
       left.channelCount = 1
+      left.gain.value = .5
       splitter.connect left, 0, 0
 
       right = ac.createGain()
       right.channelCount = 1
+      right.gain.value = .5
       splitter.connect right, 1, 0
 
       merger = ac.createChannelMerger(2)
@@ -34,6 +36,9 @@ define () ->
       @nodes.left.gain.value = lval
       @nodes.right.gain.value = rval
       return
+    getValue: ->
+      return @nodes.right.gain.value
+
     setDualMono: () ->
       console.log _f("setDualMono")
       splitter = @nodes.splitter

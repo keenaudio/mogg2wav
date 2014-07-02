@@ -29,6 +29,9 @@ define [
         #$scope.node.gain.value = val  if $scope.node
         return
 
+      $scope.pan = (val) ->
+        $scope.value = val
+        return
       return
 
   return
