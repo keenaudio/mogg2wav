@@ -4,6 +4,7 @@ define [
   "angular"
   "audio"
   "daw/module"
+  "appTemplates"
 ], (assert, module, angular, audio, dawModule) ->
   
   moduleName = module.config().name
@@ -20,7 +21,6 @@ define [
   # Define the app instance.
   app = angular.module(moduleName, [ # Module dependencies
     "ngRoute"
-    "ui.slider"
     "config"
     "app-templates"
     dawModule["name"]

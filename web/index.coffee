@@ -89,12 +89,18 @@ require.config
     #  #   "appTemplates"
     #     "audio"
     #   ]
+
+    app:
+      deps: ["appTemplates"]
+
     appTemplates:
       deps: ["angular"]
       exports: "angular"
 
 
-
+    daw:
+      deps: ["dawTemplates"]
+      
     dawTemplates:
       deps: ["angular"]
       exports: "angular"

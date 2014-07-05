@@ -1,12 +1,12 @@
 define ["../../module", "angular", "ng"], (module, angular, NG) ->
-  angular.module(module["name"]).directive "kExport", ($http, config) ->
+  angular.module(module["name"]).directive "kExport", ($http, config, daw) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
       console.log "export view loaded"
 
       $scope.$watch "project", (project) ->
-        $scope.text = JSON.stringify project, null, 2
+        $scope.text = daw.exportProject()
         $scope.saveAs = project.name + "." + new Date().getTime() + ".json"
         return
         

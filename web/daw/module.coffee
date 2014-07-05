@@ -3,7 +3,9 @@ define [
   "module"
   "angular"
   "audio"
-], (assert, module, angular, audio) ->
+  "dawTemplates"
+  "angularUISlider"
+], (assert, module, angular, audio, dawTemplates) ->
   
   console.log("DAW MODULE: " + JSON.stringify(module));
   console.log("DAW CONFIG: " + JSON.stringify(module.config()));
@@ -135,6 +137,13 @@ define [
           if mt.linked
             pt.link = mt.linkedTo.id
           return pt
+
+        exportStr = JSON.stringify project, (key, value) ->
+          return undefined if key == "$$hashKey"
+          return value
+
+        console.log _f("exportProject")
+        return exportStr
 
 
     svc.clearAudio()

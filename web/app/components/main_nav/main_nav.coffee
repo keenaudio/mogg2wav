@@ -18,23 +18,27 @@ define [
         daw.scheduler.stopAll() if daw.scheduler
         return
 
+      $scope.openProject = ->
+        app.showOverlay "open"
+        return
+        
       $scope.export = ->
-        project = daw.project
-        projectTracks = project.tracks
-        mixer = daw.mixer
-        mixerTracks = mixer.tracks
-        projectTracks.forEach (pt, i) ->
-          mt = mixerTracks[i];
-          pt.pan = mt.panner.getValue()
-          if mt.linked
-            pt.link = mt.linkedTo.id
-          return
+        # project = daw.project
+        # projectTracks = project.tracks
+        # mixer = daw.mixer
+        # mixerTracks = mixer.tracks
+        # projectTracks.forEach (pt, i) ->
+        #   mt = mixerTracks[i];
+        #   pt.pan = mt.panner.getValue()
+        #   if mt.linked
+        #     pt.link = mt.linkedTo.id
+        #   return
 
         app.showOverlay "export",
-          project: project
+          project: daw.project
 
 
-        console.log JSON.stringify project, null, 2
+        #console.log JSON.stringify project, null, 2
         return
 
       return
