@@ -1,5 +1,5 @@
-define ["angular", "ng"], (angular, NG) ->
-  angular.module("keenaudio").directive "kExport", ($http, config) ->
+define ["../../module", "angular", "ng"], (module, angular, NG) ->
+  angular.module(module["name"]).directive "kExport", ($http, config) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem

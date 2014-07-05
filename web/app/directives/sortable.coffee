@@ -1,9 +1,10 @@
 define [
   "assert"
+  "../module"
   "angular"
   "ng"
-], (assert, angular, NG) ->
-  angular.module("keenaudio").directive "kSortable", ($log) ->
+], (assert, module, angular, NG) ->
+  angular.module(module["name"]).directive "kSortable", ($log) ->
   restrict: "A"
   link: (scope, element, attrs) ->
     NG.attachScopeToElem $scope, $elem

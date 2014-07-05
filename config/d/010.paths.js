@@ -20,11 +20,13 @@ module.exports = function(config) {
   config.merge({
     paths: {
       root: rootDir,
+      tmp: tmpDir,
+      config: configDir,
       revManifest: mkpath('rev-manifest.json'),
       buildInfo: mkpath('build_info.json'),
       configJSON: mkpath(configDir, 'config.json'),
-      configJSONdefault: mkpath('config.defaults.json')
+      configJSONdefault: mkpath('config.defaults.json'),
+      web: mkpath('web')
     }
   });
-
 }

@@ -5,7 +5,7 @@ block head
   //link(rel="stylesheet", type="text/css", href="/bower_components/jquery-ui/themes/smoothness/jquery.ui.theme.css")
 
 
-  link(rel="stylesheet", type="text/css", href="components/components.css")
+  link(rel="stylesheet", type="text/css", href="/daw/components/components.css")
   link(rel="stylesheet", type="text/css", href="styles/app.css")
   //script(type="text/javascript", src="/bower_components/jquery-ui/ui/jquery-ui.js")
   script(type='text/javascript').
@@ -26,7 +26,7 @@ block content
   #app
     div.h100p(ng-view="")
 
-  script(type='text/javascript', data-main='scripts/index.js', src='/bower_components/requirejs/require.js')
+  script(type='text/javascript', data-main='/index.js', src='/bower_components/requirejs/require.js')
 
   // script(src="/lib/wavesurfer/wavesurfer.js")
   // script(src="/lib/wavesurfer/audio.js")

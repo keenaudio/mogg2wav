@@ -1,8 +1,11 @@
 define [
+  "../../module"
   "angular"
   "ng"
   "formats"
-], (angular, NG, formats) ->
+], (module, angular, NG, formats) ->
+  moduleName = module["name"]
+
   clip2sample = (clip, baseUrl) ->
     return  unless clip
     return  unless clip.sample
@@ -19,7 +22,7 @@ define [
       url: urlParts.join("/")
 
     sample
-  angular.module("keenaudio").directive "kAlsProjects", ($http, $routeParams) ->
+  angular.module(moduleName).directive "kAlsProjects", ($http, $routeParams) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -30,7 +33,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsProject", ($http, $routeParams, config, app) ->
+  angular.module(moduleName).directive "kAlsProject", ($http, $routeParams, config, app) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -69,7 +72,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsScene", ($routeParams, config) ->
+  angular.module(moduleName).directive "kAlsScene", ($routeParams, config) ->
     restrict: "A"
     templateUrl: "views/als/als_scene.jade"
     scope:
@@ -87,7 +90,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsTrack", ->
+  angular.module(moduleName).directive "kAlsTrack", ->
     restrict: "A"
     templateUrl: "views/als/als_track.jade"
     scope:
@@ -106,7 +109,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsClipSlot", ->
+  angular.module(moduleName).directive "kAlsClipSlot", ->
     restrict: "A"
     templateUrl: "views/als/als_slot.jade"
     scope:
@@ -121,7 +124,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsClip", ->
+  angular.module(moduleName).directive "kAlsClip", ->
     restrict: "A"
     templateUrl: "views/als/als_clip.jade"
     scope:
@@ -140,7 +143,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsSample", ->
+  angular.module(moduleName).directive "kAlsSample", ->
     restrict: "A"
     templateUrl: "views/als/als_sample.jade"
     scope:
@@ -158,7 +161,7 @@ define [
 
       return
 
-  angular.module("keenaudio").directive "kAlsFileRef", ($routeParams, config) ->
+  angular.module(moduleName).directive "kAlsFileRef", ($routeParams, config) ->
     restrict: "A"
     templateUrl: "views/als/als_file_ref.jade"
     scope:

@@ -1,5 +1,5 @@
-define ["angular", "ng"], (angular, NG) ->
-  angular.module("keenaudio").directive "kMain", ->
+define ["../../module", "angular", "ng"], (module, angular, NG) ->
+  angular.module(module["name"]).directive "kMain", ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem

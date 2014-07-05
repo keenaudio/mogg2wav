@@ -8,7 +8,7 @@ var args = require('yargs').argv;// Command line args
 
 // Core helpers
 var $ = require('gulp-load-plugins')(); // Load gulp plugins (lazy)
-$.merge = require('merge');
+$.merge = require('node.extend');
 $.merge($, {
   _: _,
   assert: require('assert'),
@@ -20,6 +20,8 @@ $.merge($, {
   fs: fs,
   sequence: require('run-sequence')
 });
+
+console.log("$: " + JSON.stringify($));
 
 // Simple helper methods
 $.pad = function(num, size) {
@@ -359,10 +361,10 @@ gulp.task("app-templates", function() {
         }
       //  stripPrefix: config.cwd
     }))
-    .pipe($.concatUtil('app-templates.js'))
+    .pipe($.concatUtil('templates.js'))
     .pipe($.rename({
-      dirname: "web/app/scripts",
-      basename: "app-templates"
+      dirname: "web/app",
+      basename: "templates"
     }))
     .pipe($.debug({ verbose: true }))
 
@@ -372,8 +374,48 @@ gulp.task("app-templates", function() {
 
 });
 
+gulp.task("daw-templates", function() {
+
+  var jadeVars = {
+    "NG": true,
+    config: $.config,
+    baseUrl: $.config.get('routes.app')
+  };
+
+  return gulp.src("{views,components}/**/*.jade", { cwd: "web/daw"})
+   // .pipe(jadeFilter)
+   // .pipe($.jsmacro($.options.jsmacro.client)) // unlike html, jade will be processed with jsmacro
+   .pipe($.debug({ verbose: true }))
+
+    .pipe($.jade({ pretty: true, locals: jadeVars }))
+    .pipe($.debug({ verbose: true }))
+    //.pipe(jadeFilter.restore())
+    .pipe($.ngHtml2js({
+        moduleName: "daw-templates",
+       // declareModule: false,
+        rename: function(filename) {
+           return filename.replace('.html', '.jade');
+        }
+      //  stripPrefix: config.cwd
+    }))
+    .pipe($.concatUtil('templates.js'))
+    .pipe($.rename({
+      dirname: "web/daw",
+      basename: "templates"
+    }))
+    .pipe($.debug({ verbose: true }))
+
+   // .pipe($.concat(config.module + '.js'))
+    .pipe(gulp.dest(".tmp"))
+    .pipe($.size({ showFiles: true }));
+
+});
+
+
 gulp.task('coffee', function() {
 
+  var srcRoot = $.config.get('paths.web');
+  $.util.log("Starting coffee, source root: " + srcRoot);
   return gulp.src('{lib,server,web}/**/*.coffee')
     .pipe($.changed('.tmp', { 
       extension: ".js",
@@ -381,7 +423,7 @@ gulp.task('coffee', function() {
     }))
     .pipe($.sourcemaps.init())
       .pipe($.coffee({ bare: true }).on('error', $.util.log))
-    .pipe($.sourcemaps.write({ sourceRoot: './' }))
+    .pipe($.sourcemaps.write({ sourceRoot: "./" }))
     .pipe(gulp.dest('.tmp'));
 
 });
@@ -420,6 +462,7 @@ gulp.task('watch', function(cb) {
 
   gulp.watch('{lib,server,web}/**/*.coffee', { mode: 'poll'}, ['coffee']);
   gulp.watch("web/app/**/*.jade", { mode: 'poll'}, ["app-templates"]); // recompile jade templates to JS on file save
+  gulp.watch("web/daw/**/*.jade", { mode: 'poll'}, ["daw-templates"]); 
   gulp.watch('web/**/*.less', { mode: 'poll'}, ['less']);
 
   var lr = livereload();
@@ -446,7 +489,8 @@ gulp.task('build', function(cb) {
 gulp.task('server', ['clean'], function(cb) {
   // start LR server
   livereload();
-  $.sequence('app-templates', 'coffee', 'less', function() {
+  console.log("$: " + JSON.stringify($));
+  $.sequence('app-templates', 'daw-templates', 'coffee', 'less', function() {
     $.util.log("Now starting server and watch");
     $.gulp.start('dev-server', 'watch', function() {
       $.util.log("Somehow it is all over?");

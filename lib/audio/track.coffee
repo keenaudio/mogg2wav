@@ -20,6 +20,7 @@ define ["dispatcher", "audio/panner"], (Dispatcher, Panner) ->
       #volume.connect panner
       panner.nodes.output.connect output
 
+      @output = 1
       @panner = panner
       @nodes =
         input: input
@@ -34,6 +35,17 @@ define ["dispatcher", "audio/panner"], (Dispatcher, Panner) ->
       @numChannels = 2
 
       return
+    setOutput: (value) ->
+      prev = @output
+      if prev == value
+        console.log _f("Track %i output is unchanged at %s"), @id, value
+        return
+
+      @output = value
+      @nodes.output.gain.value = if value then 1 else 0
+      @notifyChange "output", @output, prev
+      return
+
     addClip: (clip, index) ->
       console.log "Adding clip " + clip + " at index " + index
       @clips[index] = clip
@@ -44,21 +56,45 @@ define ["dispatcher", "audio/panner"], (Dispatcher, Panner) ->
       #console.log "Getting clip at index " + index + " : " + clip
       return clip
 
+    setSolo: (value) ->
+      prev = @solo
+      if prev == value
+        console.log _f("Track %i solo is unchanged at %s"), @id, value
+        return
+
+      @solo = value
+      @notifyChange "solo", @solo, prev
+
+
+      if @linkedTo
+        console.log _f("Setting solo on track: %i : %s"), @linkedTo.id, value
+        @linkedTo.setSolo value
+
+      return
+
     soloToggle: () ->
       console.log _f "soloToggle, was: " + @solo
-      prev = @solo
-      @solo = not @solo
-      @notifyChange "solo", @solo, prev
+      @setSolo not @solo
+      return
+
+    setMute: (value) ->
+      prev = @mute
+      if prev == value
+        console.log _f("Track %i mute is unchanged at %s"), @id, value
+        return
+
+      @mute = value
+      @notifyChange "mute", @mute, prev
+
+      if @linkedTo
+        console.log _f("Setting mute on track: %i : %s"), @linkedTo.id, value
+        @linkedTo.setMute value
+
       return
 
     muteToggle: () ->
       console.log _f "muteToggle, was: " + @mute
-      prev = @mute
-      @mute = not @mute
-      # node = @nodes.gain
-      # node.gain.value = if @mute then 0 else 1
-      # console.log _f "muteToggle, now: " + @mute + " gain: " + node.gain.value
-      @notifyChange "mute", @mute, prev
+      @setMute not @mute
       return
 
     setNumChannels: (numChannels) ->
@@ -80,11 +116,54 @@ define ["dispatcher", "audio/panner"], (Dispatcher, Panner) ->
         @panner.setStereo()
       @notifyChange "numChannels", @numChannels, prev
       return
+
+    getVolume: ->
+      @volume = @nodes.volume.gain.value
+      console.log _f("track %i, getVolume: "), @id, @volume
+      return @volume
+
     setVolume: (value) ->
-      prev = @nodes.volume.gain.value;
+      prev = @nodes.volume.gain.value
+      if prev == value
+        console.log _f("Track %i volume is unchanged at %s"), @id, value
+        return
+
       @volume = value
-      @nodes.volume.gain.value = value;
+      @nodes.volume.gain.value = value
       @notifyChange "volume", value, prev
+
+      if @linkedTo
+        console.log _f("Setting volume on track: %i : %s"), @linkedTo.id, value
+        @linkedTo.setVolume value
+
+      return
+
+    linkTo: (track, pan=0, volume=0) ->
+      if @linked
+        console.log _f("linkTo: %i, already linked"), @id
+        return
+
+      if not volume
+        console.log _f("track %i, no volume passed, getting value from volume node"), @id
+        volume = @getVolume()
+
+      console.log _f("track %i linkTo: %i, pan: %i, volume: %s"), @id, track.id, pan, volume
+      @linked = true
+      @linkedTo = track
+      @panner.setValue pan
+      @setVolume volume
+      track.linkTo this, 1 - pan, volume
+      return
+
+    unlink: ->
+      if not @linked
+        console.log _f("track %i, not linked"), @id
+        return
+
+      console.log _f("unlink %i, linked: %s, linkedTo: %s"), @id, @linked, @linkedTo
+      @linked = false
+      @linkedTo.unlink()
+      delete @linkedTo
       return
 
   # export

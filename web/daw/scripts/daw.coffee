@@ -1,49 +1,30 @@
 define [
+  "module"
   "angular"
   "audio"
-], (angular, audio) ->
+], (module, angular, audio) ->
   
+  console.log("DAW MODULE: " + JSON.stringify(module));
+  console.log("DAW CONFIG: " + JSON.stringify(module.config()));
   #@if LOG
-  _ls = "App.app"
+  _ls = "Daw.daw"
   _f = (msg) ->
     "[" + _ls + "] " + msg
-
-  
-  hathBroken = false
-  window["onerror"] = ()->
-    debugger if !hathBroken
-    hathBroken = true
-    return
 
   #@end
   locals = {}
   
   # Define the app instance.
-  app = angular.module("keenaudio", [ # Module dependencies
-    "ngRoute"
+  app = angular.module("daw", [ # Module dependencies
     "ui.slider"
     "config"
-    "app-templates"
+    "daw-templates"
   ])
-  app.config ($routeProvider, $locationProvider) ->
-    $routeProvider.when("/",
-      templateUrl: "views/main/main.jade"
-    ).when("/folders",
-      templateUrl: "views/folders/folders_index.jade"
-    ).when("/folder/:folder",
-      templateUrl: "views/folders/folder.jade"
-    ).when("/als",
-      templateUrl: "views/als/als_index.jade"
-    ).when("/als/project/:project",
-      templateUrl: "views/als/als_project.jade"
-    ).otherwise redirect: "/"
-    return
 
-  
   # configure html5 to get links working on jsfiddle
   #$locationProvider.html5Mode(true);
-  app.service "app", ($rootScope) ->
-    appSvc =
+  app.service "daw", ($rootScope) ->
+    svc =
       audioContext: ->
         audio.context()
 
@@ -133,29 +114,12 @@ define [
           track.linkTo nextTrack
         return
 
-      showOverlay: (name, props) ->
-        if name
-          $("#overlay").addClass("visible")
-        else
-          $("#overlay").removeClass("visible")
-          $rootScope.overlay = false
-          return
-          
-        $rootScope.overlay =
-          name: name
-          props: props or {}
 
-        return
-
-    $rootScope.closeOverlay = ->
-      appSvc.showOverlay false
-      return
-
-    appSvc.clearAudio()
-    return appSvc
+    svc.clearAudio()
+    return svc
 
   app.run ->
-    console.log _f("keenaudio app running") #@strip
+    console.log _f("daw app running") #@strip
     return
 
   return app

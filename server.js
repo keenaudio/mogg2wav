@@ -161,93 +161,11 @@ if (DEV) {
 // Handlers
 var api = require('./server/api')(config);
 
-app.use(function(req, res, next) {
-  //console.log(_f("START REQUEST: " + req.url));
-  next();
-});
-
-app.use('/bower_components', express.static('bower_components'));
-app.use('/fonts', express.static('bower_components/bootstrap/dist/fonts'));
-
-
-app.use(config.get('routes.folders'), express.static(config.get('paths.folders')));
-
-app.use(config.get('routes.folders') + '/:folder', function(req, res, next) {
-  var folder = req.params.folder;
-  api.wavs(folder, function(err, files) {
-    res.render('pages/files.jade', {
-      files: files,
-      folder: folder
-    });
-  });
-});
-
-app.use(config.get('routes.folders'), function(req, res, next) {
-  api.folders(function(err, files) {
-    res.render('pages/folders.jade', {
-      folders: files
-    });
-  });
-});
-
-// app.use(config.get('routes.als') + '/:project', function(req, res, next) {
-
-//   var folder = req.params.project;
-//   var filePath = path.join(config.get("paths.als"), folder, folder) + ".als.json";
-//   var jsonStr = fs.readFileSync(filePath);
-//   var json = JSON.parse(jsonStr);
-
-//   console.log(_f("ALS JSON: " + jsonStr)); //@strip
-//   api.alsProjects(function(err, files) {
-//     res.render('pages/als.jade', {
-//       projects: files,
-//       jsonStr: jsonStr,
-//       json: json
-//     });
-//   });
-// });
-
-
-// app.use(config.get('routes.als'), function(req, res, next) {
-//   api.alsProjects(function(err, files) {
-//     res.render('pages/als.jade', {
-//       projects: files
-//     });
-//   });
-// });
-app.use(config.get('routes.als'), express.static(config.get('paths.als')));
-app.use(config.get('routes.daw'), express.static(config.get('paths.openDAW')));
+// JSON REST API
 app.use(config.get('routes.json_api'), require('./server/json_api')(config, api));
-app.use(config.get('routes.app'), require('./web/app/app_route')(config));
 
-//@if DEV
-if (DEV) {
-  app.use(config.get('routes.static'), express.static('.tmp/web/static', { hidden: true }));
-}
-//@end
-
-app.use(config.get('routes.static'), express.static('web/static'));
-
-//@if DEV
-if (DEV) {
-  app.use(config.get('routes.lib'), express.static('.tmp/lib', { hidden: true }));
-}
-//@end
-
-app.use(config.get('routes.lib'), express.static('lib'));
-
-
-// Last handler, 404
-app.use(function(req, res, next) {
-  if (req.path === '/') {
-    //res.render('pages/index.jade', {});
-    res.redirect(config.get('routes.app'));
-    return;
-  }
-
-  console.log(_f("404 Not found: " + req.path)); //@strip
-  res.send(404);
-});
+// Web 
+app.use('/', require('./web/route')(config, api));
 
 // Service start
 var server = http.createServer(app);

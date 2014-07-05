@@ -1,9 +1,10 @@
 define [
   "assert"
+  "../module"
   "angular"
   "ng"
-], (assert, angular, NG) ->
-  angular.module("keenaudio").directive "kOverlay", ($rootScope, $compile) ->
+], (assert, module, angular, NG) ->
+  angular.module(module["name"]).directive "kOverlay", ($rootScope, $compile) ->
     restrict: "A"
     link: ($scope, $elem, attrs) ->
       NG.attachScopeToElem $scope, $elem

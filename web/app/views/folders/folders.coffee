@@ -1,5 +1,12 @@
-define ["angular", "ng", "formats"], (angular, NG, formats) ->
-  angular.module("keenaudio").directive "kFolders", ($http) ->
+define [
+  "../../module"
+  "angular"
+  "ng"
+  "formats"
+], (module, angular, NG, formats) ->
+  moduleName = module["name"]
+
+  angular.module(moduleName).directive "kFolders", ($http) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -9,7 +16,7 @@ define ["angular", "ng", "formats"], (angular, NG, formats) ->
 
       return
 
-  angular.module("keenaudio").directive "kFolder", ($http, $routeParams, config, app) ->
+  angular.module(moduleName).directive "kFolder", ($http, $routeParams, config, app) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -53,7 +60,7 @@ define ["angular", "ng", "formats"], (angular, NG, formats) ->
   #   var track = mixer.createTrack();
   #   scheduler.addItem(sample, track, 0);
   # });
-  angular.module("keenaudio").directive "kFile", ($routeParams, config) ->
+  angular.module(moduleName).directive "kFile", ($routeParams, config) ->
     restrict: "A"
     templateUrl: "views/folders/file.jade"
     scope:

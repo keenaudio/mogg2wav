@@ -43,11 +43,11 @@ define [
       if @soloActive
         console.log _f("Updating tracks following solo Rules")
         for track in @tracks
-          track.nodes.output.gain.value = if track.solo then 1 else 0
+          track.setOutput if track.solo then 1 else 0
       else
         for track in @tracks
           console.log _f("Updating tracks following regular Rules")
-          track.nodes.output.gain.value = if track.mute then 0 else 1
+          track.setOutput if track.mute then 0 else 1
       return
 
     createTrack: () ->
@@ -57,17 +57,17 @@ define [
       track.addHandler "change", (prop, val, last) ->
         console.log _f("Track %i change: %s : %s => %s"), track.id, prop, last, val
         if prop is "mute"
-          node = track.nodes.gain
-          node.gain.value = if val then 0 else 1
-          console.log _f("Track %i mute: %s, gain %i"), track.id, track.mute, node.gain.value
+          if not that.soloActive
+            track.setOutput if val then 0 else 1
         else if prop is "solo"
           that.updateSolo()
+        return
 
       nodes = @nodes
-      nodes.trackGain.push
-        node: track.nodes.gain
-        isMuted: false
-        isSolo: false
+      # nodes.trackGain.push
+      #   node: track.nodes.gain
+      #   isMuted: false
+      #   isSolo: false
 
       nodes.trackVolume.push track.nodes.volume
       nodes.trackInput.push track.nodes.input

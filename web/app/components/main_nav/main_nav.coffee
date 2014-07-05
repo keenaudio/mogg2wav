@@ -1,8 +1,9 @@
 define [
+  "../../module"
   "angular"
   "ng"
-], (angular, NG) ->
-  angular.module("keenaudio").directive "kMainNav", ($http, $routeParams, $rootScope, app) ->
+], (module, angular, NG) ->
+  angular.module(module["name"]).directive "kMainNav", ($http, $routeParams, $rootScope, app) ->
     restrict: "A"
     templateUrl: "components/main_nav/main_nav.jade"
     link: ($scope, $elem, attr) ->

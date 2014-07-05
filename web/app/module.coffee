@@ -1,29 +1,29 @@
 define [
+  "assert"
+  "module"
   "angular"
   "audio"
-], (angular, audio) ->
+  "daw/module"
+], (assert, module, angular, audio, dawModule) ->
   
+  moduleName = module.config().name
+  assert moduleName, "Need a module name for app"
+
   #@if LOG
   _ls = "App.app"
   _f = (msg) ->
     "[" + _ls + "] " + msg
 
-  
-  hathBroken = false
-  window["onerror"] = ()->
-    debugger if !hathBroken
-    hathBroken = true
-    return
-
   #@end
   locals = {}
   
   # Define the app instance.
-  app = angular.module("keenaudio", [ # Module dependencies
+  app = angular.module(moduleName, [ # Module dependencies
     "ngRoute"
     "ui.slider"
     "config"
     "app-templates"
+    dawModule["name"]
   ])
   app.config ($routeProvider, $locationProvider) ->
     $routeProvider.when("/",
