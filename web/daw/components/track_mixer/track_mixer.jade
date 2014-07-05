@@ -5,6 +5,6 @@
     .center(daw-fader='', track='track', node='track.nodes.volume')
     .vu-meter(daw-vu-meter='', node='track.nodes.volume', enabled='track.output')
     .track-link
-      a.btn.btn-xs.btn-default(ng-click='app.linkTrack(track)', ng-class='{ active: track.linked }')
+      a.btn.btn-xs.btn-default(ng-click='daw.linkTrack(track)', ng-class='{ active: track.linked }')
         i.ui-icon.ui-icon-link
   strong {{ track.name }}

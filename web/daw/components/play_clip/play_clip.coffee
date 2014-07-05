@@ -4,7 +4,7 @@ define [
   "ng"
   "audio"
 ], (module, angular, NG, audio) ->
-  angular.module(module["name"]).directive "dawPlayClip", ($http, $routeParams, app) ->
+  angular.module(module["name"]).directive "dawPlayClip", ($http, $routeParams) ->
     restrict: "A"
     scope:
       clip: "="

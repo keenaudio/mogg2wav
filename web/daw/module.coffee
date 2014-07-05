@@ -74,7 +74,7 @@ define [
 
       setProject: (project) ->
         $rootScope.project = project
-        appSvc.clearAudio()
+        svc.clearAudio()
         mixer = $rootScope.mixer
         _.each project.tracks, (trackData) ->
           track = mixer.createTrack()

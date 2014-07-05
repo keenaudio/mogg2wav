@@ -16,7 +16,7 @@ define [
 
       return
 
-  angular.module(moduleName).directive "kFolder", ($http, $routeParams, config, app) ->
+  angular.module(moduleName).directive "kFolder", ($http, $routeParams, config, daw) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -45,7 +45,7 @@ define [
         project.addSet new formats.Project.Set("Empty 1", "wav")
         
         $scope.project = project
-        app.setProject project
+        daw.setProject project
         return
 
       return

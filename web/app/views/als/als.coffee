@@ -33,7 +33,7 @@ define [
 
       return
 
-  angular.module(moduleName).directive "kAlsProject", ($http, $routeParams, config, app) ->
+  angular.module(moduleName).directive "kAlsProject", ($http, $routeParams, config, daw) ->
     restrict: "A"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
@@ -67,7 +67,7 @@ define [
           return
 
         $scope.project = project
-        app.setProject project
+        daw.setProject project
         return
 
       return

@@ -3,7 +3,7 @@ define [
   "angular"
   "ng"
 ], (module, angular, NG) ->
-  angular.module(module["name"]).directive "dawProject", ($http, $routeParams, config, app) ->
+  angular.module(module["name"]).directive "dawProject", ($http, $routeParams, config, daw) ->
     restrict: "A"
     templateUrl: "views/project/project.jade"
     scope:
@@ -13,8 +13,8 @@ define [
       NG.attachScopeToElem $scope, $elem
       $scope.$watch "project", (project) ->
         return  unless project
-        mixer = app.getMixer()
-        scheduler = app.getScheduler()
+        mixer = daw.getMixer()
+        scheduler = daw.getScheduler()
         $scope.mixer = mixer
         $scope.scheduler = scheduler
         return

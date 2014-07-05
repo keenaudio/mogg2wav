@@ -4,7 +4,7 @@ define [
   "ng"
   "audio"
 ], (module, angular, NG, audio) ->
-  angular.module(module["name"]).directive "dawSet", ($http, $routeParams, app) ->
+  angular.module(module["name"]).directive "dawSet", ($http, $routeParams, daw) ->
     restrict: "A"
     scope:
       set: "="
@@ -16,8 +16,8 @@ define [
       $scope.$watch "playable.state", (state, prev) ->
         console.log "Set playable.state: " + prev + " => " + state
         if state is "playing"
-          app.playSet $scope.set
-        else app.pauseSet $scope.set  if state is "paused"
+          daw.playSet $scope.set
+        else daw.pauseSet $scope.set  if state is "paused"
         return
 
       return

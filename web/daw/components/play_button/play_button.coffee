@@ -5,7 +5,7 @@ define [
   "ng"
   "ng/receiver"
 ], (assert, module, angular, NG, Receiver) ->
-  angular.module(module["name"]).directive "dawPlayButton", (app) ->
+  angular.module(module["name"]).directive "dawPlayButton", () ->
     restrict: "A"
     templateUrl: "components/play_button/play_button.jade"
     scope:
