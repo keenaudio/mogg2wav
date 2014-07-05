@@ -3,13 +3,11 @@ define [
   "angular"
   "ng"
 ], (module, angular, NG) ->
-  angular.module(module["name"]).directive "dawMasterControls", ($http, $routeParams, $rootScope) ->
+  angular.module(module["name"]).directive "dawMasterControls", (daw) ->
     restrict: "A"
     templateUrl: "components/master_controls/master_controls.jade"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
-
-      $rootScope.$watch "mixer", (mixer) ->
-        $scope.mixer = mixer
+      $scope.mixer = daw.mixer
       
   return

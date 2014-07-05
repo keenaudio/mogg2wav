@@ -28,8 +28,13 @@ define [
 
   # configure html5 to get links working on jsfiddle
   #$locationProvider.html5Mode(true);
-  app.service "daw", ($rootScope) ->
+  app.service "daw", () ->
+
+
     svc =
+      mixer: audio.createMixer()
+      scheduler: audio.createScheduler()
+
       audioContext: ->
         audio.context()
 
@@ -62,20 +67,18 @@ define [
         return
 
       getMixer: ->
-        $rootScope.mixer
+        svc.mixer
 
       getScheduler: ->
-        $rootScope.scheduler
+        svc.scheduler
 
       clearAudio: ->
-        $rootScope.mixer = audio.createMixer()
-        $rootScope.scheduler = audio.createScheduler()
         return
 
       setProject: (project) ->
-        $rootScope.project = project
+        svc.project = project
         svc.clearAudio()
-        mixer = $rootScope.mixer
+        mixer = svc.mixer
         _.each project.tracks, (trackData) ->
           track = mixer.createTrack()
           _.each project.sets, (set) ->
@@ -89,9 +92,9 @@ define [
         return
 
       playSet: (set) ->
-        project = $rootScope.project
-        scheduler = $rootScope.scheduler
-        mixer = $rootScope.mixer
+        project = svc.project
+        scheduler = svc.scheduler
+        mixer = svc.mixer
         _.each mixer.tracks, (track) ->
           clip = track.getClip(set.id)
           if clip
@@ -104,7 +107,7 @@ define [
         return
 
       pauseSet: (set) ->
-        $rootScope.scheduler.stop()
+        svc.scheduler.stop()
         return
 
       linkTrack: (track) ->
@@ -112,12 +115,26 @@ define [
           track.unlink()
           return
 
-        mixer = $rootScope.mixer
+        mixer = svc.mixer
         tracks = mixer.tracks
         if track.id < tracks.length - 1
           nextTrack = tracks[track.id+1]
           track.linkTo nextTrack
         return
+
+      exportProject: (options) ->
+        project = svc.project
+        mixer = svc.mixer
+
+        projectTracks = project.tracks
+        mixerTracks = mixer.tracks
+        
+        exportTracks = projectTracks.map (pt, i) ->
+          mt = mixerTracks[i];
+          pt.pan = mt.panner.getValue()
+          if mt.linked
+            pt.link = mt.linkedTo.id
+          return pt
 
 
     svc.clearAudio()

@@ -3,25 +3,25 @@ define [
   "angular"
   "ng"
 ], (module, angular, NG) ->
-  angular.module(module["name"]).directive "kMainNav", ($http, $routeParams, $rootScope, app) ->
+  angular.module(module["name"]).directive "kMainNav", ($http, $routeParams, app, daw) ->
     restrict: "A"
     templateUrl: "components/main_nav/main_nav.jade"
     link: ($scope, $elem, attr) ->
       NG.attachScopeToElem $scope, $elem
       $scope.playPause = ->
         console.log "playPause"
-        $rootScope.scheduler.play()  if $rootScope.scheduler
+        daw.scheduler.play() if daw.scheduler
         return
 
       $scope.stop = ->
         console.log "stop"
-        $rootScope.scheduler.stopAll()  if $rootScope.scheduler
+        daw.scheduler.stopAll() if daw.scheduler
         return
 
       $scope.export = ->
-        project = $rootScope.project
+        project = daw.project
         projectTracks = project.tracks
-        mixer = $rootScope.mixer
+        mixer = daw.mixer
         mixerTracks = mixer.tracks
         projectTracks.forEach (pt, i) ->
           mt = mixerTracks[i];
